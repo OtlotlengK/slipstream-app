@@ -3,72 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slipstream | Merchant Receipt Generator</title>
-    <!-- Tailwind CSS for modern, clean mobile-responsive styling -->
+    <title>Slipstream | Digital Receipts</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 min-h-screen flex flex-col justify-between font-sans text-slate-800">
 
-    <!-- Header -->
-    <header class="bg-indigo-600 text-white p-4 shadow-md">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-wider">SLIPSTREAM</h1>
-            <span class="text-xs bg-indigo-500 py-1 px-2 rounded-full uppercase tracking-widest font-semibold">Merchant Portal</span>
+    <!-- Top Navigation Bar -->
+    <header class="bg-blue-600 text-white shadow-md">
+        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="font-bold text-lg tracking-wider">SLIPSTREAM</h1>
+            <span id="nav-badge" class="text-xs bg-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide font-medium">Merchant Portal</span>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="max-w-md w-full mx-auto p-4 flex-grow">
-        
-        <!-- Welcome Card -->
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6">
-            <h2 class="text-lg font-semibold text-slate-900 mb-1">Create Instant Receipt</h2>
-            <p class="text-sm text-slate-500">Fill in the sale details below to generate a shareable digital receipt for your customer.</p>
+    <!-- Main Container -->
+    <main class="max-w-md w-full mx-auto p-4 flex-grow flex flex-col justify-center">
+
+        <!-- VIEW 1: MERCHANT FORM -->
+        <div id="merchant-view" class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+            <div class="mb-5">
+                <h2 class="text-xl font-bold text-slate-900">Create Instant Receipt</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Fill in the sale details below to generate a shareable digital receipt for your customer.</p>
+            </div>
+
+            <form id="receipt-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Customer Name / Handle</label>
+                    <input type="text" id="cust-name" required placeholder="e.g. Sipho Dlamini" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Customer Phone Number (WhatsApp)</label>
+                    <input type="tel" id="cust-phone" required placeholder="e.g. 082 123 4567" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Item / Product Sold</label>
+                    <input type="text" id="item-desc" required placeholder="e.g. Custom Unit - 18 inch Bone Straight" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Amount (ZAR)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-sm font-semibold text-slate-400">R</span>
+                        <input type="number" id="item-amount" required placeholder="1200.00" class="w-full pl-8 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-all shadow-sm text-sm">
+                    Generate & Send Receipt
+                </button>
+            </form>
         </div>
 
-        <!-- Receipt Form -->
-        <form id="receiptForm" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-            
-            <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Customer Name / Handle</label>
-                <input type="text" id="customerName" required placeholder="e.g. Sipho Dlamini" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+        <!-- VIEW 2: CUSTOMER DIGITAL RECEIPT (Hidden by default) -->
+        <div id="receipt-view" class="hidden bg-white rounded-2xl shadow-sm p-6 border border-slate-200 space-y-5">
+            <div class="text-center pb-4 border-b border-dashed border-slate-200">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full mb-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h2 class="text-lg font-bold text-slate-900">Payment Verified</h2>
+                <p class="text-xs text-slate-500">Official Digital Proof of Purchase</p>
             </div>
 
-            <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Customer Phone Number (WhatsApp)</label>
-                <input type="tel" id="customerPhone" required placeholder="e.g. 082 123 4567" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Item / Product Sold</label>
-                <input type="text" id="itemDescription" required placeholder="e.g. K Wigs - 18 inch Bone Straight" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Amount (ZAR)</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-sm font-bold">R</span>
-                    <input type="number" id="amount" required placeholder="1200.00" class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Receipt No</span>
+                    <span id="res-id" class="font-mono font-semibold text-slate-700"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Date</span>
+                    <span id="res-date" class="font-medium text-slate-700"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Customer</span>
+                    <span id="res-customer" class="font-medium text-slate-700"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Item</span>
+                    <span id="res-item" class="font-medium text-slate-700 text-right max-w-[180px] truncate"></span>
+                </div>
+                <div class="flex justify-between py-2 text-base font-bold text-slate-900">
+                    <span>Total Paid</span>
+                    <span id="res-total" class="text-blue-600"></span>
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-indigo-100 text-sm">
-                Generate & Send Receipt
-            </button>
-        </form>
-
-        <!-- Generated Link Section (Hidden by default) -->
-        <div id="resultCard" class="hidden mt-6 bg-emerald-50 border border-emerald-200 p-5 rounded-2xl">
-            <div class="flex items-center space-x-2 mb-2">
-                <span class="text-emerald-600 font-bold text-lg">✓</span>
-                <h3 class="font-semibold text-emerald-900 text-sm">Receipt Generated Successfully!</h3>
-            </div>
-            <p class="text-xs text-emerald-700 mb-3">Share this secure link with your customer via WhatsApp or SMS:</p>
-            
-            <div class="flex items-center space-x-2">
-                <input type="text" id="generatedLink" readonly class="w-full bg-white px-3 py-2 rounded-lg border border-emerald-300 text-xs text-slate-600 focus:outline-none">
-                <button onclick="copyLink()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
-                    Copy
+            <div class="pt-2 space-y-2">
+                <a id="whatsapp-share-btn" href="#" target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition-all shadow-sm text-sm">
+                    Share Receipt via WhatsApp
+                </a>
+                <button onclick="resetForm()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 rounded-xl transition-all text-xs">
+                    Create Another Receipt
                 </button>
             </div>
         </div>
@@ -76,44 +102,54 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-100 mt-8">
+    <footer class="text-center py-4 text-xs text-slate-400">
         Powered by Slipstream &copy; 2026
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- Logic Script -->
     <script>
-        document.getElementById('receiptForm').addEventListener('submit', function(e) {
+        const form = document.getElementById('receipt-form');
+        const merchantView = document.getElementById('merchant-view');
+        const receiptView = document.getElementById('receipt-view');
+        const navBadge = document.getElementById('nav-badge');
+
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Gather input values
-            const name = document.getElementById('customerName').value;
-            const phone = document.getElementById('customerPhone').value;
-            const item = document.getElementById('itemDescription').value;
-            const amount = document.getElementById('amount').value;
 
-            // Generate a fake unique transaction code
-            const txnCode = 'SLIP-' + Math.floor(100000 + Math.random() * 900000);
+            // Grab form data
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const item = document.getElementById('item-desc').value;
+            const amount = parseFloat(document.getElementById('item-amount').value).toFixed(2);
 
-            // Create a mock secure link
-            const mockUrl = `https://slipstream.app/receipt/${txnCode}`;
+            // Generate unique receipt metadata
+            const receiptId = 'SS-' + Math.floor(100000 + Math.random() * 900000);
+            const currentDate = new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
 
-            // Show the result card
-            const resultCard = document.getElementById('resultCard');
-            const linkInput = document.getElementById('generatedLink');
-            
-            linkInput.value = mockUrl;
-            resultCard.classList.remove('hidden');
-            
-            // Scroll down smoothly to the result
-            resultCard.scrollIntoView({ behavior: 'smooth' });
+            // Populate Receipt View elements
+            document.getElementById('res-id').textContent = receiptId;
+            document.getElementById('res-date').textContent = currentDate;
+            document.getElementById('res-customer').textContent = name;
+            document.getElementById('res-item').textContent = item;
+            document.getElementById('res-total').textContent = 'R ' + amount;
+
+            // Build WhatsApp Share Link
+            const shareText = `Hi ${name}, here is your digital receipt from Kgabi Solutions PTY LTD for ${item} (Amount: R ${amount}). Receipt Ref: ${receiptId}. Thank you for your support!`;
+            const encodedText = encodeURIComponent(shareText);
+            const cleanPhone = phone.replace(/\D/g, ''); // strip spaces/symbols
+            document.getElementById('whatsapp-share-btn').href = `https://wa.me/${cleanPhone}?text=${encodedText}`;
+
+            // Switch views smoothly
+            merchantView.classList.add('hidden');
+            receiptView.classList.remove('hidden');
+            navBadge.textContent = "Customer View";
         });
 
-        function copyLink() {
-            const linkInput = document.getElementById('generatedLink');
-            linkInput.select();
-            linkInput.setSelectionRange(0, 99999); // For mobile devices
-            navigator.clipboard.writeText(linkInput.value);
-            alert('Receipt link copied to clipboard!');
+        function resetForm() {
+            form.reset();
+            receiptView.classList.add('hidden');
+            merchantView.classList.remove('hidden');
+            navBadge.textContent = "Merchant Portal";
         }
     </script>
 </body>
