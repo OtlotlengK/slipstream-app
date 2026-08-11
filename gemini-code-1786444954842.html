@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slipstream | Merchant Receipt Generator</title>
+    <!-- Tailwind CSS for modern, clean mobile-responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white p-4 shadow-md">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wider">SLIPSTREAM</h1>
+            <span class="text-xs bg-indigo-500 py-1 px-2 rounded-full uppercase tracking-widest font-semibold">Merchant Portal</span>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-md w-full mx-auto p-4 flex-grow">
+        
+        <!-- Welcome Card -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6">
+            <h2 class="text-lg font-semibold text-slate-900 mb-1">Create Instant Receipt</h2>
+            <p class="text-sm text-slate-500">Fill in the sale details below to generate a shareable digital receipt for your customer.</p>
+        </div>
+
+        <!-- Receipt Form -->
+        <form id="receiptForm" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+            
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Customer Name / Handle</label>
+                <input type="text" id="customerName" required placeholder="e.g. Sipho Dlamini" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Customer Phone Number (WhatsApp)</label>
+                <input type="tel" id="customerPhone" required placeholder="e.g. 082 123 4567" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Item / Product Sold</label>
+                <input type="text" id="itemDescription" required placeholder="e.g. K Wigs - 18 inch Bone Straight" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Amount (ZAR)</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 text-sm font-bold">R</span>
+                    <input type="number" id="amount" required placeholder="1200.00" class="w-full pl-8 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-indigo-100 text-sm">
+                Generate & Send Receipt
+            </button>
+        </form>
+
+        <!-- Generated Link Section (Hidden by default) -->
+        <div id="resultCard" class="hidden mt-6 bg-emerald-50 border border-emerald-200 p-5 rounded-2xl">
+            <div class="flex items-center space-x-2 mb-2">
+                <span class="text-emerald-600 font-bold text-lg">✓</span>
+                <h3 class="font-semibold text-emerald-900 text-sm">Receipt Generated Successfully!</h3>
+            </div>
+            <p class="text-xs text-emerald-700 mb-3">Share this secure link with your customer via WhatsApp or SMS:</p>
+            
+            <div class="flex items-center space-x-2">
+                <input type="text" id="generatedLink" readonly class="w-full bg-white px-3 py-2 rounded-lg border border-emerald-300 text-xs text-slate-600 focus:outline-none">
+                <button onclick="copyLink()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
+                    Copy
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-400 border-t border-slate-100 mt-8">
+        Powered by Slipstream &copy; 2026
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.getElementById('receiptForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Gather input values
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const item = document.getElementById('itemDescription').value;
+            const amount = document.getElementById('amount').value;
+
+            // Generate a fake unique transaction code
+            const txnCode = 'SLIP-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Create a mock secure link
+            const mockUrl = `https://slipstream.app/receipt/${txnCode}`;
+
+            // Show the result card
+            const resultCard = document.getElementById('resultCard');
+            const linkInput = document.getElementById('generatedLink');
+            
+            linkInput.value = mockUrl;
+            resultCard.classList.remove('hidden');
+            
+            // Scroll down smoothly to the result
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function copyLink() {
+            const linkInput = document.getElementById('generatedLink');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(linkInput.value);
+            alert('Receipt link copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
