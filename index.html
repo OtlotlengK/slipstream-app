@@ -14,10 +14,13 @@
     <header class="bg-blue-600 text-white shadow-md">
         <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <h1 class="font-bold text-lg tracking-wider">SLIPSTREAM</h1>
+                <h1 id="brand-title" class="font-bold text-lg tracking-wider">SLIPSTREAM</h1>
                 <span class="bg-blue-500 text-[10px] font-semibold px-2 py-0.5 rounded-full tracking-wide">SECURE PROTOCOL</span>
             </div>
-            <span id="nav-badge" class="text-xs bg-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide font-medium">Merchant Portal</span>
+            <div class="flex items-center gap-2">
+                <span id="nav-badge" class="text-xs bg-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide font-medium">Merchant Portal</span>
+                <button onclick="handleLogout()" class="text-xs bg-blue-800 hover:bg-blue-900 px-2.5 py-1 rounded-lg font-medium transition-all">Log Out</button>
+            </div>
         </div>
     </header>
 
@@ -47,11 +50,21 @@
                     <input type="text" id="item-desc" required placeholder="e.g. Custom Unit - 18 inch Bone Straight" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Amount (ZAR)</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-sm font-semibold text-slate-400">R</span>
-                        <input type="number" id="item-amount" required placeholder="1200.00" class="w-full pl-8 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Amount (ZAR)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-sm font-semibold text-slate-400">R</span>
+                            <input type="number" id="item-amount" required placeholder="1200.00" class="w-full pl-8 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Payment Type</label>
+                        <select id="payment-method" class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
+                            <option value="EFT">EFT / Transfer</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card Machine</option>
+                        </select>
                     </div>
                 </div>
 
@@ -73,16 +86,30 @@
                 </button>
             </div>
 
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                <div>
+                    <p class="text-[10px] uppercase font-bold text-slate-400">EFT</p>
+                    <p id="stat-eft" class="text-xs font-bold text-slate-800">R 0.00</p>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Cash</p>
+                    <p id="stat-cash" class="text-xs font-bold text-slate-800">R 0.00</p>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase font-bold text-slate-400">Card</p>
+                    <p id="stat-card" class="text-xs font-bold text-slate-800">R 0.00</p>
+                </div>
+            </div>
+
             <div class="space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Recent Transactions</h3>
                 </div>
-                <!-- Search Input Bar -->
                 <div>
                     <input type="text" id="search-receipts" placeholder="🔍 Search customer or item..." onkeyup="filterReceipts()" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
                 </div>
 
-                <div id="receipts-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                <div id="receipts-list" class="space-y-2.5 max-h-52 overflow-y-auto pr-1">
                     <p class="text-xs text-slate-400 text-center py-4">Loading sales history...</p>
                 </div>
             </div>
@@ -95,7 +122,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 </div>
                 <h2 class="text-lg font-bold text-slate-900">Fraud-Protected Receipt</h2>
-                <p class="text-xs text-emerald-600 font-semibold mt-0.5">✓ Cryptographically Verified & Logged</p>
+                <p id="res-merchant-subtitle" class="text-xs text-emerald-600 font-semibold mt-0.5">✓ Cryptographically Verified & Logged</p>
             </div>
 
             <div class="space-y-3 text-sm">
@@ -106,6 +133,10 @@
                 <div class="flex justify-between py-1 border-b border-slate-50">
                     <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Verification Hash</span>
                     <span id="res-hash" class="font-mono text-[10px] text-blue-600 font-bold"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Method</span>
+                    <span id="res-method" class="font-medium text-slate-700"></span>
                 </div>
                 <div class="flex justify-between py-1 border-b border-slate-50">
                     <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Date</span>
@@ -158,17 +189,51 @@
         const submitBtn = document.getElementById('submit-btn');
 
         let allReceipts = [];
+        let currentMerchant = null;
 
-        document.addEventListener('DOMContentLoaded', loadDashboard);
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check Session Authentication
+            const { data: { session }, error } = await _supabase.auth.getSession();
+            
+            if (error || !session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Fetch Merchant Profile details
+            const { data: merchantData } = await _supabase
+                .from('merchants')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            if (merchantData) {
+                currentMerchant = merchantData;
+                document.getElementById('brand-title').textContent = merchantData.business_name.toUpperCase();
+            }
+
+            loadDashboard();
+        });
+
+        async function handleLogout() {
+            await _supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
 
         async function loadDashboard() {
+            if (!currentMerchant) return;
+
             const { data, error } = await _supabase
                 .from('receipts')
                 .select('*')
+                .eq('merchant_id', currentMerchant.id)
                 .order('created_at', { ascending: false });
 
             const receiptsListEl = document.getElementById('receipts-list');
             const totalRevenueEl = document.getElementById('total-revenue');
+            const statEft = document.getElementById('stat-eft');
+            const statCash = document.getElementById('stat-cash');
+            const statCard = document.getElementById('stat-card');
 
             if (error) {
                 receiptsListEl.innerHTML = `<p class="text-xs text-red-500 text-center py-2">Failed to load sales history.</p>`;
@@ -177,6 +242,9 @@
 
             if (!data || data.length === 0) {
                 totalRevenueEl.textContent = 'R 0.00';
+                statEft.textContent = 'R 0.00';
+                statCash.textContent = 'R 0.00';
+                statCard.textContent = 'R 0.00';
                 receiptsListEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No receipts recorded yet.</p>`;
                 allReceipts = [];
                 return;
@@ -186,6 +254,14 @@
 
             const total = data.reduce((acc, curr) => acc + Number(curr.amount), 0);
             totalRevenueEl.textContent = 'R ' + total.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            const eftTotal = data.filter(i => (i.payment_method || 'EFT') === 'EFT').reduce((a, c) => a + Number(c.amount), 0);
+            const cashTotal = data.filter(i => i.payment_method === 'Cash').reduce((a, c) => a + Number(c.amount), 0);
+            const cardTotal = data.filter(i => i.payment_method === 'Card').reduce((a, c) => a + Number(c.amount), 0);
+
+            statEft.textContent = 'R ' + eftTotal.toLocaleString('en-ZA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            statCash.textContent = 'R ' + cashTotal.toLocaleString('en-ZA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            statCard.textContent = 'R ' + cardTotal.toLocaleString('en-ZA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
             renderReceiptsList(allReceipts);
         }
@@ -200,12 +276,13 @@
 
             receiptsListEl.innerHTML = items.map(item => {
                 const dateStr = new Date(item.created_at).toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const method = item.payment_method || 'EFT';
                 return `
                     <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
                         <div>
                             <div class="flex items-center gap-1.5">
                                 <p class="font-bold text-slate-800">${item.customer_name}</p>
-                                <span class="bg-emerald-100 text-emerald-700 text-[9px] px-1.5 py-0.2 rounded font-semibold">VERIFIED</span>
+                                <span class="bg-blue-50 text-blue-700 text-[9px] px-1.5 py-0.2 rounded font-semibold">${method}</span>
                             </div>
                             <p class="text-slate-400 text-[10px]">${item.item_desc} • ${dateStr}</p>
                         </div>
@@ -227,6 +304,7 @@
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
+            if (!currentMerchant) return;
 
             submitBtn.textContent = "Securing & Saving...";
             submitBtn.disabled = true;
@@ -235,6 +313,7 @@
             const phone = document.getElementById('cust-phone').value;
             const item = document.getElementById('item-desc').value;
             const amount = parseFloat(document.getElementById('item-amount').value).toFixed(2);
+            const paymentMethod = document.getElementById('payment-method').value;
 
             const receiptId = 'SS-' + Math.floor(100000 + Math.random() * 900000);
             const verificationHash = '0x' + Array.from({length: 12}, () => Math.floor(Math.random()*16).toString(16)).join('').toUpperCase();
@@ -244,11 +323,13 @@
                 .from('receipts')
                 .insert([
                     { 
+                        merchant_id: currentMerchant.id,
                         receipt_no: receiptId, 
                         customer_name: name, 
                         customer_phone: phone, 
                         item_desc: item, 
-                        amount: parseFloat(amount) 
+                        amount: parseFloat(amount),
+                        payment_method: paymentMethod
                     }
                 ]);
 
@@ -261,12 +342,14 @@
 
             document.getElementById('res-id').textContent = receiptId;
             document.getElementById('res-hash').textContent = verificationHash;
+            document.getElementById('res-method').textContent = paymentMethod;
             document.getElementById('res-date').textContent = currentDate;
             document.getElementById('res-customer').textContent = name;
             document.getElementById('res-item').textContent = item;
             document.getElementById('res-total').textContent = 'R ' + amount;
+            document.getElementById('res-merchant-subtitle').textContent = `✓ Verified by ${currentMerchant.business_name}`;
 
-            const shareText = `🔒 *VERIFIED DIGITAL RECEIPT*\nKgabi Solutions PTY LTD\n\nCustomer: ${name}\nItem: ${item}\nAmount: R ${amount}\nReceipt Ref: ${receiptId}\nSecurity Hash: ${verificationHash}\n\nThank you for your business!`;
+            const shareText = `🔒 *VERIFIED DIGITAL RECEIPT*\n${currentMerchant.business_name}\n\nCustomer: ${name}\nItem: ${item}\nAmount: R ${amount} (${paymentMethod})\nReceipt Ref: ${receiptId}\nSecurity Hash: ${verificationHash}\n\nThank you for your business!`;
             const encodedText = encodeURIComponent(shareText);
             const cleanPhone = phone.replace(/\D/g, '');
             document.getElementById('whatsapp-share-btn').href = `https://wa.me/${cleanPhone}?text=${encodedText}`;
