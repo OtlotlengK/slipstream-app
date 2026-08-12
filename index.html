@@ -19,7 +19,7 @@
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-md w-full mx-auto p-4 flex-grow flex flex-col justify-center">
+    <main class="max-w-md w-full mx-auto p-4 flex-grow flex flex-col justify-center space-y-4">
 
         <!-- VIEW 1: MERCHANT FORM -->
         <div id="merchant-view" class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
@@ -56,6 +56,26 @@
                     Generate & Save Receipt
                 </button>
             </form>
+        </div>
+
+        <!-- SALES DASHBOARD CARD -->
+        <div id="dashboard-view" class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-600">Total Revenue</h3>
+                    <p id="total-revenue" class="text-2xl font-black text-blue-600 mt-0.5">R 0.00</p>
+                </div>
+                <button onclick="loadDashboard()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg font-medium transition-all">
+                    Refresh 🔄
+                </button>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Recent Transactions</h3>
+                <div id="receipts-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                    <p class="text-xs text-slate-400 text-center py-4">Loading sales history...</p>
+                </div>
+            </div>
         </div>
 
         <!-- VIEW 2: CUSTOMER DIGITAL RECEIPT (Hidden by default) -->
@@ -118,9 +138,52 @@
 
         const form = document.getElementById('receipt-form');
         const merchantView = document.getElementById('merchant-view');
+        const dashboardView = document.getElementById('dashboard-view');
         const receiptView = document.getElementById('receipt-view');
         const navBadge = document.getElementById('nav-badge');
         const submitBtn = document.getElementById('submit-btn');
+
+        // Fetch and load dashboard stats on page load
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+
+        async function loadDashboard() {
+            const { data, error } = await _supabase
+                .from('receipts')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            const receiptsListEl = document.getElementById('receipts-list');
+            const totalRevenueEl = document.getElementById('total-revenue');
+
+            if (error) {
+                receiptsListEl.innerHTML = `<p class="text-xs text-red-500 text-center py-2">Failed to load sales history.</p>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                totalRevenueEl.textContent = 'R 0.00';
+                receiptsListEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No receipts recorded yet.</p>`;
+                return;
+            }
+
+            // Calculate total revenue
+            const total = data.reduce((acc, curr) => acc + Number(curr.amount), 0);
+            totalRevenueEl.textContent = 'R ' + total.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // Render list of transactions
+            receiptsListEl.innerHTML = data.map(item => {
+                const dateStr = new Date(item.created_at).toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+                        <div>
+                            <p class="font-bold text-slate-800">${item.customer_name}</p>
+                            <p class="text-slate-400 text-[10px]">${item.item_desc} • ${dateStr}</p>
+                        </div>
+                        <span class="font-bold text-blue-600">R ${Number(item.amount).toFixed(2)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -169,16 +232,23 @@
             submitBtn.textContent = "Generate & Save Receipt";
             submitBtn.disabled = false;
 
+            // Hide merchant view and dashboard, show customer receipt view
             merchantView.classList.add('hidden');
+            dashboardView.classList.add('hidden');
             receiptView.classList.remove('hidden');
             navBadge.textContent = "Customer View";
+            
+            // Refresh dashboard data behind the scenes
+            loadDashboard();
         });
 
         function resetForm() {
             form.reset();
             receiptView.classList.add('hidden');
             merchantView.classList.remove('hidden');
+            dashboardView.classList.remove('hidden');
             navBadge.textContent = "Merchant Portal";
+            loadDashboard();
         }
     </script>
 </body>
