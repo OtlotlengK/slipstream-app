@@ -1,435 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slipstream | Merchant Login</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
-
-    <div class="w-full max-w-md">
-
-        <!-- BRAND -->
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-black tracking-wider text-blue-600">
-                SLIPSTREAM
-            </h1>
-
-            <p class="text-sm text-slate-500 mt-1">
-                Secure Digital Receipts
-            </p>
-        </div>
-
-        <!-- CARD -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-
-            <h2 id="form-title"
-                class="text-xl font-bold text-slate-900">
-                Create your merchant account
-            </h2>
-
-            <p id="form-subtitle"
-               class="text-xs text-slate-500 mt-1 mb-6">
-                Start issuing verifiable digital receipts.
-            </p>
-
-            <!-- SIGN UP FIELDS -->
-            <div id="signup-fields" class="space-y-4">
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                        Business Name
-                    </label>
-
-                    <input
-                        id="business-name"
-                        type="text"
-                        placeholder="e.g. Kgabi Solutions"
-                        class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                        Your Name
-                    </label>
-
-                    <input
-                        id="owner-name"
-                        type="text"
-                        placeholder="e.g. Otlotleng Kgabi"
-                        class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-            </div>
-
-            <!-- EMAIL -->
-            <div class="mt-4">
-
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Email Address
-                </label>
-
-                <input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-            </div>
-
-            <!-- PASSWORD -->
-            <div class="mt-4">
-
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
-                    Password
-                </label>
-
-                <input
-                    id="password"
-                    type="password"
-                    placeholder="Minimum 6 characters"
-                    class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-            </div>
-
-            <!-- MESSAGE -->
-            <div id="message"
-                 class="hidden mt-4 p-3 rounded-xl text-xs">
-            </div>
-
-            <!-- BUTTON -->
-            <button
-                id="submit-btn"
-                onclick="handleSubmit()"
-                class="w-full mt-5 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all">
-
-                Create Merchant Account
-
-            </button>
-
-            <!-- SWITCH -->
-            <button
-                id="switch-btn"
-                onclick="toggleMode()"
-                class="w-full mt-4 text-xs text-blue-600 hover:text-blue-800 font-medium">
-
-                Already have an account? Log in
-
-            </button>
-
-        </div>
-
-        <p class="text-center text-[10px] text-slate-400 mt-5">
-            Slipstream © 2026
-        </p>
-
-    </div>
-
-
-<script>
-
-    // --------------------------------------------------
-    // SUPABASE CONFIGURATION
-    // --------------------------------------------------
-
-    const SUPABASE_URL =
-        'https://pddjualtnhgmplampucn.supabase.co';
-
-    const SUPABASE_ANON_KEY =
-        'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
-
-    const { createClient } = supabase;
-
-    const _supabase =
-        createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-
-    // --------------------------------------------------
-    // STATE
-    // --------------------------------------------------
-
-    let loginMode = false;
-
-
-    // --------------------------------------------------
-    // TOGGLE LOGIN / SIGNUP
-    // --------------------------------------------------
-
-    function toggleMode() {
-
-        loginMode = !loginMode;
-
-        const signupFields =
-            document.getElementById('signup-fields');
-
-        const title =
-            document.getElementById('form-title');
-
-        const subtitle =
-            document.getElementById('form-subtitle');
-
-        const submitBtn =
-            document.getElementById('submit-btn');
-
-        const switchBtn =
-            document.getElementById('switch-btn');
-
-
-        if (loginMode) {
-
-            signupFields.classList.add('hidden');
-
-            title.textContent =
-                'Welcome back';
-
-            subtitle.textContent =
-                'Log in to your merchant dashboard.';
-
-            submitBtn.textContent =
-                'Log In';
-
-            switchBtn.textContent =
-                "Don't have an account? Create one";
-
-        } else {
-
-            signupFields.classList.remove('hidden');
-
-            title.textContent =
-                'Create your merchant account';
-
-            subtitle.textContent =
-                'Start issuing verifiable digital receipts.';
-
-            submitBtn.textContent =
-                'Create Merchant Account';
-
-            switchBtn.textContent =
-                'Already have an account? Log in';
-
-        }
-
-    }
-
-
-    // --------------------------------------------------
-    // MESSAGE
-    // --------------------------------------------------
-
-    function showMessage(text, type) {
-
-        const message =
-            document.getElementById('message');
-
-        message.textContent = text;
-
-        message.className =
-            'mt-4 p-3 rounded-xl text-xs';
-
-        if (type === 'error') {
-
-            message.classList.add(
-                'bg-red-50',
-                'text-red-600'
-            );
-
-        } else {
-
-            message.classList.add(
-                'bg-emerald-50',
-                'text-emerald-600'
-            );
-
-        }
-
-    }
-
-
-    // --------------------------------------------------
-    // MAIN SUBMIT
-    // --------------------------------------------------
-
-    async function handleSubmit() {
-
-        const email =
-            document.getElementById('email').value.trim();
-
-        const password =
-            document.getElementById('password').value;
-
-        const submitBtn =
-            document.getElementById('submit-btn');
-
+async function handleSubmit() {
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const submitBtn = document.getElementById('submit-btn');
 
         if (!email || !password) {
-
-            showMessage(
-                'Please enter your email and password.',
-                'error'
-            );
-
+            showMessage('Please enter your email and password.', 'error');
             return;
-
         }
 
-
         submitBtn.disabled = true;
-
-        submitBtn.textContent =
-            loginMode
-                ? 'Logging in...'
-                : 'Creating account...';
-
+        submitBtn.textContent = loginMode ? 'Logging in...' : 'Creating account...';
 
         // --------------------------------------------------
         // LOGIN
         // --------------------------------------------------
-
         if (loginMode) {
-
-            const { data, error } =
-                await _supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
-
-
-            if (error) {
-
-                showMessage(
-                    error.message,
-                    'error'
-                );
-
-                submitBtn.disabled = false;
-
-                submitBtn.textContent =
-                    'Log In';
-
-                return;
-
-            }
-
-
-            window.location.href =
-                'index.html';
-
-            return;
-
-        }
-
-
-        // --------------------------------------------------
-        // SIGN UP
-        // --------------------------------------------------
-
-        const businessName =
-            document
-                .getElementById('business-name')
-                .value
-                .trim();
-
-        const ownerName =
-            document
-                .getElementById('owner-name')
-                .value
-                .trim();
-
-
-        if (!businessName || !ownerName) {
-
-            showMessage(
-                'Please enter your business name and your name.',
-                'error'
-            );
-
-            submitBtn.disabled = false;
-
-            submitBtn.textContent =
-                'Create Merchant Account';
-
-            return;
-
-        }
-
-
-        const { data, error } =
-            await _supabase.auth.signUp({
+            const { error } = await _supabase.auth.signInWithPassword({
                 email,
                 password
             });
 
-
-        if (error) {
-
-            showMessage(
-                error.message,
-                'error'
-            );
-
-            submitBtn.disabled = false;
-
-            submitBtn.textContent =
-                'Create Merchant Account';
-
-            return;
-
-        }
-
-
-        // --------------------------------------------------
-        // CREATE MERCHANT PROFILE
-        // --------------------------------------------------
-
-        if (data.user) {
-
-            const { error: profileError } =
-                await _supabase
-                    .from('merchants')
-                    .insert({
-                        id: data.user.id,
-                        business_name: businessName,
-                        owner_name: ownerName
-                    });
-
-
-            if (profileError) {
-
-                showMessage(
-                    'Account created, but the merchant profile could not be saved: ' +
-                    profileError.message,
-                    'error'
-                );
-
+            if (error) {
+                showMessage(error.message, 'error');
                 submitBtn.disabled = false;
-
-                submitBtn.textContent =
-                    'Create Merchant Account';
-
+                submitBtn.textContent = 'Log In';
                 return;
-
             }
 
+            window.location.href = 'index.html';
+            return;
         }
 
+        // --------------------------------------------------
+        // SIGN UP WITH METADATA (Triggers backend profile creation)
+        // --------------------------------------------------
+        const businessName = document.getElementById('business-name').value.trim();
+        const ownerName = document.getElementById('owner-name').value.trim();
 
-        showMessage(
-            'Account created successfully. You can now log in.',
-            'success'
-        );
+        if (!businessName || !ownerName) {
+            showMessage('Please enter your business name and your name.', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Create Merchant Account';
+            return;
+        }
 
+        const { error } = await _supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    business_name: businessName,
+                    owner_name: ownerName
+                }
+            }
+        });
 
+        if (error) {
+            showMessage(error.message, 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Create Merchant Account';
+            return;
+        }
+
+        showMessage('Account created successfully! Please check your email to verify your account before logging in.', 'success');
+        
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Merchant Account';
+        
         loginMode = true;
-
         toggleMode();
-
     }
-
-</script>
-
-</body>
-</html>
