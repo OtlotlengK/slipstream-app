@@ -6,6 +6,14 @@
     <title>Slipstream | Merchant Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #receipt-modal, #receipt-modal * { visibility: visible; }
+            #receipt-modal { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px; background: white; }
+            .no-print { display: none !important; }
+        }
+    </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col justify-between font-sans text-slate-800">
 
@@ -26,7 +34,7 @@
     <!-- Main Container -->
     <main class="max-w-4xl w-full mx-auto p-4 flex-grow space-y-6">
 
-        <!-- STATS / QUICK OVERVIEW -->
+        <!-- STATS -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
                 <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Revenue</p>
@@ -39,12 +47,12 @@
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
                 <p class="text-xs font-bold uppercase tracking-wider text-slate-400">System Status</p>
                 <p class="text-xs font-bold text-emerald-600 mt-2 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> RLS Secured
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> POP & RLS Secured
                 </p>
             </div>
         </div>
 
-        <!-- GENERATE RECEIPT CARD -->
+        <!-- GENERATE RECEIPT -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
             <h2 class="text-lg font-bold text-slate-900 mb-4">Issue New Digital Receipt</h2>
             
@@ -56,7 +64,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Payment Method</label>
-                        <select id="payment-method" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <select id="payment-method" onchange="togglePopRequirement()" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="EFT">EFT (Bank Transfer)</option>
                             <option value="Cash">Cash</option>
                             <option value="Card">Card</option>
@@ -83,7 +91,7 @@
             </form>
         </div>
 
-        <!-- RECENT RECEIPTS SECTION -->
+        <!-- RECENT RECEIPTS TABLE -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-bold text-slate-900">Recent Receipts</h2>
@@ -94,18 +102,17 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                            <th class="py-3 px-3">Receipt ID / Hash</th>
+                            <th class="py-3 px-3">Receipt Hash</th>
                             <th class="py-3 px-3">Customer</th>
                             <th class="py-3 px-3">Amount</th>
                             <th class="py-3 px-3">Method</th>
+                            <th class="py-3 px-3">POP Status</th>
                             <th class="py-3 px-3">Status</th>
                             <th class="py-3 px-3 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="receipts-table-body" class="text-xs divide-y divide-slate-100">
-                        <tr>
-                            <td colspan="6" class="py-6 text-center text-slate-400">Loading receipts...</td>
-                        </tr>
+                        <tr><td colspan="7" class="py-6 text-center text-slate-400">Loading receipts...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -113,12 +120,87 @@
 
     </main>
 
+    <!-- RECEIPT VIEW / POP MODAL -->
+    <div id="receipt-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 space-y-5 relative border border-slate-200 my-8">
+            
+            <div class="text-center border-b border-slate-100 pb-4">
+                <h3 id="modal-business-name" class="font-black text-xl text-blue-600">BUSINESS NAME</h3>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">Verified Digital Receipt & POP Slip</p>
+            </div>
+
+            <div class="space-y-2.5 text-xs">
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Receipt Hash:</span>
+                    <span id="modal-hash" class="font-mono font-bold text-blue-600"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Date Issued:</span>
+                    <span id="modal-date" class="font-medium text-slate-800"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Customer:</span>
+                    <span id="modal-customer" class="font-medium text-slate-800"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Payment Method:</span>
+                    <span id="modal-method" class="font-bold uppercase text-slate-800"></span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-50">
+                    <span class="text-slate-400 font-semibold">Description:</span>
+                    <span id="modal-description" class="font-medium text-slate-800 text-right"></span>
+                </div>
+                <div class="flex justify-between py-2 text-sm font-bold border-t border-slate-200 mt-1">
+                    <span>Total Amount:</span>
+                    <span id="modal-amount" class="text-slate-900 text-base"></span>
+                </div>
+            </div>
+
+            <!-- PROOF OF PAYMENT SECTION -->
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Proof of Payment (POP)</span>
+                    <span id="modal-pop-status" class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"></span>
+                </div>
+
+                <div id="pop-upload-area" class="space-y-2">
+                    <input type="file" id="pop-file-input" accept="image/*,.pdf" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                    <button onclick="uploadPOP()" id="upload-pop-btn" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 rounded-xl text-xs transition-all">Upload POP Slip</button>
+                </div>
+
+                <div id="pop-view-area" class="hidden flex items-center justify-between pt-1">
+                    <a id="pop-link" href="#" target="_blank" class="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">View Attached POP Slip &rarr;</a>
+                    <button onclick="removePOP()" class="text-[11px] text-red-600 hover:underline font-medium">Replace / Remove</button>
+                </div>
+
+                <div id="pop-verification-actions" class="hidden flex gap-2 pt-2 border-t border-slate-200">
+                    <button onclick="updatePOPStatus('verified')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-1.5 rounded-lg text-[11px] transition-all">Verify POP</button>
+                    <button onclick="updatePOPStatus('rejected')" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-1.5 rounded-lg text-[11px] transition-all">Reject POP</button>
+                </div>
+            </div>
+
+            <!-- MANAGEMENT ACTIONS INSIDE MODAL -->
+            <div class="no-print space-y-3 pt-1">
+                <div class="flex gap-2">
+                    <button onclick="window.print()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all">Print / Save PDF</button>
+                    <button onclick="closeModal()" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-xs transition-all">Close</button>
+                </div>
+                
+                <div class="flex gap-2 border-t border-slate-100 pt-3">
+                    <button id="btn-cancel-receipt" onclick="updateReceiptStatus('cancelled')" class="flex-1 bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-2 rounded-lg text-[11px] transition-all">Cancel Receipt</button>
+                    <button id="btn-refund-receipt" onclick="updateReceiptStatus('refunded')" class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-600 font-semibold py-2 rounded-lg text-[11px] transition-all">Mark Refunded</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="text-center py-4 text-[10px] text-slate-400">
         Slipstream &copy; 2026 &bull; Cryptographically Verified Ledger
     </footer>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- SCRIPT -->
     <script>
         const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
@@ -129,6 +211,7 @@
         let currentUser = null;
         let currentMerchant = null;
         let allReceipts = [];
+        let activeReceipt = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
             const { data: { session }, error } = await _supabase.auth.getSession();
@@ -190,6 +273,10 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
         }
 
+        function togglePopRequirement() {
+            // Can be used if specific logic per payment method is required
+        }
+
         async function handleCreateReceipt(event) {
             event.preventDefault();
             const btn = document.getElementById('issue-btn');
@@ -205,6 +292,7 @@
 
             const rawString = `${currentUser.id}-${customerName}-${amount}-${Date.now()}`;
             const verificationHash = await generateCryptoHash(rawString);
+            const popStatus = paymentMethod === 'EFT' ? 'pending' : 'not_required';
 
             const { error } = await _supabase.from('receipts').insert([
                 {
@@ -214,7 +302,8 @@
                     payment_method: paymentMethod,
                     description: items,
                     verification_hash: verificationHash,
-                    status: 'issued'
+                    status: 'issued',
+                    pop_status: popStatus
                 }
             ]);
 
@@ -242,7 +331,7 @@
         function renderReceipts(receipts) {
             const tbody = document.getElementById('receipts-table-body');
             if (receipts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">No receipts found. Issue your first receipt above.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400">No receipts found. Issue your first receipt above.</td></tr>`;
                 return;
             }
 
@@ -252,9 +341,10 @@
                     <td class="py-3 px-3 font-medium text-slate-800">${escapeHtml(r.customer_name)}</td>
                     <td class="py-3 px-3 font-bold text-slate-900">R ${Number(r.amount).toFixed(2)}</td>
                     <td class="py-3 px-3"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${r.payment_method}</span></td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getPopBadgeClass(r.pop_status)}">${r.pop_status || 'N/A'}</span></td>
                     <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getStatusBadgeClass(r.status)}">${r.status}</span></td>
                     <td class="py-3 px-3 text-right space-x-2">
-                        <button onclick="viewReceipt('${r.verification_hash}')" class="text-blue-600 hover:text-blue-800 font-semibold">View</button>
+                        <button onclick="viewReceipt('${r.id}')" class="text-blue-600 hover:text-blue-800 font-semibold">View / POP</button>
                     </td>
                 </tr>
             `).join('');
@@ -269,6 +359,163 @@
             }
         }
 
+        function getPopBadgeClass(status) {
+            switch(status) {
+                case 'verified': return 'bg-emerald-50 text-emerald-600';
+                case 'pending': return 'bg-amber-50 text-amber-600';
+                case 'rejected': return 'bg-red-50 text-red-600';
+                default: return 'bg-slate-100 text-slate-500';
+            }
+        }
+
+        function viewReceipt(id) {
+            const receipt = allReceipts.find(r => r.id === id);
+            if (!receipt) return;
+
+            activeReceipt = receipt;
+            document.getElementById('modal-business-name').textContent = currentMerchant ? currentMerchant.business_name : 'SLIPSTREAM MERCHANT';
+            document.getElementById('modal-hash').textContent = receipt.verification_hash;
+            document.getElementById('modal-date').textContent = new Date(receipt.created_at).toLocaleString();
+            document.getElementById('modal-customer').textContent = receipt.customer_name;
+            document.getElementById('modal-method').textContent = receipt.payment_method;
+            document.getElementById('modal-description').textContent = receipt.description || 'N/A';
+            document.getElementById('modal-amount').textContent = `R ${Number(receipt.amount).toFixed(2)}`;
+
+            const popStatusEl = document.getElementById('modal-pop-status');
+            popStatusEl.textContent = receipt.pop_status || 'not_required';
+            popStatusEl.className = `px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getPopBadgeClass(receipt.pop_status)}`;
+
+            const uploadArea = document.getElementById('pop-upload-area');
+            const viewArea = document.getElementById('pop-view-area');
+            const verificationActions = document.getElementById('pop-verification-actions');
+
+            if (receipt.pop_url) {
+                uploadArea.classList.add('hidden');
+                viewArea.classList.remove('hidden');
+                document.getElementById('pop-link').href = receipt.pop_url;
+                verificationActions.classList.remove('hidden');
+            } else {
+                uploadArea.classList.remove('hidden');
+                viewArea.classList.add('hidden');
+                verificationActions.classList.add('hidden');
+            }
+
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+            activeReceipt = null;
+        }
+
+        async function uploadPOP() {
+            if (!activeReceipt) return;
+            const fileInput = document.getElementById('pop-file-input');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const btn = document.getElementById('upload-pop-btn');
+            btn.disabled = true;
+            btn.textContent = 'Uploading...';
+
+            const filePath = `${currentUser.id}/${activeReceipt.id}-${Date.now()}-${file.name}`;
+            const { data, error } = await _supabase.storage
+                .from('pop-files')
+                .upload(filePath, file);
+
+            if (error) {
+                alert(`Upload failed: ${error.message}`);
+                btn.disabled = false;
+                btn.textContent = 'Upload POP Slip';
+                return;
+            }
+
+            const { data: { publicUrl } } = _supabase.storage
+                .from('pop-files')
+                .getPublicUrl(filePath);
+
+            const { error: updateError } = await _supabase
+                .from('receipts')
+                .update({ 
+                    pop_url: publicUrl,
+                    pop_status: 'pending'
+                })
+                .eq('id', activeReceipt.id);
+
+            if (updateError) {
+                alert(`Error linking POP to receipt: ${updateError.message}`);
+                btn.disabled = false;
+                btn.textContent = 'Upload POP Slip';
+                return;
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Upload POP Slip';
+            fileInput.value = '';
+            
+            await loadReceipts();
+            viewReceipt(activeReceipt.id);
+        }
+
+        async function removePOP() {
+            if (!activeReceipt || !confirm('Are you sure you want to remove this POP file?')) return;
+
+            const { error } = await _supabase
+                .from('receipts')
+                .update({ 
+                    pop_url: null,
+                    pop_status: 'pending'
+                })
+                .eq('id', activeReceipt.id);
+
+            if (error) {
+                alert(`Error removing POP: ${error.message}`);
+                return;
+            }
+
+            await loadReceipts();
+            viewReceipt(activeReceipt.id);
+        }
+
+        async function updatePOPStatus(newPopStatus) {
+            if (!activeReceipt) return;
+
+            const { error } = await _supabase
+                .from('receipts')
+                .update({ pop_status: newPopStatus })
+                .eq('id', activeReceipt.id);
+
+            if (error) {
+                alert(`Error updating POP status: ${error.message}`);
+                return;
+            }
+
+            await loadReceipts();
+            viewReceipt(activeReceipt.id);
+        }
+
+        async function updateReceiptStatus(newStatus) {
+            if (!activeReceipt) return;
+            if (!confirm(`Are you sure you want to mark this receipt as ${newStatus}?`)) return;
+
+            const { error } = await _supabase
+                .from('receipts')
+                .update({ status: newStatus })
+                .eq('id', activeReceipt.id);
+
+            if (error) {
+                alert(`Error updating receipt: ${error.message}`);
+                return;
+            }
+
+            closeModal();
+            await loadReceipts();
+        }
+
         function filterReceipts() {
             const query = document.getElementById('search-input').value.toLowerCase();
             const filtered = allReceipts.filter(r => 
@@ -276,10 +523,6 @@
                 r.verification_hash.toLowerCase().includes(query)
             );
             renderReceipts(filtered);
-        }
-
-        function viewReceipt(hash) {
-            alert(`Viewing verification details for cryptographic hash: ${hash}`);
         }
 
         async function handleLogout() {
