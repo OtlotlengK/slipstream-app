@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slipstream | Merchant Dashboard</title>
+    <title>Slipstream | Universal Verification Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -22,7 +22,7 @@
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <h1 class="font-bold text-lg tracking-wider">SLIPSTREAM</h1>
-                <span class="bg-blue-500 text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide">Secure Protocol</span>
+                <span class="bg-blue-500 text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide">Universal Protocol</span>
             </div>
             <div class="flex items-center gap-4">
                 <span id="nav-badge" class="text-xs bg-blue-700 px-2.5 py-1 rounded-lg font-medium">Loading...</span>
@@ -47,7 +47,7 @@
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
                 <p class="text-xs font-bold uppercase tracking-wider text-slate-400">System Status</p>
                 <p class="text-xs font-bold text-emerald-600 mt-2 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Comm & POP Secured
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> API Gateway Online
                 </p>
             </div>
         </div>
@@ -96,11 +96,39 @@
             </form>
         </div>
 
+        <!-- API KEYS MANAGEMENT SECTION -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Developer API Keys</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Use these keys to connect external storefronts or custom apps to your Slipstream endpoint.</p>
+                </div>
+                <button onclick="openApiKeyModal()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-4 py-2 rounded-xl text-xs transition-all shadow-sm">
+                    + Generate API Key
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            <th class="py-3 px-3">Key Label</th>
+                            <th class="py-3 px-3">Created</th>
+                            <th class="py-3 px-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="api-keys-table-body" class="text-xs divide-y divide-slate-100">
+                        <tr><td colspan="3" class="py-4 text-center text-slate-400">Loading API keys...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- RECENT RECEIPTS TABLE -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-bold text-slate-900">Recent Receipts</h2>
-                <input id="search-input" type="text" onkeyup="filterReceipts()" placeholder="Search customer or ID..." class="px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-48">
+                <input id="search-input" type="text" onkeyup="filterReceipts()" placeholder="Search customer or hash..." class="px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-48">
             </div>
 
             <div class="overflow-x-auto">
@@ -124,6 +152,35 @@
         </div>
 
     </main>
+
+    <!-- API KEY GENERATION MODAL -->
+    <div id="apikey-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4 relative border border-slate-200">
+            <h3 class="font-bold text-lg text-slate-900">Generate New API Key</h3>
+            
+            <div id="apikey-form-area" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Key Label</label>
+                    <input id="apikey-label" type="text" placeholder="e.g. Shopify Production Store" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button onclick="createApiKey()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl text-xs transition-all">Generate</button>
+                    <button onclick="closeApiKeyModal()" class="px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-xs transition-all">Cancel</button>
+                </div>
+            </div>
+
+            <div id="apikey-success-area" class="hidden space-y-3">
+                <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl text-xs font-medium">
+                    ⚠️ Copy this key now! For security reasons, it will never be shown again.
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Your Secret API Key</label>
+                    <input id="raw-apikey-output" type="text" readonly class="w-full px-3.5 py-2.5 text-xs font-mono bg-slate-100 border border-slate-200 rounded-xl select-all">
+                </div>
+                <button onclick="closeApiKeyModal()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 rounded-xl text-xs transition-all">Done & Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- RECEIPT VIEW / COMM MODAL -->
     <div id="receipt-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 overflow-y-auto">
@@ -219,7 +276,7 @@
 
     <!-- Footer -->
     <footer class="text-center py-4 text-[10px] text-slate-400">
-        Slipstream &copy; 2026 &bull; Cryptographically Verified Ledger
+        Slipstream &copy; 2026 &bull; Universal Cryptographic Verification Engine
     </footer>
 
     <!-- SCRIPT -->
@@ -233,6 +290,7 @@
         let currentUser = null;
         let currentMerchant = null;
         let allReceipts = [];
+        let allApiKeys = [];
         let activeReceipt = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -244,6 +302,7 @@
             currentUser = session.user;
             await loadMerchantProfile();
             await loadReceipts();
+            await loadApiKeys();
         });
 
         async function loadMerchantProfile() {
@@ -276,6 +335,100 @@
             allReceipts = data || [];
             renderReceipts(allReceipts);
             updateStats(allReceipts);
+        }
+
+        async function loadApiKeys() {
+            const { data, error } = await _supabase
+                .from('api_keys')
+                .select('*')
+                .eq('merchant_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading API keys:', error);
+                return;
+            }
+
+            allApiKeys = data || [];
+            renderApiKeys(allApiKeys);
+        }
+
+        function renderApiKeys(keys) {
+            const tbody = document.getElementById('api-keys-table-body');
+            if (keys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-slate-400">No API keys generated yet. Click above to create one.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = keys.map(k => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-3 font-semibold text-slate-800">${escapeHtml(k.label || 'Unnamed Key')}</td>
+                    <td class="py-3 px-3 text-slate-500">${new Date(k.created_at).toLocaleDateString()}</td>
+                    <td class="py-3 px-3 text-right">
+                        <button onclick="deleteApiKey('${k.id}')" class="text-red-600 hover:text-red-800 font-semibold">Revoke</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openApiKeyModal() {
+            document.getElementById('apikey-label').value = '';
+            document.getElementById('apikey-form-area').classList.remove('hidden');
+            document.getElementById('apikey-success-area').classList.add('hidden');
+            document.getElementById('apikey-modal').classList.remove('hidden');
+        }
+
+        function closeApiKeyModal() {
+            document.getElementById('apikey-modal').classList.add('hidden');
+            loadApiKeys();
+        }
+
+        async function createApiKey() {
+            const label = document.getElementById('apikey-label').value.trim() || 'Production Key';
+            
+            // Generate a secure random API key string
+            const rawKey = 'sk_live_' + Array.from(crypto.getRandomValues(new Uint8Array(24)))
+                .map(b => b.toString(16).padStart(2, '0')).join('');
+
+            // Hash the raw key using SHA-256 for secure database storage
+            const encoder = new TextEncoder();
+            const dataBytes = encoder.encode(rawKey);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', dataBytes);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const keyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            const { error } = await _supabase.from('api_keys').insert([
+                {
+                    merchant_id: currentUser.id,
+                    key_hash: keyHash,
+                    label: label
+                }
+            ]);
+
+            if (error) {
+                alert(`Error creating API key: ${error.message}`);
+                return;
+            }
+
+            document.getElementById('raw-apikey-output').value = rawKey;
+            document.getElementById('apikey-form-area').classList.add('hidden');
+            document.getElementById('apikey-success-area').classList.remove('hidden');
+        }
+
+        async function deleteApiKey(id) {
+            if (!confirm('Are you sure you want to revoke this API key? Any connected applications will instantly lose access.')) return;
+
+            const { error } = await _supabase
+                .from('api_keys')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert(`Error revoking key: ${error.message}`);
+                return;
+            }
+
+            await loadApiKeys();
         }
 
         function updateStats(receipts) {
@@ -351,7 +504,7 @@
         function renderReceipts(receipts) {
             const tbody = document.getElementById('receipts-table-body');
             if (receipts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400">No receipts found. Issue your first receipt above.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400">No receipts found.</td></tr>`;
                 return;
             }
 
