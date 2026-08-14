@@ -165,10 +165,11 @@
             return;
         }
 
-        const { error } = await _supabase.auth.signUp({
+        const { data, error } = await _supabase.auth.signUp({
             email,
             password,
             options: {
+                emailRedirectTo: 'https://slipstream-app-sigma.vercel.app/login.html',
                 data: {
                     business_name: businessName,
                     owner_name: ownerName
