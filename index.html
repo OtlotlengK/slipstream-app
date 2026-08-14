@@ -3,177 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slipstream | Secure Digital Receipts</title>
+    <title>Slipstream | Merchant Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS Client SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col justify-between font-sans text-slate-800">
 
     <!-- Top Navigation Bar -->
     <header class="bg-blue-600 text-white shadow-md">
-        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <h1 id="brand-title" class="font-bold text-lg tracking-wider">SLIPSTREAM</h1>
-                <span class="bg-blue-500 text-[10px] font-semibold px-2 py-0.5 rounded-full tracking-wide">SECURE PROTOCOL</span>
+                <h1 class="font-bold text-lg tracking-wider">SLIPSTREAM</h1>
+                <span class="bg-blue-500 text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide">Secure Protocol</span>
             </div>
-            <div class="flex items-center gap-2">
-                <span id="nav-badge" class="text-xs bg-blue-700 px-2.5 py-1 rounded-full uppercase tracking-wide font-medium">Merchant Portal</span>
-                <button onclick="handleLogout()" class="text-xs bg-blue-800 hover:bg-blue-900 px-2.5 py-1 rounded-lg font-medium transition-all">Log Out</button>
+            <div class="flex items-center gap-4">
+                <span id="nav-badge" class="text-xs bg-blue-700 px-2.5 py-1 rounded-lg font-medium">Loading...</span>
+                <button onclick="handleLogout()" class="text-xs bg-blue-700 hover:bg-blue-800 px-3 py-1.5 rounded-lg font-medium transition-all">Log Out</button>
             </div>
         </div>
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-md w-full mx-auto p-4 flex-grow flex flex-col justify-center space-y-4">
+    <main class="max-w-4xl w-full mx-auto p-4 flex-grow space-y-6">
 
-        <!-- VIEW 1: MERCHANT FORM -->
-        <div id="merchant-view" class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
-            <div class="mb-5">
-                <h2 class="text-xl font-bold text-slate-900">Create Secure Receipt</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Generate tamper-proof electronic proof of purchase with anti-fraud verification.</p>
+        <!-- STATS / QUICK OVERVIEW -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Revenue</p>
+                <p id="stat-revenue" class="text-2xl font-black text-slate-900 mt-1">R 0.00</p>
             </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Receipts Issued</p>
+                <p id="stat-count" class="text-2xl font-black text-slate-900 mt-1">0</p>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">System Status</p>
+                <p class="text-xs font-bold text-emerald-600 mt-2 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> RLS Secured
+                </p>
+            </div>
+        </div>
 
-            <form id="receipt-form" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Customer Name / Handle</label>
-                    <input type="text" id="cust-name" required placeholder="e.g. Sipho Dlamini" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Customer Phone Number (WhatsApp)</label>
-                    <input type="tel" id="cust-phone" required placeholder="e.g. 082 123 4567" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Item / Product Sold</label>
-                    <input type="text" id="item-desc" required placeholder="e.g. Custom Unit - 18 inch Bone Straight" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
+        <!-- GENERATE RECEIPT CARD -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-lg font-bold text-slate-900 mb-4">Issue New Digital Receipt</h2>
+            
+            <form id="receipt-form" onsubmit="handleCreateReceipt(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Amount (ZAR)</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-sm font-semibold text-slate-400">R</span>
-                            <input type="number" id="item-amount" required placeholder="1200.00" class="w-full pl-8 pr-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                        </div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Customer Name</label>
+                        <input id="customer-name" type="text" required placeholder="e.g. John Doe" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Payment Type</label>
-                        <select id="payment-method" class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                            <option value="EFT">EFT / Transfer</option>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Payment Method</label>
+                        <select id="payment-method" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="EFT">EFT (Bank Transfer)</option>
                             <option value="Cash">Cash</option>
-                            <option value="Card">Card Machine</option>
+                            <option value="Card">Card</option>
                         </select>
                     </div>
                 </div>
 
-                <button type="submit" id="submit-btn" class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition-all shadow-sm text-sm">
-                    Generate Verified Receipt
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Amount (ZAR)</label>
+                        <input id="receipt-amount" type="number" step="0.01" required placeholder="0.00" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Description / Items</label>
+                        <input id="receipt-items" type="text" required placeholder="e.g. Consulting Services / Goods" class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div id="form-message" class="hidden p-3 rounded-xl text-xs"></div>
+
+                <button type="submit" id="issue-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all shadow-sm">
+                    Generate & Secure Receipt
                 </button>
             </form>
         </div>
 
-        <!-- SALES DASHBOARD CARD -->
-        <div id="dashboard-view" class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200 space-y-4">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
-                <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-600">Total Revenue</h3>
-                    <p id="total-revenue" class="text-2xl font-black text-blue-600 mt-0.5">R 0.00</p>
-                </div>
-                <button onclick="loadDashboard()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2 rounded-lg font-medium transition-all">
-                    Refresh 🔄
-                </button>
+        <!-- RECENT RECEIPTS SECTION -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-slate-900">Recent Receipts</h2>
+                <input id="search-input" type="text" onkeyup="filterReceipts()" placeholder="Search customer or ID..." class="px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-48">
             </div>
 
-            <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                <div>
-                    <p class="text-[10px] uppercase font-bold text-slate-400">EFT</p>
-                    <p id="stat-eft" class="text-xs font-bold text-slate-800">R 0.00</p>
-                </div>
-                <div>
-                    <p class="text-[10px] uppercase font-bold text-slate-400">Cash</p>
-                    <p id="stat-cash" class="text-xs font-bold text-slate-800">R 0.00</p>
-                </div>
-                <div>
-                    <p class="text-[10px] uppercase font-bold text-slate-400">Card</p>
-                    <p id="stat-card" class="text-xs font-bold text-slate-800">R 0.00</p>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Recent Transactions</h3>
-                </div>
-                <div>
-                    <input type="text" id="search-receipts" placeholder="🔍 Search customer or item..." onkeyup="filterReceipts()" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all">
-                </div>
-
-                <div id="receipts-list" class="space-y-2.5 max-h-52 overflow-y-auto pr-1">
-                    <p class="text-xs text-slate-400 text-center py-4">Loading sales history...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW 2: CUSTOMER DIGITAL RECEIPT (Hidden by default) -->
-        <div id="receipt-view" class="hidden bg-white rounded-2xl shadow-sm p-6 border border-slate-200 space-y-5">
-            <div class="text-center pb-4 border-b border-dashed border-slate-200">
-                <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full mb-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                </div>
-                <h2 class="text-lg font-bold text-slate-900">Fraud-Protected Receipt</h2>
-                <p id="res-merchant-subtitle" class="text-xs text-emerald-600 font-semibold mt-0.5">✓ Cryptographically Verified & Logged</p>
-            </div>
-
-            <div class="space-y-3 text-sm">
-                <div class="flex justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Receipt No</span>
-                    <span id="res-id" class="font-mono font-semibold text-slate-700"></span>
-                </div>
-                <div class="flex justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Verification Hash</span>
-                    <span id="res-hash" class="font-mono text-[10px] text-blue-600 font-bold"></span>
-                </div>
-                <div class="flex justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Method</span>
-                    <span id="res-method" class="font-medium text-slate-700"></span>
-                </div>
-                <div class="flex justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Date</span>
-                    <span id="res-date" class="font-medium text-slate-700"></span>
-                </div>
-                <div class="flex justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Customer</span>
-                    <span id="res-customer" class="font-medium text-slate-700"></span>
-                </div>
-                <div class="flex justify-between py-1 border-b border-slate-50">
-                    <span class="text-slate-400 text-xs uppercase tracking-wider font-medium">Item</span>
-                    <span id="res-item" class="font-medium text-slate-700 text-right max-w-[180px] truncate"></span>
-                </div>
-                <div class="flex justify-between py-2 text-base font-bold text-slate-900">
-                    <span>Total Paid</span>
-                    <span id="res-total" class="text-blue-600"></span>
-                </div>
-            </div>
-
-            <div class="pt-2 space-y-2">
-                <a id="whatsapp-share-btn" href="#" target="_blank" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition-all shadow-sm text-sm">
-                    Share Verified Receipt via WhatsApp
-                </a>
-                <button onclick="resetForm()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 rounded-xl transition-all text-xs">
-                    Create Another Receipt
-                </button>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            <th class="py-3 px-3">Receipt ID / Hash</th>
+                            <th class="py-3 px-3">Customer</th>
+                            <th class="py-3 px-3">Amount</th>
+                            <th class="py-3 px-3">Method</th>
+                            <th class="py-3 px-3">Status</th>
+                            <th class="py-3 px-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="receipts-table-body" class="text-xs divide-y divide-slate-100">
+                        <tr>
+                            <td colspan="6" class="py-6 text-center text-slate-400">Loading receipts...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-slate-400">
-        Powered by Slipstream &copy; 2026
+    <footer class="text-center py-4 text-[10px] text-slate-400">
+        Slipstream &copy; 2026 &bull; Cryptographically Verified Ledger
     </footer>
 
-    <!-- Logic Script & Supabase Integration -->
+    <!-- SCRIPT LOGIC -->
     <script>
         const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
@@ -181,198 +126,169 @@
         const { createClient } = supabase;
         const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const form = document.getElementById('receipt-form');
-        const merchantView = document.getElementById('merchant-view');
-        const dashboardView = document.getElementById('dashboard-view');
-        const receiptView = document.getElementById('receipt-view');
-        const navBadge = document.getElementById('nav-badge');
-        const submitBtn = document.getElementById('submit-btn');
-
-        let allReceipts = [];
+        let currentUser = null;
         let currentMerchant = null;
+        let allReceipts = [];
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check Session Authentication
+        window.addEventListener('DOMContentLoaded', async () => {
             const { data: { session }, error } = await _supabase.auth.getSession();
-            
             if (error || !session) {
                 window.location.href = 'login.html';
                 return;
             }
+            currentUser = session.user;
+            await loadMerchantProfile();
+            await loadReceipts();
+        });
 
-            // Fetch Merchant Profile details
-            const { data: merchantData } = await _supabase
+        async function loadMerchantProfile() {
+            const { data } = await _supabase
                 .from('merchants')
                 .select('*')
-                .eq('id', session.user.id)
+                .eq('id', currentUser.id)
                 .single();
 
-            if (merchantData) {
-                currentMerchant = merchantData;
-                document.getElementById('brand-title').textContent = merchantData.business_name.toUpperCase();
+            if (data) {
+                currentMerchant = data;
+                document.getElementById('nav-badge').textContent = data.business_name;
+            } else {
+                document.getElementById('nav-badge').textContent = currentUser.email;
+            }
+        }
+
+        async function loadReceipts() {
+            const { data, error } = await _supabase
+                .from('receipts')
+                .select('*')
+                .eq('merchant_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Error loading receipts:', error);
+                return;
             }
 
-            loadDashboard();
-        });
+            allReceipts = data || [];
+            renderReceipts(allReceipts);
+            updateStats(allReceipts);
+        }
+
+        function updateStats(receipts) {
+            const totalCount = receipts.length;
+            const totalRev = receipts
+                .filter(r => r.status !== 'cancelled' && r.status !== 'refunded')
+                .reduce((sum, r) => sum + Number(r.amount), 0);
+
+            document.getElementById('stat-count').textContent = totalCount;
+            document.getElementById('stat-revenue').textContent = `R ${totalRev.toFixed(2)}`;
+        }
+
+        async function generateCryptoHash(text) {
+            const msgBuffer = new TextEncoder().encode(text);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
+        }
+
+        async function handleCreateReceipt(event) {
+            event.preventDefault();
+            const btn = document.getElementById('issue-btn');
+            const msgBox = document.getElementById('form-message');
+
+            const customerName = document.getElementById('customer-name').value.trim();
+            const paymentMethod = document.getElementById('payment-method').value;
+            const amount = parseFloat(document.getElementById('receipt-amount').value);
+            const items = document.getElementById('receipt-items').value.trim();
+
+            btn.disabled = true;
+            btn.textContent = 'Securing Receipt...';
+
+            const rawString = `${currentUser.id}-${customerName}-${amount}-${Date.now()}`;
+            const verificationHash = await generateCryptoHash(rawString);
+
+            const { error } = await _supabase.from('receipts').insert([
+                {
+                    merchant_id: currentUser.id,
+                    customer_name: customerName,
+                    amount: amount,
+                    payment_method: paymentMethod,
+                    description: items,
+                    verification_hash: verificationHash,
+                    status: 'issued'
+                }
+            ]);
+
+            if (error) {
+                msgBox.textContent = error.message;
+                msgBox.className = 'p-3 rounded-xl text-xs bg-red-50 text-red-600 mt-4';
+                msgBox.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = 'Generate & Secure Receipt';
+                return;
+            }
+
+            document.getElementById('receipt-form').reset();
+            msgBox.textContent = 'Receipt generated and cryptographically secured successfully!';
+            msgBox.className = 'p-3 rounded-xl text-xs bg-emerald-50 text-emerald-600 mt-4';
+            msgBox.classList.remove('hidden');
+
+            btn.disabled = false;
+            btn.textContent = 'Generate & Secure Receipt';
+
+            setTimeout(() => msgBox.classList.add('hidden'), 4000);
+            await loadReceipts();
+        }
+
+        function renderReceipts(receipts) {
+            const tbody = document.getElementById('receipts-table-body');
+            if (receipts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">No receipts found. Issue your first receipt above.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = receipts.map(r => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-3 font-mono text-[11px] text-blue-600 font-semibold">${r.verification_hash}</td>
+                    <td class="py-3 px-3 font-medium text-slate-800">${escapeHtml(r.customer_name)}</td>
+                    <td class="py-3 px-3 font-bold text-slate-900">R ${Number(r.amount).toFixed(2)}</td>
+                    <td class="py-3 px-3"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${r.payment_method}</span></td>
+                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${getStatusBadgeClass(r.status)}">${r.status}</span></td>
+                    <td class="py-3 px-3 text-right space-x-2">
+                        <button onclick="viewReceipt('${r.verification_hash}')" class="text-blue-600 hover:text-blue-800 font-semibold">View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'issued': return 'bg-emerald-50 text-emerald-600';
+                case 'cancelled': return 'bg-red-50 text-red-600';
+                case 'refunded': return 'bg-amber-50 text-amber-600';
+                default: return 'bg-slate-100 text-slate-600';
+            }
+        }
+
+        function filterReceipts() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allReceipts.filter(r => 
+                r.customer_name.toLowerCase().includes(query) || 
+                r.verification_hash.toLowerCase().includes(query)
+            );
+            renderReceipts(filtered);
+        }
+
+        function viewReceipt(hash) {
+            alert(`Viewing verification details for cryptographic hash: ${hash}`);
+        }
 
         async function handleLogout() {
             await _supabase.auth.signOut();
             window.location.href = 'login.html';
         }
 
-        async function loadDashboard() {
-            if (!currentMerchant) return;
-
-            const { data, error } = await _supabase
-                .from('receipts')
-                .select('*')
-                .eq('merchant_id', currentMerchant.id)
-                .order('created_at', { ascending: false });
-
-            const receiptsListEl = document.getElementById('receipts-list');
-            const totalRevenueEl = document.getElementById('total-revenue');
-            const statEft = document.getElementById('stat-eft');
-            const statCash = document.getElementById('stat-cash');
-            const statCard = document.getElementById('stat-card');
-
-            if (error) {
-                receiptsListEl.innerHTML = `<p class="text-xs text-red-500 text-center py-2">Failed to load sales history.</p>`;
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                totalRevenueEl.textContent = 'R 0.00';
-                statEft.textContent = 'R 0.00';
-                statCash.textContent = 'R 0.00';
-                statCard.textContent = 'R 0.00';
-                receiptsListEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No receipts recorded yet.</p>`;
-                allReceipts = [];
-                return;
-            }
-
-            allReceipts = data;
-
-            const total = data.reduce((acc, curr) => acc + Number(curr.amount), 0);
-            totalRevenueEl.textContent = 'R ' + total.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-            const eftTotal = data.filter(i => (i.payment_method || 'EFT') === 'EFT').reduce((a, c) => a + Number(c.amount), 0);
-            const cashTotal = data.filter(i => i.payment_method === 'Cash').reduce((a, c) => a + Number(c.amount), 0);
-            const cardTotal = data.filter(i => i.payment_method === 'Card').reduce((a, c) => a + Number(c.amount), 0);
-
-            statEft.textContent = 'R ' + eftTotal.toLocaleString('en-ZA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-            statCash.textContent = 'R ' + cashTotal.toLocaleString('en-ZA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-            statCard.textContent = 'R ' + cardTotal.toLocaleString('en-ZA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-
-            renderReceiptsList(allReceipts);
-        }
-
-        function renderReceiptsList(items) {
-            const receiptsListEl = document.getElementById('receipts-list');
-            
-            if (items.length === 0) {
-                receiptsListEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No matching receipts found.</p>`;
-                return;
-            }
-
-            receiptsListEl.innerHTML = items.map(item => {
-                const dateStr = new Date(item.created_at).toLocaleDateString('en-ZA', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                const method = item.payment_method || 'EFT';
-                return `
-                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs">
-                        <div>
-                            <div class="flex items-center gap-1.5">
-                                <p class="font-bold text-slate-800">${item.customer_name}</p>
-                                <span class="bg-blue-50 text-blue-700 text-[9px] px-1.5 py-0.2 rounded font-semibold">${method}</span>
-                            </div>
-                            <p class="text-slate-400 text-[10px]">${item.item_desc} • ${dateStr}</p>
-                        </div>
-                        <span class="font-bold text-blue-600">R ${Number(item.amount).toFixed(2)}</span>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function filterReceipts() {
-            const query = document.getElementById('search-receipts').value.toLowerCase();
-            const filtered = allReceipts.filter(item => 
-                item.customer_name.toLowerCase().includes(query) || 
-                item.item_desc.toLowerCase().includes(query) ||
-                item.receipt_no.toLowerCase().includes(query)
-            );
-            renderReceiptsList(filtered);
-        }
-
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!currentMerchant) return;
-
-            submitBtn.textContent = "Securing & Saving...";
-            submitBtn.disabled = true;
-
-            const name = document.getElementById('cust-name').value;
-            const phone = document.getElementById('cust-phone').value;
-            const item = document.getElementById('item-desc').value;
-            const amount = parseFloat(document.getElementById('item-amount').value).toFixed(2);
-            const paymentMethod = document.getElementById('payment-method').value;
-
-            const receiptId = 'SS-' + Math.floor(100000 + Math.random() * 900000);
-            const verificationHash = '0x' + Array.from({length: 12}, () => Math.floor(Math.random()*16).toString(16)).join('').toUpperCase();
-            const currentDate = new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
-
-            const { error } = await _supabase
-                .from('receipts')
-                .insert([
-                    { 
-                        merchant_id: currentMerchant.id,
-                        receipt_no: receiptId, 
-                        customer_name: name, 
-                        customer_phone: phone, 
-                        item_desc: item, 
-                        amount: parseFloat(amount),
-                        payment_method: paymentMethod
-                    }
-                ]);
-
-            if (error) {
-                alert('Error saving receipt: ' + error.message);
-                submitBtn.textContent = "Generate Verified Receipt";
-                submitBtn.disabled = false;
-                return;
-            }
-
-            document.getElementById('res-id').textContent = receiptId;
-            document.getElementById('res-hash').textContent = verificationHash;
-            document.getElementById('res-method').textContent = paymentMethod;
-            document.getElementById('res-date').textContent = currentDate;
-            document.getElementById('res-customer').textContent = name;
-            document.getElementById('res-item').textContent = item;
-            document.getElementById('res-total').textContent = 'R ' + amount;
-            document.getElementById('res-merchant-subtitle').textContent = `✓ Verified by ${currentMerchant.business_name}`;
-
-            const shareText = `🔒 *VERIFIED DIGITAL RECEIPT*\n${currentMerchant.business_name}\n\nCustomer: ${name}\nItem: ${item}\nAmount: R ${amount} (${paymentMethod})\nReceipt Ref: ${receiptId}\nSecurity Hash: ${verificationHash}\n\nThank you for your business!`;
-            const encodedText = encodeURIComponent(shareText);
-            const cleanPhone = phone.replace(/\D/g, '');
-            document.getElementById('whatsapp-share-btn').href = `https://wa.me/${cleanPhone}?text=${encodedText}`;
-
-            submitBtn.textContent = "Generate Verified Receipt";
-            submitBtn.disabled = false;
-
-            merchantView.classList.add('hidden');
-            dashboardView.classList.add('hidden');
-            receiptView.classList.remove('hidden');
-            navBadge.textContent = "Customer View";
-            
-            loadDashboard();
-        });
-
-        function resetForm() {
-            form.reset();
-            document.getElementById('search-receipts').value = '';
-            receiptView.classList.add('hidden');
-            merchantView.classList.remove('hidden');
-            dashboardView.classList.remove('hidden');
-            navBadge.textContent = "Merchant Portal";
-            loadDashboard();
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
     </script>
 </body>
