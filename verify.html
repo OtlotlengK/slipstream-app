@@ -1,141 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Receipt | Slipstream</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slipstream | Verify Receipt</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4 font-sans text-slate-800">
-
-    <main class="max-w-md w-full bg-white rounded-3xl shadow-lg border border-slate-200 p-8 space-y-6">
-        
-        <!-- Header -->
-        <div class="text-center space-y-2">
-            <div id="status-icon" class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold shadow-sm">
-                🔍
-            </div>
-            <h1 class="font-black text-2xl tracking-tight text-slate-900">Slipstream Verification</h1>
-            <p id="status-subtitle" class="text-xs text-slate-400 uppercase tracking-widest font-semibold">Validating Cryptographic Proof...</p>
-        </div>
-
-        <!-- Receipt Details Card -->
-        <div id="receipt-card" class="hidden space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-200 text-xs">
-            <div class="flex justify-between py-1.5 border-b border-slate-200">
-                <span class="text-slate-400 font-semibold">Business:</span>
-                <span id="receipt-business" class="font-bold text-slate-900 text-right">--</span>
-            </div>
-            <div class="flex justify-between py-1.5 border-b border-slate-200">
-                <span class="text-slate-400 font-semibold">Customer:</span>
-                <span id="receipt-customer" class="font-medium text-slate-800">--</span>
-            </div>
-            <div class="flex justify-between py-1.5 border-b border-slate-200">
-                <span class="text-slate-400 font-semibold">Amount:</span>
-                <span id="receipt-amount" class="font-bold text-slate-900 text-sm">--</span>
-            </div>
-            <div class="flex justify-between py-1.5 border-b border-slate-200">
-                <span class="text-slate-400 font-semibold">Payment Method:</span>
-                <span id="receipt-method" class="font-bold uppercase text-slate-800">--</span>
-            </div>
-            <div class="flex justify-between py-1.5 border-b border-slate-200">
-                <span class="text-slate-400 font-semibold">Description:</span>
-                <span id="receipt-description" class="font-medium text-slate-800 text-right">--</span>
-            </div>
-            <div class="flex justify-between py-1.5 border-b border-slate-200">
-                <span class="text-slate-400 font-semibold">Date Issued:</span>
-                <span id="receipt-date" class="font-medium text-slate-800">--</span>
-            </div>
-            <div class="flex justify-between py-1.5">
-                <span class="text-slate-400 font-semibold">Verification Hash:</span>
-                <span id="receipt-hash" class="font-mono font-bold text-blue-600 text-[11px]">--</span>
-            </div>
-        </div>
-
-        <!-- Error Message Container -->
-        <div id="error-box" class="hidden bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs text-center font-medium">
-            Receipt not found or invalid verification hash.
-        </div>
-
-        <!-- Trust Footer -->
-        <div class="text-center pt-2">
-            <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Secured by Slipstream Protocol</p>
-        </div>
-
-    </main>
-
-    <!-- SCRIPT -->
-    <script>
-        const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
-
-        const { createClient } = supabase;
-        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const hash = urlParams.get('h');
-
-            if (!hash) {
-                showError();
-                return;
-            }
-
-            const { data: receipt, error } = await _supabase
-                .from('receipts')
-                .select('*')
-                .eq('verification_hash', hash)
-                .single();
-
-            if (error || !receipt) {
-                showError();
-                return;
-            }
-
-            // Fetch Merchant Name
-            let businessName = 'Verified Merchant';
-            const { data: merchant } = await _supabase
-                .from('merchants')
-                .select('business_name')
-                .eq('id', receipt.merchant_id)
-                .single();
-
-            if (merchant) businessName = merchant.business_name;
-
-            // Render Receipt Data
-            document.getElementById('receipt-business').textContent = businessName;
-            document.getElementById('receipt-customer').textContent = receipt.customer_name;
-            document.getElementById('receipt-amount').textContent = `R ${Number(receipt.amount).toFixed(2)}`;
-            document.getElementById('receipt-method').textContent = receipt.payment_method || 'EFT';
-            document.getElementById('receipt-description').textContent = receipt.description || 'N/A';
-            document.getElementById('receipt-date').textContent = new Date(receipt.created_at).toLocaleString();
-            document.getElementById('receipt-hash').textContent = receipt.verification_hash;
-
-            const iconEl = document.getElementById('status-icon');
-            const subtitleEl = document.getElementById('status-subtitle');
-
-            if (receipt.status === 'issued') {
-                iconEl.textContent = '✓';
-                iconEl.className = 'w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-black shadow-sm';
-                subtitleEl.textContent = 'Authentic & Verified Receipt';
-                subtitleEl.className = 'text-xs text-emerald-600 uppercase tracking-widest font-bold';
-            } else if (receipt.status === 'cancelled' || receipt.status === 'refunded') {
-                iconEl.textContent = '✕';
-                iconEl.className = 'w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl font-black shadow-sm';
-                subtitleEl.textContent = `Receipt Status: ${receipt.status.toUpperCase()}`;
-                subtitleEl.className = 'text-xs text-amber-600 uppercase tracking-widest font-bold';
-            }
-
-            document.getElementById('receipt-card').classList.remove('hidden');
-        });
-
-        function showError() {
-            document.getElementById('status-icon').textContent = '⚠';
-            document.getElementById('status-icon').className = 'w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl font-black shadow-sm';
-            document.getElementById('status-subtitle').textContent = 'Verification Failed';
-            document.getElementById('status-subtitle').className = 'text-xs text-red-600 uppercase tracking-widest font-bold';
-            document.getElementById('error-box').classList.remove('hidden');
-        }
-    </script>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4 font-sans text-slate-800">
+<main class="max-w-md w-full bg-white rounded-3xl shadow-lg border border-slate-200 p-7 space-y-5">
+<div class="text-center">
+<div id="status-icon" class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">🔍</div>
+<h1 class="font-black text-2xl mt-3">Slipstream Verification</h1>
+<p id="status-subtitle" class="text-xs text-slate-400 uppercase tracking-widest font-semibold mt-1">Checking receipt...</p>
+</div>
+<div id="receipt-card" class="hidden space-y-3 bg-slate-50 p-5 rounded-2xl border border-slate-200 text-xs">
+<div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-400">Business</span><strong id="business"></strong></div>
+<div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-400">Receipt</span><strong id="receipt-no"></strong></div>
+<div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-400">Customer</span><strong id="customer"></strong></div>
+<div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-400">Amount</span><strong id="amount"></strong></div>
+<div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-400">Payment Method</span><strong id="method"></strong></div>
+<div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-400">Description</span><strong id="description" class="text-right max-w-[60%]"></strong></div>
+<div class="flex justify-between border-b border-slate-200 pb-2"><span class="text-slate-400">Date Issued</span><strong id="date"></strong></div>
+<div><span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Verification Hash</span><p id="hash" class="font-mono text-[11px] break-all text-blue-600 mt-1"></p></div>
+</div>
+<div id="error-box" class="hidden bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl text-xs text-center font-medium">Receipt not found or the verification link is invalid.</div>
+<p class="text-center text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Secured by Slipstream Protocol</p>
+</main>
+<script>
+const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+const {createClient}=supabase; const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+async function verify(){
+ const id=new URLSearchParams(location.search).get('id');
+ if(!id){return fail();}
+ const {data,error}=await db.rpc('verify_receipt',{p_receipt_id:id});
+ if(error||!data||!data.length){return fail();}
+ const r=data[0];
+ document.getElementById('business').textContent=r.business_name||'Verified Merchant';
+ document.getElementById('receipt-no').textContent=r.receipt_no||'—';
+ document.getElementById('customer').textContent=r.customer_name||'—';
+ document.getElementById('amount').textContent=`R ${Number(r.amount||0).toFixed(2)}`;
+ document.getElementById('method').textContent=r.payment_method||'—';
+ document.getElementById('description').textContent=r.description||'—';
+ document.getElementById('date').textContent=r.created_at?new Date(r.created_at).toLocaleString():'—';
+ document.getElementById('hash').textContent=r.verification_hash||'—';
+ document.getElementById('receipt-card').classList.remove('hidden');
+ const icon=document.getElementById('status-icon'), sub=document.getElementById('status-subtitle');
+ if(r.status==='cancelled'||r.status==='refunded'){icon.textContent='!';icon.className='w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl font-black';sub.textContent=`Receipt ${r.status.toUpperCase()}`;sub.className='text-xs text-amber-600 uppercase tracking-widest font-bold mt-1';}
+ else {icon.textContent='✓';icon.className='w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-black';sub.textContent='Authentic Slipstream Receipt';sub.className='text-xs text-emerald-600 uppercase tracking-widest font-bold mt-1';}
+}
+function fail(){document.getElementById('status-icon').textContent='⚠';document.getElementById('status-icon').className='w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl font-black';document.getElementById('status-subtitle').textContent='Verification Failed';document.getElementById('status-subtitle').className='text-xs text-red-600 uppercase tracking-widest font-bold mt-1';document.getElementById('error-box').classList.remove('hidden');}
+verify();
+</script>
 </body>
 </html>
