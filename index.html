@@ -8,6 +8,19 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 @media print{body *{visibility:hidden}#receipt-modal,#receipt-modal *{visibility:visible}#receipt-modal{position:absolute;left:0;top:0;width:100%;margin:0;padding:20px;background:white}.no-print{display:none!important}}
+/* Premium dashboard theme: graphite + restrained champagne gold */
+body.bg-slate-100{background:#f4f2ed!important}
+header.bg-blue-600{background:#171717!important}
+.bg-blue-600{background:#b08d3b!important}
+.hover\:bg-blue-700:hover{background:#96772f!important}
+.bg-blue-500{background:#2a2a2a!important}
+.bg-blue-700{background:#242424!important}
+.text-blue-600{color:#a47f2b!important}
+.text-blue-700{color:#8d6c24!important}
+.text-blue-800{color:#76591d!important}
+.bg-blue-50{background:#fbf8ef!important}
+.border-blue-100{border-color:#e8dcc0!important}
+input:focus,select:focus{border-color:#b08d3b!important;outline:none;box-shadow:0 0 0 2px rgba(176,141,59,.15)!important}
 </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex flex-col justify-between font-sans text-slate-800">
@@ -54,5 +67,5 @@ async function updatePOPStatus(s){if(!activeReceipt)return;const{error}=await _s
 async function updateReceiptStatus(s){if(!activeReceipt||!confirm(`Mark this receipt as ${s}?`))return;const{error}=await _supabase.from('receipts').update({status:s}).eq('id',activeReceipt.id);if(error)alert(error.message);else{closeModal();await loadReceipts()}}
 function filterReceipts(){const q=document.getElementById('search-input').value.toLowerCase();renderReceipts(allReceipts.filter(r=>(r.customer_name||'').toLowerCase().includes(q)||(r.verification_hash||'').toLowerCase().includes(q)))}
 async function handleLogout(){await _supabase.auth.signOut();location.href='login.html'}
-function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#039;')}
 </script></body></html>
