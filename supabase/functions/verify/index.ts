@@ -32,11 +32,15 @@ serve(async (req) => {
     return json({ error: "invalid_api_key" }, 401);
   }
 
-  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-  const db = createClient(supabaseUrl, serviceRoleKey);
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!supabaseUrl || !serviceRoleKey) {
+    return json({ error: "server_configuration_error" }, 500);
+  }
 
+  const db = createClient(supabaseUrl, serviceRoleKey);
   const keyHash = await sha256Hex(apiKey);
+
   const { data: key, error: keyError } = await db
     .from("api_keys")
     .select("id, merchant_id, label, created_at")
@@ -72,20 +76,22 @@ serve(async (req) => {
 
   const verificationId = `ver_${crypto.randomUUID().replaceAll("-", "")}`;
   const verified = !!receipt && receipt.status !== "cancelled";
+  const result = !receipt ? "not_found_or_invalid" : verified ? "verified" : "cancelled";
 
-  // Best-effort audit event. The API response does not depend on an optional
-  // event-log table so the verification endpoint remains deployable on the
-  // current schema.
-  try {
-    await db.from("verification_events").insert({
+  const { error: eventError } = await db.from("verification_events").insert({
+    verification_id: verificationId,
+    merchant_id: key.merchant_id,
+    receipt_id: receipt?.id ?? null,
+    api_key_id: key.id,
+    result,
+  });
+
+  if (eventError) {
+    return json({
+      error: "audit_log_error",
+      message: "Verification could not be completed because the audit event could not be recorded.",
       verification_id: verificationId,
-      merchant_id: key.merchant_id,
-      receipt_id: receipt?.id ?? null,
-      api_key_id: key.id,
-      result: verified ? "verified" : "not_found_or_invalid",
-    });
-  } catch (_) {
-    // Audit storage can be enabled later without breaking verification.
+    }, 500);
   }
 
   if (!receipt) {
