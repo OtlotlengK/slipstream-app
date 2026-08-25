@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://slipstream-app-jbxe.vercel.app/sitemap.xml
