@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ValoraTap | API Developer Console</title>
+<meta name="description" content="ValoraTap API documentation and developer console for transaction ingestion and verifiable receipts.">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+html{scroll-behavior:smooth}body{background:#f7f5f0}.gold{color:#a47f2b}.gold-bg{background:#b08d3b}.gold-bg:hover{background:#96772f}.dark{background:#171717}.code{background:#111827;color:#e5e7eb}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+</style>
+</head>
+<body class="text-slate-800 antialiased">
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+<div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+<a href="home.html" class="font-black tracking-[0.2em] text-lg text-slate-900">VALORATAP</a>
+<nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-600"><a href="#quickstart">Quickstart</a><a href="#endpoint">API</a><a href="#events">Events</a><a href="#tester">Test request</a></nav>
+<div class="flex items-center gap-2"><a href="index.html" class="px-4 py-2 text-sm font-semibold">Dashboard</a><a href="index.html#api" class="gold-bg text-white px-4 py-2.5 rounded-xl text-sm font-bold">API Keys</a></div>
+</div></header>
+<main>
+<section class="dark text-white">
+<div class="max-w-6xl mx-auto px-5 py-16 md:py-20 grid lg:grid-cols-2 gap-12 items-center">
+<div><div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-xs font-bold gold">● DEVELOPER PLATFORM</div><h1 class="text-4xl md:text-6xl font-black tracking-tight mt-6 leading-tight">Connect any business to <span class="gold">ValoraTap.</span></h1><p class="text-slate-300 text-lg leading-relaxed mt-6 max-w-xl">Send confirmed transactions to ValoraTap and get a verifiable digital receipt, receipt number and verification URL back.</p><div class="flex flex-col sm:flex-row gap-3 mt-8"><a href="#quickstart" class="gold-bg text-white font-bold px-6 py-3.5 rounded-xl text-center">Start integrating</a><a href="#tester" class="bg-white/10 border border-white/10 text-white font-bold px-6 py-3.5 rounded-xl text-center">Test an API request</a></div></div>
+<div class="code rounded-3xl border border-white/10 shadow-2xl p-5 overflow-hidden"><div class="flex items-center justify-between border-b border-white/10 pb-4"><div class="flex gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-400"></span><span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span><span class="w-2.5 h-2.5 rounded-full bg-green-400"></span></div><span class="text-[10px] uppercase tracking-widest text-slate-500">POST /transactions</span></div><pre class="mono text-xs md:text-sm leading-6 mt-5 whitespace-pre-wrap"><code>Authorization: Bearer sk_live_••••••••
+Idempotency-Key: order_2026_00124
+
+{
+  "amount": 1250.00,
+  "currency": "ZAR",
+  "payment_method": "card",
+  "customer": {
+    "name": "John Doe",
+    "phone": "+27820000000"
+  },
+  "description": "Towing service",
+  "reference": "MOS-2026-00124"
+}</code></pre></div>
+</div></section>
+<section id="quickstart" class="max-w-6xl mx-auto px-5 py-16 md:py-20">
+<div class="max-w-2xl"><p class="gold font-bold text-sm uppercase tracking-widest">Quickstart</p><h2 class="text-3xl md:text-4xl font-black mt-2">Three steps to connect.</h2></div>
+<div class="grid md:grid-cols-3 gap-5 mt-10"><div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm"><span class="gold text-2xl font-black">01</span><h3 class="font-black text-lg mt-4">Create an API key</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">Open your ValoraTap dashboard, generate a key and store the secret securely on your server.</p><a href="index.html" class="inline-block text-xs font-bold gold mt-5">Open dashboard →</a></div><div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm"><span class="gold text-2xl font-black">02</span><h3 class="font-black text-lg mt-4">Send a transaction</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">After your payment provider confirms a payment, POST the transaction to the ValoraTap endpoint.</p><a href="#endpoint" class="inline-block text-xs font-bold gold mt-5">See endpoint →</a></div><div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm"><span class="gold text-2xl font-black">03</span><h3 class="font-black text-lg mt-4">Use the receipt</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">Save the returned receipt ID and verification URL in your system and send the receipt to the customer.</p><a href="#response" class="inline-block text-xs font-bold gold mt-5">See response →</a></div></div>
+<div class="mt-10 bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm"><b>Security rule:</b> never put a live API key in frontend JavaScript, mobile app code or public GitHub repositories. Call ValoraTap from your server/backend.</div>
+</section>
+<section id="endpoint" class="dark text-white py-16 md:py-20"><div class="max-w-6xl mx-auto px-5"><div class="max-w-3xl"><p class="gold font-bold text-sm uppercase tracking-widest">Transactions API</p><h2 class="text-3xl md:text-4xl font-black mt-2">Create a transaction.</h2><p class="text-slate-400 mt-4 leading-relaxed">Use this endpoint when your business system has a transaction that should become a ValoraTap receipt.</p></div><div class="grid lg:grid-cols-2 gap-6 mt-10"><div><div class="flex items-center justify-between mb-3"><span class="text-xs font-bold uppercase tracking-widest text-slate-500">Request</span><button onclick="copyText('request-code')" class="text-xs bg-white/10 px-3 py-1.5 rounded-lg">Copy</button></div><pre id="request-code" class="code rounded-2xl p-5 overflow-x-auto text-xs leading-6 mono">POST https://pddjualtnhgmplampucn.supabase.co/functions/v1/transactions
+Authorization: Bearer sk_live_xxxxxxxxx
+Content-Type: application/json
+Idempotency-Key: order_2026_00124
+
+{
+  "amount": 1250.00,
+  "currency": "ZAR",
+  "payment_method": "card",
+  "customer": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "+27820000000"
+  },
+  "description": "Towing service",
+  "reference": "MOS-2026-00124"
+}</pre></div><div id="response"><div class="mb-3"><span class="text-xs font-bold uppercase tracking-widest text-slate-500">Success response</span></div><pre class="code rounded-2xl p-5 overflow-x-auto text-xs leading-6 mono">{
+  "success": true,
+  "receipt_id": "uuid",
+  "receipt_no": "VT-000124",
+  "verification_url": "https://.../verify.html?id=uuid",
+  "verification_hash": "sha256..."
+}</pre><div class="mt-5 bg-white/5 border border-white/10 rounded-2xl p-5"><h3 class="font-bold">Idempotency</h3><p class="text-sm text-slate-400 mt-2 leading-relaxed">Send a unique <span class="mono text-slate-200">Idempotency-Key</span> for every logical transaction. Retrying the same key is safe; ValoraTap will not create a duplicate transaction.</p></div></div></div></div></section>
+<section class="max-w-6xl mx-auto px-5 py-16"><div class="max-w-3xl"><p class="gold font-bold text-sm uppercase tracking-widest">Parameters</p><h2 class="text-3xl font-black mt-2">What you can send.</h2></div><div class="overflow-x-auto mt-8 bg-white border border-slate-200 rounded-2xl shadow-sm"><table class="w-full text-left text-sm"><thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-400"><tr><th class="p-4">Field</th><th class="p-4">Type</th><th class="p-4">Required</th><th class="p-4">Description</th></tr></thead><tbody class="divide-y divide-slate-100"><tr><td class="p-4 mono font-bold">amount</td><td class="p-4">number</td><td class="p-4">Yes</td><td class="p-4 text-slate-500">Positive transaction amount in ZAR.</td></tr><tr><td class="p-4 mono font-bold">currency</td><td class="p-4">string</td><td class="p-4">Yes</td><td class="p-4 text-slate-500">Currently supported value: ZAR.</td></tr><tr><td class="p-4 mono font-bold">payment_method</td><td class="p-4">string</td><td class="p-4">Yes</td><td class="p-4 text-slate-500">Payment method used by the customer.</td></tr><tr><td class="p-4 mono font-bold">customer</td><td class="p-4">object</td><td class="p-4">No</td><td class="p-4 text-slate-500">Name, email and phone where available.</td></tr><tr><td class="p-4 mono font-bold">description</td><td class="p-4">string</td><td class="p-4">No</td><td class="p-4 text-slate-500">What the customer paid for.</td></tr><tr><td class="p-4 mono font-bold">reference</td><td class="p-4">string</td><td class="p-4">No</td><td class="p-4 text-slate-500">Your own order, booking or transaction reference.</td></tr></tbody></table></div></section>
+<section id="events" class="bg-white border-y py-16"><div class="max-w-6xl mx-auto px-5"><div class="max-w-3xl"><p class="gold font-bold text-sm uppercase tracking-widest">Transaction events</p><h2 class="text-3xl font-black mt-2">Build a complete Proof Chain.</h2><p class="text-slate-500 mt-4 leading-relaxed">After a receipt exists, your integration can record lifecycle events such as payment confirmation, delivery confirmation, customer acknowledgement, warranty activation, returns and refunds.</p></div><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10"><div class="border rounded-2xl p-5"><b>PAYMENT_CONFIRMED</b><p class="text-xs text-slate-500 mt-2">Payment provider confirms the transaction.</p></div><div class="border rounded-2xl p-5"><b>DELIVERY_CONFIRMED</b><p class="text-xs text-slate-500 mt-2">Business records completion or delivery.</p></div><div class="border rounded-2xl p-5"><b>CUSTOMER_ACKNOWLEDGED</b><p class="text-xs text-slate-500 mt-2">Customer acknowledges the transaction.</p></div><div class="border rounded-2xl p-5"><b>WARRANTY_ACTIVATED</b><p class="text-xs text-slate-500 mt-2">Warranty or after-sales coverage begins.</p></div><div class="border rounded-2xl p-5"><b>RETURN_REQUESTED</b><p class="text-xs text-slate-500 mt-2">Customer requests a return.</p></div><div class="border rounded-2xl p-5"><b>REFUND_COMPLETED</b><p class="text-xs text-slate-500 mt-2">Refund is completed and recorded.</p></div></div></div></section>
+<section id="tester" class="max-w-6xl mx-auto px-5 py-16 md:py-20"><div class="max-w-3xl"><p class="gold font-bold text-sm uppercase tracking-widest">Developer Console</p><h2 class="text-3xl md:text-4xl font-black mt-2">Test your integration.</h2><p class="text-slate-500 mt-4">Enter a live API key and test transaction data. The key is used only for this request and is not saved by this page.</p></div><div class="grid lg:grid-cols-2 gap-6 mt-10"><div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4"><div><label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">API Key</label><input id="test-key" type="password" autocomplete="off" placeholder="sk_live_..." class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl mono"></div><div class="grid sm:grid-cols-2 gap-4"><div><label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Amount (ZAR)</label><input id="test-amount" type="number" step="0.01" value="100.00" class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl"></div><div><label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Payment Method</label><select id="test-method" class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl"><option value="card">Card</option><option value="EFT">EFT</option><option value="cash">Cash</option></select></div></div><div><label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Customer Name</label><input id="test-name" type="text" value="API Test Customer" class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl"></div><div><label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Description</label><input id="test-description" type="text" value="ValoraTap API test transaction" class="w-full px-3.5 py-3 text-sm bg-slate-50 border border-slate-200 rounded-xl"></div><button id="test-button" onclick="runTest()" class="w-full gold-bg text-white font-bold py-3.5 rounded-xl">Send Test Transaction</button><p id="test-note" class="text-[11px] text-slate-400">This creates a real receipt if the request succeeds. Use a small amount while testing.</p></div><div><div class="flex items-center justify-between mb-3"><span class="text-xs font-bold uppercase tracking-wider text-slate-500">API response</span><button onclick="copyText('test-output')" class="text-xs border border-slate-200 bg-white px-3 py-1.5 rounded-lg">Copy</button></div><pre id="test-output" class="code rounded-2xl p-5 min-h-[320px] overflow-auto text-xs leading-6 mono">Waiting for request...</pre></div></div></section>
+<section class="dark text-white py-14"><div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row md:items-center justify-between gap-6"><div><p class="gold font-bold text-sm uppercase tracking-widest">Ready</p><h2 class="text-3xl font-black mt-2">Connect your first business.</h2><p class="text-slate-400 mt-2">Generate an API key and wire your payment confirmation flow into ValoraTap.</p></div><a href="index.html" class="gold-bg text-white font-bold px-6 py-3.5 rounded-xl text-center">Open ValoraTap Dashboard</a></div></section>
+</main>
+<footer class="dark text-slate-500 py-8 border-t border-white/10"><div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row justify-between gap-3 text-xs"><span>ValoraTap © 2026</span><span>Universal transaction verification infrastructure</span></div></footer>
+<script>
+const API_URL='https://pddjualtnhgmplampucn.supabase.co/functions/v1/transactions';
+function copyText(id){const el=document.getElementById(id);const text=el.innerText||el.value||'';navigator.clipboard?.writeText(text).then(()=>{const old=el.dataset.copied;el.dataset.copied='1';setTimeout(()=>{el.dataset.copied=old||''},1200)}).catch(()=>{})}
+async function runTest(){const btn=document.getElementById('test-button'),out=document.getElementById('test-output'),key=document.getElementById('test-key').value.trim();if(!key){out.textContent='Enter your sk_live_ API key first.';return}if(!/^sk_live_[A-Za-z0-9_-]{20,}$/.test(key)){out.textContent='Invalid API key format. Use a live ValoraTap key beginning with sk_live_.';return}const amount=Number(document.getElementById('test-amount').value);if(!Number.isFinite(amount)||amount<=0){out.textContent='Enter a valid positive amount.';return}const idem='console_'+crypto.randomUUID();const body={amount,currency:'ZAR',payment_method:document.getElementById('test-method').value,customer:{name:document.getElementById('test-name').value.trim()},description:document.getElementById('test-description').value.trim(),reference:idem};btn.disabled=true;btn.textContent='Sending...';out.textContent='Sending request...';try{const res=await fetch(API_URL,{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json','Idempotency-Key':idem},body:JSON.stringify(body)});const text=await res.text();let data;try{data=JSON.parse(text)}catch{data={raw:text}}out.textContent=JSON.stringify({http_status:res.status,...data},null,2)}catch(err){out.textContent=JSON.stringify({error:'Network request failed',message:err.message},null,2)}finally{btn.disabled=false;btn.textContent='Send Test Transaction'}}
+</script>
+</body>
+</html>
