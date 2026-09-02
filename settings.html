@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ValoraTap | Business Settings</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-[#0b0d10] min-h-screen text-slate-100">
+<header class="border-b border-slate-800 bg-[#101318]"><div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between"><div><div class="font-black tracking-[0.12em] text-[#d8b84c]">VALORATAP</div><div class="text-[10px] uppercase tracking-wider text-slate-500">Business Settings</div></div><a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg">← Dashboard</a></div></header>
+<main class="max-w-3xl mx-auto p-4 py-8 space-y-5">
+<div><h1 class="text-2xl font-black">Business Profile</h1><p class="text-sm text-slate-400 mt-1">Manage the business identity used across your ValoraTap account.</p></div>
+<div class="bg-[#14171c] border border-slate-800 rounded-2xl p-6">
+<div class="space-y-5">
+<div><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Business Name</label><input id="business-name" maxlength="120" required class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]"></div>
+<div><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Owner / Contact Name</label><input id="owner-name" maxlength="120" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]"></div>
+<div><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Business Phone</label><input id="phone" type="tel" maxlength="40" placeholder="e.g. +27 71 234 5678" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]"></div>
+<div><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Account Email</label><input id="email" readonly class="w-full px-3.5 py-3 text-sm bg-[#0d1014]/60 border border-slate-800 text-slate-500 rounded-xl"></div>
+</div>
+<div id="message" class="hidden mt-5 p-3 rounded-xl text-xs"></div>
+<button id="save-btn" onclick="saveProfile()" class="w-full mt-5 bg-[#c9a227] hover:bg-[#d8b84c] text-[#0b0d10] font-bold py-3 rounded-xl">Save Changes</button>
+</div>
+<div class="bg-[#14171c] border border-slate-800 rounded-2xl p-6"><h2 class="font-bold">Account</h2><p class="text-xs text-slate-400 mt-1">Signed in as <span id="account-email"></span></p><button onclick="logout()" class="mt-4 text-xs text-red-300 hover:text-red-200">Log out</button></div>
+</main>
+<script>
+const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+const{createClient}=supabase;const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let user=null;
+function showMessage(text,error=false){const el=document.getElementById('message');el.textContent=text;el.className='mt-5 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');el.classList.remove('hidden');}
+async function init(){const{data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}user=session.user;document.getElementById('email').value=user.email||'';document.getElementById('account-email').textContent=user.email||'';const{data,error}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).single();if(error||!data){showMessage('We could not load your business profile.',true);return}document.getElementById('business-name').value=data.business_name||'';document.getElementById('owner-name').value=data.owner_name||'';document.getElementById('phone').value=data.phone||'';}
+async function saveProfile(){const business_name=document.getElementById('business-name').value.trim();const owner_name=document.getElementById('owner-name').value.trim();const phone=document.getElementById('phone').value.trim();if(!business_name){showMessage('Business name is required.',true);return}const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Saving...';const{error}=await db.from('merchants').update({business_name,owner_name,phone}).eq('id',user.id);if(error){showMessage('Could not save changes. Please try again.',true);btn.disabled=false;btn.textContent='Save Changes';return}showMessage('Business profile updated successfully.');btn.disabled=false;btn.textContent='Save Changes';}
+async function logout(){await db.auth.signOut();location.href='login.html';}
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
