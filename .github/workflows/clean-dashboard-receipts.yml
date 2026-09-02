@@ -1,0 +1,45 @@
+name: Move receipts to dedicated page
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  clean-dashboard:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Remove dashboard receipt list
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          start = '<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"><div class="mb-4"><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 class="text-lg font-bold text-slate-900">Receipts</h2>'
+          i = s.find(start)
+          if i == -1:
+              raise SystemExit('Receipt section anchor not found')
+          end = s.find('</main>', i)
+          if end == -1:
+              raise SystemExit('Main closing tag not found')
+          section = s[i:end]
+          if 'View All Receipts' not in section:
+              raise SystemExit('Expected View All Receipts section not found')
+          # The receipt section is the final dashboard section before </main>.
+          # Replace it with a compact navigation card; all receipt functionality remains on receipts.html.
+          compact = '<div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6"><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"><div><h2 class="text-lg font-bold text-slate-900">Receipt Vault</h2><p class="text-xs text-slate-400 mt-1">View, search, filter and verify your complete receipt history.</p></div><a href="receipts.html" class="inline-flex items-center justify-center bg-slate-800 hover:bg-slate-900 text-white font-semibold px-5 py-3 rounded-xl text-xs">View All Receipts →</a></div></div>\n'
+          p.write_text(s[:i] + compact + s[end:], encoding='utf-8')
+          PY
+      - name: Commit dashboard cleanup
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Move receipt history to dedicated receipt vault' || exit 0
+          git push
