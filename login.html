@@ -8,150 +8,35 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-[#0b0d10] min-h-screen flex items-center justify-center p-4 text-slate-100">
-
     <div class="w-full max-w-md">
-
         <div class="text-center mb-7">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#c9a227]/10 border border-[#c9a227]/30 mb-3">
-                <span class="text-[#d8b84c] text-xl font-black">V</span>
-            </div>
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#c9a227]/10 border border-[#c9a227]/30 mb-3"><span class="text-[#d8b84c] text-xl font-black">V</span></div>
             <h1 class="text-3xl font-black tracking-[0.12em] text-[#d8b84c]">VALORATAP</h1>
             <p class="text-sm text-slate-400 mt-1">The trust layer for business transactions</p>
         </div>
-
         <div class="bg-[#14171c] rounded-2xl shadow-2xl border border-slate-800 p-6">
-
             <h2 id="form-title" class="text-xl font-bold text-white">Welcome back</h2>
             <p id="form-subtitle" class="text-xs text-slate-400 mt-1 mb-6">Log in to your merchant dashboard.</p>
-
             <div id="signup-fields" class="hidden space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Business Name</label>
-                    <input id="business-name" type="text" placeholder="e.g. Kgabi Solutions" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Your Name</label>
-                    <input id="owner-name" type="text" placeholder="e.g. Otlotleng Kgabi" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]">
-                </div>
+                <div><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Business Name</label><input id="business-name" type="text" placeholder="e.g. Kgabi Solutions" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]"></div>
+                <div><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Your Name</label><input id="owner-name" type="text" placeholder="e.g. Otlotleng Kgabi" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]"></div>
             </div>
-
-            <div class="mt-4">
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Email Address</label>
-                <input id="email" type="email" placeholder="you@example.com" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]">
-            </div>
-
-            <div class="mt-4">
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Password</label>
-                <input id="password" type="password" placeholder="Minimum 6 characters" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]">
-            </div>
-
+            <div class="mt-4"><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Email Address</label><input id="email" type="email" placeholder="you@example.com" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]"></div>
+            <div class="mt-4"><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Password</label><input id="password" type="password" placeholder="Minimum 6 characters" class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white placeholder-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c9a227]"></div>
             <div id="message" class="hidden mt-4 p-3 rounded-xl text-xs"></div>
-
             <button id="submit-btn" onclick="handleSubmit()" class="w-full mt-5 bg-[#c9a227] hover:bg-[#d8b84c] text-[#0b0d10] font-bold py-3 rounded-xl transition-all">Log In</button>
-
             <button id="switch-btn" onclick="toggleMode()" class="w-full mt-4 text-xs text-[#d8b84c] hover:text-white font-medium">Don't have an account? Create one</button>
-
         </div>
-
         <p class="text-center text-[10px] text-slate-600 mt-5">ValoraTap &copy; 2026</p>
-
     </div>
-
 <script>
-    const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
-    const { createClient } = supabase;
-    const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let loginMode = true;
-
-    function toggleMode() {
-        loginMode = !loginMode;
-        const signupFields = document.getElementById('signup-fields');
-        const title = document.getElementById('form-title');
-        const subtitle = document.getElementById('form-subtitle');
-        const submitBtn = document.getElementById('submit-btn');
-        const switchBtn = document.getElementById('switch-btn');
-        if (loginMode) {
-            signupFields.classList.add('hidden');
-            title.textContent = 'Welcome back';
-            subtitle.textContent = 'Log in to your merchant dashboard.';
-            submitBtn.textContent = 'Log In';
-            switchBtn.textContent = "Don't have an account? Create one";
-        } else {
-            signupFields.classList.remove('hidden');
-            title.textContent = 'Create your merchant account';
-            subtitle.textContent = 'Start issuing verifiable digital receipts.';
-            submitBtn.textContent = 'Create Merchant Account';
-            switchBtn.textContent = 'Already have an account? Log in';
-        }
-    }
-
-    function showMessage(text, type) {
-        const message = document.getElementById('message');
-        message.textContent = text;
-        message.className = 'mt-4 p-3 rounded-xl text-xs';
-        message.classList.add(type === 'error' ? 'bg-red-950/50' : 'bg-emerald-950/50');
-        message.classList.add(type === 'error' ? 'text-red-300' : 'text-emerald-300');
-        message.classList.remove('hidden');
-    }
-
-    async function handleSubmit() {
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value;
-        const submitBtn = document.getElementById('submit-btn');
-        if (!email || !password) {
-            showMessage('Please enter your email and password.', 'error');
-            return;
-        }
-        submitBtn.disabled = true;
-        submitBtn.textContent = loginMode ? 'Logging in...' : 'Creating account...';
-
-        if (loginMode) {
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                showMessage(error.message, 'error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Log In';
-                return;
-            }
-            window.location.href = 'index.html';
-            return;
-        }
-
-        const businessName = document.getElementById('business-name').value.trim();
-        const ownerName = document.getElementById('owner-name').value.trim();
-        if (!businessName || !ownerName) {
-            showMessage('Please enter your business name and your name.', 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Create Merchant Account';
-            return;
-        }
-
-        const { error } = await _supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                emailRedirectTo: 'https://slipstream-app-sigma.vercel.app/login.html',
-                data: { business_name: businessName, owner_name: ownerName }
-            }
-        });
-
-        if (error) {
-            showMessage(error.message, 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Create Merchant Account';
-            return;
-        }
-
-        loginMode = true;
-        toggleMode();
-        document.getElementById('email').value = email;
-        document.getElementById('password').value = '';
-        showMessage('Account created successfully. Check your email to verify your account, then log in below.', 'success');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Log In';
-    }
+const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+const{createClient}=supabase;const _supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let loginMode=true;
+function toggleMode(){loginMode=!loginMode;const f=document.getElementById('signup-fields'),t=document.getElementById('form-title'),s=document.getElementById('form-subtitle'),b=document.getElementById('submit-btn'),sw=document.getElementById('switch-btn');if(loginMode){f.classList.add('hidden');t.textContent='Welcome back';s.textContent='Log in to your merchant dashboard.';b.textContent='Log In';sw.textContent="Don't have an account? Create one"}else{f.classList.remove('hidden');t.textContent='Create your merchant account';s.textContent='Start issuing verifiable digital receipts.';b.textContent='Create Merchant Account';sw.textContent='Already have an account? Log in'}}
+function showMessage(text,type){const m=document.getElementById('message');m.textContent=text;m.className='mt-4 p-3 rounded-xl text-xs';m.classList.add(type==='error'?'bg-red-950/50':'bg-emerald-950/50',type==='error'?'text-red-300':'text-emerald-300');m.classList.remove('hidden')}
+async function routeAfterLogin(){const{data:{user},error:userError}=await _supabase.auth.getUser();if(userError||!user){location.href='login.html';return}const{data}=await _supabase.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).maybeSingle();if(!data||!data.business_name||!data.phone){location.href='onboarding.html';return}location.href='index.html'}
+async function handleSubmit(){const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,btn=document.getElementById('submit-btn');if(!email||!password){showMessage('Please enter your email and password.','error');return}btn.disabled=true;btn.textContent=loginMode?'Logging in...':'Creating account...';if(loginMode){const{error}=await _supabase.auth.signInWithPassword({email,password});if(error){showMessage(error.message,'error');btn.disabled=false;btn.textContent='Log In';return}await routeAfterLogin();return}const businessName=document.getElementById('business-name').value.trim(),ownerName=document.getElementById('owner-name').value.trim();if(!businessName||!ownerName){showMessage('Please enter your business name and your name.','error');btn.disabled=false;btn.textContent='Create Merchant Account';return}const{error}=await _supabase.auth.signUp({email,password,options:{emailRedirectTo:'https://slipstream-app-sigma.vercel.app/login.html',data:{business_name:businessName,owner_name:ownerName}}});if(error){showMessage(error.message,'error');btn.disabled=false;btn.textContent='Create Merchant Account';return}loginMode=true;toggleMode();document.getElementById('email').value=email;document.getElementById('password').value='';showMessage('Account created successfully. Check your email to verify your account, then log in below.','success');btn.disabled=false;btn.textContent='Log In'}
 </script>
-
 </body>
 </html>
