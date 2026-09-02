@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ValoraTap | Integrations</title>
+<meta name="description" content="Connect websites, stores and business systems to ValoraTap.">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{background:#f7f5f0}.gold{color:#a47f2b}.gold-bg{background:#b08d3b}.gold-bg:hover{background:#96772f}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}.chip{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+</style>
+</head>
+<body class="text-slate-800 antialiased">
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200"><div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between gap-4"><a href="home.html" class="font-black tracking-[0.2em] text-lg text-slate-900">VALORATAP</a><div class="flex items-center gap-2"><a href="developers.html" class="px-4 py-2 text-sm font-semibold text-slate-600">Developer Console</a><a href="index.html" class="gold-bg text-white px-4 py-2.5 rounded-xl text-sm font-bold">Dashboard</a></div></div></header>
+<main>
+<section class="bg-[#171717] text-white"><div class="max-w-6xl mx-auto px-5 py-16 md:py-20"><div class="max-w-3xl"><div class="chip gold">INTEGRATION PLATFORM</div><h1 class="text-4xl md:text-6xl font-black tracking-tight mt-5">Connect your business to <span class="gold">ValoraTap.</span></h1><p class="text-slate-300 text-lg leading-relaxed mt-5">Keep your existing website, checkout and business software. ValoraTap becomes the transaction evidence layer underneath them.</p><div class="flex flex-col sm:flex-row gap-3 mt-8"><a href="developers.html#quickstart" class="gold-bg px-6 py-3.5 rounded-xl font-bold text-center">Start with the API</a><a href="#options" class="bg-white/10 border border-white/10 px-6 py-3.5 rounded-xl font-bold text-center">Choose an integration</a></div></div></div></section>
+<section id="options" class="max-w-6xl mx-auto px-5 py-16"><div class="max-w-2xl"><p class="gold font-bold text-sm uppercase tracking-widest">Integration options</p><h2 class="text-3xl md:text-4xl font-black mt-2">Use the layer that fits your stack.</h2><p class="text-slate-500 mt-3">The same transaction and receipt model works whether a business has a custom website, online store or backend application.</p></div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10">
+<div class="bg-white border rounded-2xl p-6 shadow-sm"><span class="chip gold">REST API</span><h3 class="text-xl font-black mt-3">Any backend</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">PHP, Python, Node, Java, .NET, Go or anything that can make HTTPS requests.</p><a href="developers.html#endpoint" class="inline-block mt-5 text-sm font-bold gold">View API →</a></div>
+<div class="bg-white border rounded-2xl p-6 shadow-sm"><span class="chip gold">JAVASCRIPT</span><h3 class="text-xl font-black mt-3">Server-side SDK</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">A small dependency-free Node.js client for transactions and event calls. API keys stay server-side.</p><a href="#sdk" class="inline-block mt-5 text-sm font-bold gold">See SDK →</a></div>
+<div class="bg-white border rounded-2xl p-6 shadow-sm"><span class="chip gold">WEBHOOKS</span><h3 class="text-xl font-black mt-3">Event-driven sync</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">Receive signed lifecycle events when transactions or receipt states change.</p><a href="developers.html#webhooks" class="inline-block mt-5 text-sm font-bold gold">Configure →</a></div>
+<div class="bg-white border rounded-2xl p-6 shadow-sm"><span class="chip gold">NEXT.JS / REACT</span><h3 class="text-xl font-black mt-3">Custom websites</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">Call ValoraTap from your secure server route after the payment provider confirms payment.</p><span class="inline-block mt-5 text-xs font-bold text-slate-400">Pattern ready</span></div>
+<div class="bg-white border rounded-2xl p-6 shadow-sm"><span class="chip gold">PHP / LARAVEL</span><h3 class="text-xl font-black mt-3">Business applications</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">Use the REST contract from Laravel controllers, queues or payment callbacks.</p><span class="inline-block mt-5 text-xs font-bold text-slate-400">Pattern ready</span></div>
+<div class="bg-white border rounded-2xl p-6 shadow-sm"><span class="chip gold">ECOMMERCE</span><h3 class="text-xl font-black mt-3">WooCommerce / Shopify</h3><p class="text-sm text-slate-500 mt-2 leading-relaxed">Use a webhook/app connector to send confirmed orders without changing the merchant's receipt workflow.</p><span class="inline-block mt-5 text-xs font-bold text-slate-400">Connector roadmap</span></div>
+</div></section>
+<section id="sdk" class="bg-white border-y py-16"><div class="max-w-6xl mx-auto px-5"><div class="max-w-2xl"><p class="gold font-bold text-sm uppercase tracking-widest">Node.js SDK</p><h2 class="text-3xl md:text-4xl font-black mt-2">Simple enough to drop into a backend.</h2><p class="text-slate-500 mt-3">The SDK is intentionally thin: it wraps the public ValoraTap HTTP contract and never exposes a secret to the browser.</p></div><div class="grid lg:grid-cols-2 gap-6 mt-10"><div><div class="flex items-center justify-between mb-3"><span class="chip text-slate-400">Install / import</span><button onclick="copyCode('sdk-install')" class="text-xs border px-3 py-1.5 rounded-lg">Copy</button></div><pre id="sdk-install" class="bg-[#111827] text-slate-100 rounded-2xl p-5 overflow-auto text-xs leading-6 mono">import { ValoraTap } from './sdk/valoratap.js';
+
+const vt = new ValoraTap({
+  apiKey: process.env.VALORATAP_API_KEY
+});</pre></div><div><div class="flex items-center justify-between mb-3"><span class="chip text-slate-400">Create transaction</span><button onclick="copyCode('sdk-transaction')" class="text-xs border px-3 py-1.5 rounded-lg">Copy</button></div><pre id="sdk-transaction" class="bg-[#111827] text-slate-100 rounded-2xl p-5 overflow-auto text-xs leading-6 mono">const result = await vt.transactions.create({
+  amount: 1250.00,
+  currency: 'ZAR',
+  payment_method: 'card',
+  customer: { name: 'John Doe' },
+  description: 'Towing service',
+  reference: 'MOS-2026-00124',
+  idempotencyKey: 'order_MOS_2026_00124'
+});
+
+console.log(result.receipt.receipt_no);</pre></div></div><div class="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-5 text-sm"><b>Important:</b> the SDK is for server-side code only. Never place <span class="mono">sk_live_...</span> in browser JavaScript, mobile apps or public source code.</div></div></section>
+<section class="max-w-6xl mx-auto px-5 py-16"><div class="grid lg:grid-cols-3 gap-5"><div class="bg-slate-900 text-white rounded-2xl p-6"><div class="chip gold">PAYMENT CONFIRMED</div><h3 class="text-xl font-black mt-3">1. Your system owns checkout</h3><p class="text-sm text-slate-400 mt-2">Use your existing payment provider and wait for its confirmed-payment callback/webhook.</p></div><div class="bg-slate-900 text-white rounded-2xl p-6"><div class="chip gold">VALORATAP</div><h3 class="text-xl font-black mt-3">2. Send one transaction</h3><p class="text-sm text-slate-400 mt-2">Use an idempotency key so retries cannot accidentally create duplicate receipts.</p></div><div class="bg-slate-900 text-white rounded-2xl p-6"><div class="chip gold">WEBHOOK</div><h3 class="text-xl font-black mt-3">3. Stay synchronized</h3><p class="text-sm text-slate-400 mt-2">ValoraTap signs lifecycle events so your system can update its own records safely.</p></div></div></section>
+<section class="bg-[#171717] text-white py-14"><div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row md:items-center justify-between gap-6"><div><p class="gold font-bold text-sm uppercase tracking-widest">First reference integration</p><h2 class="text-3xl font-black mt-2">Mosoeu Towing → ValoraTap</h2><p class="text-slate-400 mt-3 max-w-2xl">Bookings and dispatch stay in Mosoeu. Confirmed payments flow into ValoraTap, which creates the verifiable transaction record.</p></div><a href="developers.html" class="gold-bg text-white font-bold px-6 py-3.5 rounded-xl text-center">Open Developer Console</a></div></section>
+</main>
+<footer class="text-center py-6 text-[10px] text-slate-400">ValoraTap © 2026 • Integration Platform</footer>
+<script>function copyCode(id){const el=document.getElementById(id);navigator.clipboard?.writeText(el.innerText).then(()=>{const b=event?.target;if(b){const old=b.textContent;b.textContent='Copied';setTimeout(()=>b.textContent=old,1200)}})}</script>
+</body></html>
