@@ -1,0 +1,44 @@
+name: Add All Receipts button
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch-dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add dashboard button
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<div class="mb-4"><h2 class="text-lg font-bold text-slate-900">Receipts</h2><p class="text-xs text-slate-400 mt-1">Search by receipt number/hash, customer, phone, email, item, amount or payment method.</p></div>'
+          new = '<div class="mb-4"><div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 class="text-lg font-bold text-slate-900">Receipts</h2><p class="text-xs text-slate-400 mt-1">Search by receipt number/hash, customer, phone, email, item, amount or payment method.</p></div><a href="receipts.html" class="shrink-0 inline-flex items-center justify-center bg-slate-800 hover:bg-slate-900 text-white font-semibold px-4 py-2.5 rounded-xl text-xs">View All Receipts →</a></div></div>'
+          if old not in s:
+              print('Button already present or anchor not found; no change needed.')
+              raise SystemExit(0)
+          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          print('Dashboard button added.')
+          PY
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No dashboard change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add View All Receipts button to dashboard"
+          git push origin HEAD:main
