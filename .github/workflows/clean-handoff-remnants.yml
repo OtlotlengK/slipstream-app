@@ -1,0 +1,39 @@
+name: Clean transaction handoff remnants
+on:
+  push:
+    paths:
+      - '.github/workflows/clean-handoff-remnants.yml'
+permissions:
+  contents: write
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove leftover legacy handoff markup
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          s=p.read_text()
+          # The previous handoff left inner markup after the main application script. Remove only that exact legacy segment.
+          s=re.sub(r'</script><div class="vt-flow">.*?</div></div><script id="valoratap-transaction-handoff-v2-script">', '</script><script id="valoratap-transaction-handoff-v2-script">', s, flags=re.S)
+          # Ensure there is only one v2 script block.
+          blocks=re.findall(r'<script id="valoratap-transaction-handoff-v2-script">.*?</script>', s, flags=re.S)
+          if len(blocks)>1:
+              first=blocks[0]
+              s=s.replace(first,'__VT_KEEP__',1)
+              s=re.sub(r'<script id="valoratap-transaction-handoff-v2-script">.*?</script>','',s,flags=re.S)
+              s=s.replace('__VT_KEEP__',first,1)
+          p.write_text(s)
+          PY
+      - name: Commit and remove temporary workflow
+        run: |
+          rm -f .github/workflows/clean-handoff-remnants.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/clean-handoff-remnants.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: remove legacy transaction handoff remnants"
+          git push
