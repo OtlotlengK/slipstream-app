@@ -7,12 +7,15 @@ function renderQr(){try{if(window.QRCode){new QRCode(document.getElementById('qr
 async function load(){
  document.getElementById('verification-url').textContent=verificationUrl;
  renderQr();
- const hash=(new URLSearchParams(location.search).get('hash')||'').trim();
- if(!/^[a-fA-F0-9]{16,128}$/.test(hash)){setStatus('Unavailable',false);return fail('This verification reference is invalid. Please scan the original ValoraTap QR code again.')}
+ const params=new URLSearchParams(location.search);
+ const hash=(params.get('hash')||'').trim();
+ const id=(params.get('id')||'').trim();
+ if(!hash&&!/^[0-9a-fA-F-]{36}$/.test(id)){setStatus('Unavailable',false);return fail('This verification reference is invalid. Please scan the original ValoraTap QR code again.')}
  try{
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),10000);
-  const response=await fetch(VERIFY_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({hash}),cache:'no-store',referrerPolicy:'no-referrer',signal:controller.signal});
+  const payload=hash?{hash}:{id};
+  const response=await fetch(VERIFY_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),cache:'no-store',referrerPolicy:'no-referrer',signal:controller.signal});
   clearTimeout(timer);
   const data=await response.json().catch(()=>null);
   if(response.status===429){setStatus('Rate limited',false);return fail('Too many verification attempts. Please wait briefly and try again.')}
