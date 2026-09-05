@@ -1,1 +1,2003 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>ValoraTap | Invoice</title><script src="https://cdn.tailwindcss.com"></script><style>:root{--gold:#d0aa4b;--paper:#f4f1e9}.paper{background:#fffdf9;border:1px solid #ddd5c6;box-shadow:0 18px 55px rgba(35,30,20,.10)}.label{font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#8d867a}.gold{background:var(--gold);color:#151515}.drop{border:1px dashed #cfc6b6;background:#faf8f2}.status{padding:7px 10px;border-radius:999px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em}</style></head><body class="min-h-screen bg-[#f4f1e9] text-[#171717]"><main class="max-w-3xl mx-auto px-4 py-8 md:py-14"><div id="loading" class="text-center text-sm text-slate-500">Loading secure invoice…</div><div id="app" class="hidden space-y-5"><div class="paper rounded-2xl md:rounded-[26px] p-6 md:p-10"><div class="flex justify-between gap-6 border-b-2 border-[#171717] pb-6"><div><div class="font-black tracking-[.16em] text-lg">VALORATAP</div><div class="text-[9px] text-slate-400 mt-1">SECURE BUSINESS DOCUMENT</div><div id="business" class="text-sm font-bold mt-4"></div><div id="phone" class="text-xs text-slate-400 mt-1"></div></div><div class="text-right"><div class="text-3xl font-black">INVOICE</div><div id="invoice-no" class="text-xs font-bold mt-1"></div><div id="status" class="status bg-slate-100 text-slate-600 inline-block mt-3">Issued</div></div></div><div class="grid grid-cols-2 gap-6 py-7"><div><div class="label">Bill to</div><div id="customer" class="font-black mt-1"></div></div><div class="text-right"><div class="label">Dates</div><div id="dates" class="text-xs mt-1 leading-6"></div></div></div><div class="border-y border-[#e4ded2] py-5"><div class="grid grid-cols-[1fr_auto_auto] gap-4 text-[10px] font-black uppercase tracking-wider text-slate-500"><span>Description</span><span>Qty</span><span>Amount</span></div><div id="items" class="mt-4 space-y-3"></div></div><div class="ml-auto max-w-xs pt-6 space-y-2 text-sm"><div class="flex justify-between"><span>Subtotal</span><b id="subtotal"></b></div><div class="flex justify-between"><span>VAT</span><b id="tax"></b></div><div class="flex justify-between border-t-2 border-[#171717] pt-3 text-lg"><span class="font-black">TOTAL</span><b id="total"></b></div></div><div id="notes" class="mt-7 pt-5 border-t border-[#e4ded2] text-xs text-slate-500 whitespace-pre-wrap"></div></div><section id="payment-card" class="paper rounded-2xl p-6 md:p-7"><div class="label text-[#9a7629]">Client action</div><h2 class="text-xl font-black mt-1">Confirm your payment</h2><p class="text-sm text-slate-500 mt-2">After you have paid, confirm below. You can optionally upload proof of payment. The business will review the payment before your official ValoraTap receipt is issued.</p><div class="drop rounded-2xl p-5 mt-5"><label class="block text-xs font-black mb-2">Proof of payment <span class="font-normal text-slate-400">(optional)</span></label><input id="pop" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" class="w-full text-sm"><div class="text-[10px] text-slate-400 mt-2">PDF, JPG, PNG or WebP · maximum 10 MB</div></div><button id="paid" type="button" class="gold w-full mt-4 py-3.5 rounded-xl font-black">✓ I’ve Paid — Confirm Payment</button><div id="message" class="hidden mt-4 p-3 rounded-xl text-xs"></div></section><div id="submitted" class="hidden paper rounded-2xl p-6 text-center"><div class="text-3xl">✓</div><h2 class="font-black text-xl mt-2">Payment confirmation received</h2><p class="text-sm text-slate-500 mt-1">The business has been notified. Your invoice will become a ValoraTap receipt after the business confirms the payment.</p></div><div id="confirmed" class="hidden paper rounded-2xl p-6 text-center"><div class="text-3xl">✓</div><h2 class="font-black text-xl mt-2">Payment confirmed</h2><p class="text-sm text-slate-500 mt-1">This invoice has been converted into a secure ValoraTap receipt.</p><a id="receipt" class="inline-block gold px-5 py-3 rounded-xl font-black text-sm mt-5">View receipt →</a></div><footer class="text-center text-[10px] text-slate-400">Secured by ValoraTap · Do not forward this private invoice link publicly.</footer></div></main><script>const URL='https://pddjualtnhgmplampucn.supabase.co',KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCHY',token=new URLSearchParams(location.search).get('token'),money=n=>new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(Number(n)||0);let invoice=null;const $=s=>document.querySelector(s);function showMessage(t,ok=false){const e=$('#message');e.textContent=t;e.className='mt-4 p-3 rounded-xl text-xs '+(ok?'bg-emerald-50 text-emerald-700':'bg-red-50 text-red-700')}async function restRpc(name,body,timeout=8000){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);try{const r=await fetch(`${URL}/rest/v1/rpc/${name}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${KEY}`,'Content-Type':'application/json'},body:JSON.stringify(body),referrerPolicy:'no-referrer',cache:'no-store',signal:controller.signal});let data=null;try{data=await r.json()}catch{}if(!r.ok){const msg=data?.message||data?.error_description||data?.error||`Secure request failed (${r.status})`;throw Error(msg)}return data}catch(e){if(e?.name==='AbortError')throw Error('Secure invoice request timed out. Please check your connection and try again.');throw e}finally{clearTimeout(timer)}}async function load(){const timer=setTimeout(()=>{$('#loading').textContent='The secure invoice is taking too long to respond. Please refresh and try again.'},10000);try{if(!/^[a-f0-9]{64}$/i.test(token||''))throw Error('Invalid invoice link');const data=await restRpc('get_invoice_by_token',{p_public_token:token},8000);if(!data)throw Error('Invoice not found');invoice=Array.isArray(data)?data[0]:data;if(!invoice)throw Error('Invoice not found');$('#loading').classList.add('hidden');$('#app').classList.remove('hidden');$('#business').textContent=invoice.business_name||'Business';$('#phone').textContent=invoice.business_phone||'';$('#invoice-no').textContent=invoice.invoice_no;$('#customer').textContent=invoice.customer_name;$('#dates').innerHTML=`Issued: ${invoice.issue_date||'—'}<br>Due: ${invoice.due_date||'—'}`;$('#subtotal').textContent=money(invoice.subtotal);$('#tax').textContent=money(invoice.tax_amount);$('#total').textContent=money(invoice.total);$('#notes').textContent=invoice.notes||'';$('#items').innerHTML=(invoice.line_items||[]).map(x=>`<div class="grid grid-cols-[1fr_auto_auto] gap-4 text-sm"><span>${esc(x.description||'Item')}</span><span>${Number(x.quantity)||1}</span><span>${money((Number(x.quantity)||1)*(Number(x.unit_price)||0))}</span></div>`).join('');setStatus(invoice.status);if(invoice.status==='payment_submitted')showSubmitted();if(invoice.status==='paid'&&invoice.receipt_id)showConfirmed(invoice)}catch(e){console.error('Secure invoice load failed',e);$('#loading').textContent=e?.message==='Invoice not found'?'This invoice could not be found or is no longer available.':e?.message||'Unable to load this secure invoice. Please try again.'}finally{clearTimeout(timer)}}function setStatus(s){const e=$('#status');e.textContent=({issued:'Awaiting payment',payment_submitted:'Payment under review',paid:'Paid',rejected:'Payment rejected'}[s]||s).replaceAll('_',' ');e.className='status inline-block mt-3 '+(s==='paid'?'bg-emerald-100 text-emerald-800':s==='payment_submitted'?'bg-amber-100 text-amber-800':s==='rejected'?'bg-red-100 text-red-800':'bg-slate-100 text-slate-600')}function showSubmitted(){$('#payment-card').classList.add('hidden');$('#submitted').classList.remove('hidden')}function showConfirmed(i){$('#payment-card').classList.add('hidden');$('#confirmed').classList.remove('hidden');if(i.receipt_verification_hash)$('#receipt').href=`verify.html?hash=${encodeURIComponent(i.receipt_verification_hash)}`}function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}async function submitPayment(){const btn=$('#paid'),file=$('#pop').files[0];if(!invoice)return;btn.disabled=true;btn.textContent='Confirming payment securely…';try{if(file){if(file.size>10*1024*1024)throw Error('Proof of payment must be 10 MB or smaller');const fd=new FormData();fd.append('token',token);fd.append('file',file);const r=await fetch(`${URL}/functions/v1/invoice-pop-upload`,{method:'POST',body:fd,referrerPolicy:'no-referrer',signal:AbortSignal.timeout(12000)});let j={};try{j=await r.json()}catch{}if(!r.ok)throw Error(j.error||'Proof upload failed')}else{await restRpc('customer_confirm_invoice_payment',{p_public_token:token},8000)}showSubmitted();setStatus('payment_submitted')}catch(e){showMessage(e?.message||'We could not confirm this payment. Please try again.');btn.disabled=false;btn.textContent='✓ I’ve Paid — Confirm Payment'}}$('#paid').addEventListener('click',submitPayment);load();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>ValoraTap — Secure Invoice</title>
+
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #111827;
+      --success: #087443;
+      --success-bg: #ecfdf5;
+      --warning: #92400e;
+      --warning-bg: #fffbeb;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --radius: 18px;
+      --shadow: 0 12px 35px rgba(15,23,42,.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      padding: 28px 16px 50px;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .brand-name {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -.4px;
+    }
+
+    .secure-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: #374151;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .secure-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .loading {
+      padding: 70px 25px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 38px;
+      height: 38px;
+      margin: 0 auto 18px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #111827;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .invoice-header {
+      padding: 32px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .invoice-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .eyebrow {
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.05;
+      letter-spacing: -.8px;
+    }
+
+    .invoice-number {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status {
+      flex-shrink: 0;
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .status-issued {
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+
+    .status-payment_submitted {
+      color: var(--warning);
+      background: var(--warning-bg);
+    }
+
+    .status-paid {
+      color: var(--success);
+      background: var(--success-bg);
+    }
+
+    .status-overdue {
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .status-default {
+      color: #374151;
+      background: #f3f4f6;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+      padding: 25px 32px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-label {
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .items {
+      padding: 0 32px;
+    }
+
+    .items-header,
+    .item {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 110px 140px;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .items-header {
+      padding: 20px 0 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .item {
+      padding: 17px 0;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    .item-name {
+      font-weight: 700;
+    }
+
+    .item-description {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .totals {
+      display: flex;
+      justify-content: flex-end;
+      padding: 22px 32px 28px;
+    }
+
+    .totals-box {
+      width: 100%;
+      max-width: 330px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 7px 0;
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .total-row.final {
+      margin-top: 10px;
+      padding-top: 17px;
+      border-top: 2px solid var(--text);
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .notes {
+      margin: 0 32px 30px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+    }
+
+    .notes-title {
+      margin-bottom: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .notes-text {
+      color: #4b5563;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .payment-section {
+      padding: 30px 32px;
+      background: #fafafa;
+      border-top: 1px solid var(--line);
+    }
+
+    .payment-section h2 {
+      margin: 0 0 7px;
+      font-size: 21px;
+      letter-spacing: -.3px;
+    }
+
+    .payment-description {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .button {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 12px;
+      background: #111827;
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+      transform: none;
+    }
+
+    .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 48px;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .message.success {
+      display: block;
+      color: var(--success);
+      background: var(--success-bg);
+      border: 1px solid #bbf7d0;
+    }
+
+    .message.error {
+      display: block;
+      color: var(--danger);
+      background: var(--danger-bg);
+      border: 1px solid #fecaca;
+    }
+
+    .message.info {
+      display: block;
+      color: #1d4ed8;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+    }
+
+    .pop-area {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .pop-area.show {
+      display: block;
+    }
+
+    .pop-label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input[type="file"] {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      font-size: 13px;
+    }
+
+    .pop-help {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .paid-panel {
+      padding: 30px 32px;
+      background: var(--success-bg);
+      border-top: 1px solid #bbf7d0;
+    }
+
+    .paid-panel h2 {
+      margin: 0 0 7px;
+      color: var(--success);
+      font-size: 22px;
+    }
+
+    .paid-panel p {
+      margin: 0 0 18px;
+      color: #166534;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .verify-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 11px;
+      background: var(--success);
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .footer {
+      padding: 20px 10px 0;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 15px 10px 35px;
+      }
+
+      .invoice-header {
+        padding: 24px 20px;
+      }
+
+      .invoice-title-row {
+        flex-direction: column;
+      }
+
+      h1 {
+        font-size: 29px;
+      }
+
+      .details {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .items {
+        padding: 0 20px;
+      }
+
+      .items-header {
+        display: none;
+      }
+
+      .item {
+        grid-template-columns: 1fr 80px;
+        gap: 10px;
+      }
+
+      .item .quantity {
+        text-align: right;
+      }
+
+      .item .amount {
+        grid-column: 2;
+        text-align: right;
+      }
+
+      .totals {
+        padding: 20px;
+      }
+
+      .notes {
+        margin: 0 20px 20px;
+      }
+
+      .payment-section,
+      .paid-panel {
+        padding: 25px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <div class="brand">
+      <div class="brand-name">ValoraTap</div>
+
+      <div class="secure-badge">
+        <span class="secure-dot"></span>
+        Secure Invoice
+      </div>
+    </div>
+
+    <section class="card">
+
+      <!-- LOADING -->
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <strong>Loading secure invoice…</strong>
+        <p style="color:#6b7280;font-size:13px;margin-top:8px;">
+          Verifying your invoice securely.
+        </p>
+      </div>
+
+      <!-- ERROR -->
+      <div id="errorBox" class="loading hidden">
+        <div style="font-size:42px;margin-bottom:15px;">!</div>
+
+        <h2 id="errorTitle" style="margin:0 0 8px;">
+          Unable to load invoice
+        </h2>
+
+        <p id="errorText"
+           style="color:#6b7280;font-size:14px;line-height:1.6;">
+          Please refresh the page and try again.
+        </p>
+
+        <button
+          class="button"
+          style="max-width:320px;margin:18px auto 0;"
+          onclick="location.reload()">
+          Refresh Invoice
+        </button>
+      </div>
+
+      <!-- INVOICE -->
+      <div id="invoiceContent" class="hidden">
+
+        <header class="invoice-header">
+
+          <div class="invoice-title-row">
+
+            <div>
+              <div class="eyebrow">Invoice</div>
+
+              <h1 id="invoiceNo">—</h1>
+
+              <div class="invoice-number">
+                Issued by <strong id="merchantName">—</strong>
+              </div>
+            </div>
+
+            <div id="statusBadge"
+                 class="status status-default">
+              — 
+            </div>
+
+          </div>
+
+        </header>
+
+
+        <!-- DETAILS -->
+        <section class="details">
+
+          <div>
+            <div class="detail-label">Bill To</div>
+            <div id="customerName" class="detail-value">—</div>
+          </div>
+
+          <div>
+            <div class="detail-label">Invoice Date</div>
+            <div id="issueDate" class="detail-value">—</div>
+          </div>
+
+          <div>
+            <div class="detail-label">Due Date</div>
+            <div id="dueDate" class="detail-value">—</div>
+          </div>
+
+          <div id="customerEmailBlock">
+            <div class="detail-label">Customer Email</div>
+            <div id="customerEmail" class="detail-value">—</div>
+          </div>
+
+        </section>
+
+
+        <!-- ITEMS -->
+        <section class="items">
+
+          <div class="items-header">
+            <div>Description</div>
+            <div class="right">Qty</div>
+            <div class="right">Amount</div>
+          </div>
+
+          <div id="itemsList"></div>
+
+        </section>
+
+
+        <!-- TOTALS -->
+        <section class="totals">
+
+          <div class="totals-box">
+
+            <div class="total-row">
+              <span>Subtotal</span>
+              <strong id="subtotal">R0.00</strong>
+            </div>
+
+            <div class="total-row" id="taxRow">
+              <span id="taxLabel">Tax</span>
+              <strong id="taxAmount">R0.00</strong>
+            </div>
+
+            <div class="total-row" id="discountRow">
+              <span>Discount</span>
+              <strong id="discountAmount">R0.00</strong>
+            </div>
+
+            <div class="total-row final">
+              <span>Total</span>
+              <span id="total">R0.00</span>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- NOTES -->
+        <section id="notesBox" class="notes hidden">
+
+          <div class="notes-title">
+            Notes
+          </div>
+
+          <div id="notesText" class="notes-text"></div>
+
+        </section>
+
+
+        <!-- PAYMENT -->
+        <section id="paymentSection"
+                 class="payment-section hidden">
+
+          <h2>Confirm Your Payment</h2>
+
+          <p class="payment-description">
+            After making payment, use the button below to notify the
+            merchant. The merchant will review the payment before the
+            official ValoraTap receipt is issued.
+          </p>
+
+          <button
+            id="confirmButton"
+            class="button"
+            type="button"
+            onclick="confirmPayment()">
+            ✓ I've Paid — Confirm Payment
+          </button>
+
+          <button
+            id="showPopButton"
+            class="secondary-button"
+            type="button"
+            onclick="togglePop()">
+            Upload Proof of Payment
+          </button>
+
+
+          <div id="popArea" class="pop-area">
+
+            <label class="pop-label" for="popFile">
+              Proof of Payment
+            </label>
+
+            <input
+              id="popFile"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.webp">
+
+            <div class="pop-help">
+              Accepted: PDF, JPG, PNG or WEBP. Maximum file size: 10MB.
+            </div>
+
+            <button
+              id="uploadButton"
+              class="button"
+              style="margin-top:14px;"
+              type="button"
+              onclick="uploadPOP()">
+              Upload Proof of Payment
+            </button>
+
+          </div>
+
+          <div id="paymentMessage"
+               class="message">
+          </div>
+
+        </section>
+
+
+        <!-- PAYMENT SUBMITTED -->
+        <section id="submittedSection"
+                 class="payment-section hidden">
+
+          <h2>Payment Confirmation Received</h2>
+
+          <p class="payment-description">
+            Your payment has been submitted to the merchant for review.
+            No receipt is issued until the merchant confirms the payment.
+          </p>
+
+          <div class="message info" style="display:block;">
+            Your invoice is currently under payment review.
+          </div>
+
+        </section>
+
+
+        <!-- PAID -->
+        <section id="paidSection"
+                 class="paid-panel hidden">
+
+          <h2>✓ Payment Confirmed</h2>
+
+          <p>
+            This invoice has been marked as paid and a ValoraTap receipt
+            has been issued.
+          </p>
+
+          <a
+            id="verifyLink"
+            class="verify-link"
+            href="#"
+            target="_blank"
+            rel="noopener">
+            Verify Receipt
+          </a>
+
+        </section>
+
+      </div>
+
+    </section>
+
+
+    <footer class="footer">
+      Powered by ValoraTap.<br>
+      Secure digital invoicing and payment verification.
+    </footer>
+
+  </main>
+
+
+<script>
+"use strict";
+
+/*
+  ============================================================
+  VALORATAP SECURE CUSTOMER INVOICE
+  ============================================================
+
+  IMPORTANT:
+  This page intentionally contains NO Supabase API key.
+
+  Customer invoice data is requested through the public
+  Edge Function endpoint below.
+
+  The invoice token is a capability token and must be treated
+  as sensitive. Do not expose database IDs, token hashes,
+  merchant credentials, or service keys in this page.
+*/
+
+const API_BASE =
+  "https://pddjualtnhgmplampucn.supabase.co/functions/v1";
+
+const PUBLIC_INVOICE_ENDPOINT =
+  API_BASE + "/public-invoice";
+
+const POP_UPLOAD_ENDPOINT =
+  API_BASE + "/invoice-pop-upload";
+
+
+/* ------------------------------------------------------------
+   DOM HELPERS
+------------------------------------------------------------ */
+
+const $ = (id) => document.getElementById(id);
+
+
+function show(element) {
+  element.classList.remove("hidden");
+}
+
+
+function hide(element) {
+  element.classList.add("hidden");
+}
+
+
+function setMessage(element, type, text) {
+  element.className = "message " + type;
+  element.textContent = text;
+}
+
+
+function money(value) {
+  const number = Number(value || 0);
+
+  return number.toLocaleString("en-ZA", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+
+function formatDate(value) {
+  if (!value) return "—";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleDateString("en-ZA", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+}
+
+
+function cleanText(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value);
+}
+
+
+/* ------------------------------------------------------------
+   TOKEN VALIDATION
+------------------------------------------------------------ */
+
+function getToken() {
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const token =
+    params.get("token");
+
+  if (!token) {
+    throw new Error("missing_token");
+  }
+
+  const clean =
+    token.trim().toLowerCase();
+
+  /*
+    ValoraTap invoice tokens are 32 random bytes
+    represented as 64 hexadecimal characters.
+  */
+
+  if (!/^[a-f0-9]{64}$/.test(clean)) {
+    throw new Error("invalid_token");
+  }
+
+  return clean;
+}
+
+
+/* ------------------------------------------------------------
+   SECURE PUBLIC INVOICE REQUEST
+------------------------------------------------------------ */
+
+async function requestInvoice(token) {
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(() => controller.abort(), 15000);
+
+
+  try {
+
+    const response =
+      await fetch(PUBLIC_INVOICE_ENDPOINT, {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          token: token
+        }),
+
+        signal: controller.signal,
+
+        cache: "no-store"
+      });
+
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+
+
+    if (!response.ok) {
+
+      const message =
+        data?.error ||
+        data?.message ||
+        "Invoice request failed.";
+
+      throw new Error(message);
+    }
+
+
+    if (!data) {
+      throw new Error("empty_response");
+    }
+
+
+    return data;
+
+  } finally {
+
+    clearTimeout(timeout);
+
+  }
+}
+
+
+/* ------------------------------------------------------------
+   INVOICE NORMALIZATION
+------------------------------------------------------------ */
+
+function normalizeInvoice(payload) {
+
+  /*
+    Supports either:
+
+      { invoice: {...} }
+
+    or:
+
+      {...invoice fields...}
+
+    so the Edge Function can evolve without
+    requiring another customer-page rewrite.
+  */
+
+  const invoice =
+    payload?.invoice ||
+    payload?.data ||
+    payload;
+
+
+  if (!invoice || typeof invoice !== "object") {
+    throw new Error("invalid_invoice_response");
+  }
+
+
+  return invoice;
+}
+
+
+/* ------------------------------------------------------------
+   ITEMS
+------------------------------------------------------------ */
+
+function renderItems(items) {
+
+  const container =
+    $("itemsList");
+
+  container.innerHTML = "";
+
+
+  let parsed = items;
+
+  if (typeof parsed === "string") {
+
+    try {
+      parsed = JSON.parse(parsed);
+    } catch {
+      parsed = [];
+    }
+
+  }
+
+
+  if (!Array.isArray(parsed)) {
+    parsed = [];
+  }
+
+
+  if (!parsed.length) {
+
+    const row =
+      document.createElement("div");
+
+    row.className = "item";
+
+    row.innerHTML = `
+      <div class="item-name">
+        Invoice items
+      </div>
+
+      <div class="quantity right">
+        —
+      </div>
+
+      <div class="amount right">
+        —
+      </div>
+    `;
+
+    container.appendChild(row);
+
+    return;
+  }
+
+
+  parsed.forEach((item) => {
+
+    const row =
+      document.createElement("div");
+
+    row.className = "item";
+
+
+    const name =
+      cleanText(
+        item.description ??
+        item.name ??
+        item.product ??
+        item.item ??
+        "Item"
+      );
+
+
+    const description =
+      cleanText(
+        item.notes ??
+        item.details ??
+        ""
+      );
+
+
+    const quantity =
+      Number(
+        item.quantity ??
+        item.qty ??
+        1
+      );
+
+
+    const amount =
+      Number(
+        item.amount ??
+        item.total ??
+        (
+          Number(item.unit_price ?? item.price ?? 0) *
+          quantity
+        )
+      );
+
+
+    const descriptionHTML =
+      description
+        ? `<div class="item-description">${escapeHTML(description)}</div>`
+        : "";
+
+
+    row.innerHTML = `
+      <div>
+        <div class="item-name">
+          ${escapeHTML(name)}
+        </div>
+
+        ${descriptionHTML}
+      </div>
+
+      <div class="quantity right">
+        ${escapeHTML(String(quantity))}
+      </div>
+
+      <div class="amount right">
+        R${money(amount)}
+      </div>
+    `;
+
+
+    container.appendChild(row);
+
+  });
+
+}
+
+
+/* ------------------------------------------------------------
+   HTML ESCAPING
+------------------------------------------------------------ */
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+/* ------------------------------------------------------------
+   STATUS
+------------------------------------------------------------ */
+
+function renderStatus(status) {
+
+  const badge =
+    $("statusBadge");
+
+
+  const normalized =
+    cleanText(status)
+      .toLowerCase()
+      .trim();
+
+
+  let label =
+    "Invoice";
+
+
+  let className =
+    "status status-default";
+
+
+  if (normalized === "issued") {
+
+    label = "Awaiting Payment";
+    className = "status status-issued";
+
+  }
+
+  else if (
+    normalized === "payment_submitted"
+  ) {
+
+    label = "Payment Under Review";
+    className = "status status-payment_submitted";
+
+  }
+
+  else if (
+    normalized === "paid"
+  ) {
+
+    label = "Paid";
+    className = "status status-paid";
+
+  }
+
+  else if (
+    normalized === "overdue"
+  ) {
+
+    label = "Overdue";
+    className = "status status-overdue";
+
+  }
+
+  else if (normalized) {
+
+    label =
+      normalized
+        .replaceAll("_", " ")
+        .replace(/\b\w/g, c => c.toUpperCase());
+
+  }
+
+
+  badge.textContent = label;
+  badge.className = className;
+
+}
+
+
+/* ------------------------------------------------------------
+   RENDER INVOICE
+------------------------------------------------------------ */
+
+function renderInvoice(invoice) {
+
+  $("invoiceNo").textContent =
+    invoice.invoice_no ||
+    invoice.invoice_number ||
+    "Invoice";
+
+
+  $("merchantName").textContent =
+    invoice.merchant_name ||
+    invoice.business_name ||
+    "ValoraTap Merchant";
+
+
+  $("customerName").textContent =
+    invoice.customer_name ||
+    "Customer";
+
+
+  $("customerEmail").textContent =
+    invoice.customer_email ||
+    "—";
+
+
+  $("issueDate").textContent =
+    formatDate(
+      invoice.issue_date ||
+      invoice.created_at
+    );
+
+
+  $("dueDate").textContent =
+    formatDate(invoice.due_date);
+
+
+  const subtotal =
+    Number(invoice.subtotal || 0);
+
+
+  const taxRate =
+    Number(invoice.tax_rate || 0);
+
+
+  const taxAmount =
+    invoice.tax_amount !== undefined &&
+    invoice.tax_amount !== null
+      ? Number(invoice.tax_amount)
+      : subtotal * (taxRate / 100);
+
+
+  const discount =
+    Number(
+      invoice.discount_amount ||
+      invoice.discount ||
+      0
+    );
+
+
+  let total =
+    invoice.total !== undefined &&
+    invoice.total !== null
+      ? Number(invoice.total)
+      : subtotal + taxAmount - discount;
+
+
+  $("subtotal").textContent =
+    "R" + money(subtotal);
+
+
+  $("taxAmount").textContent =
+    "R" + money(taxAmount);
+
+
+  $("discountAmount").textContent =
+    "R" + money(discount);
+
+
+  $("total").textContent =
+    "R" + money(total);
+
+
+  $("taxLabel").textContent =
+    taxRate > 0
+      ? `Tax (${money(taxRate)}%)`
+      : "Tax";
+
+
+  if (taxRate <= 0 && taxAmount <= 0) {
+    hide($("taxRow"));
+  } else {
+    show($("taxRow"));
+  }
+
+
+  if (discount <= 0) {
+    hide($("discountRow"));
+  } else {
+    show($("discountRow"));
+  }
+
+
+  if (invoice.notes) {
+
+    show($("notesBox"));
+
+    $("notesText").textContent =
+      invoice.notes;
+
+  } else {
+
+    hide($("notesBox"));
+
+  }
+
+
+  renderItems(
+    invoice.line_items ||
+    invoice.items ||
+    []
+  );
+
+
+  renderStatus(
+    invoice.status
+  );
+
+
+  show($("invoiceContent"));
+
+
+  configurePaymentState(
+    invoice
+  );
+
+}
+
+
+/* ------------------------------------------------------------
+   PAYMENT STATE
+------------------------------------------------------------ */
+
+function configurePaymentState(invoice) {
+
+  const status =
+    cleanText(invoice.status)
+      .toLowerCase();
+
+
+  hide($("paymentSection"));
+  hide($("submittedSection"));
+  hide($("paidSection"));
+
+
+  if (status === "issued") {
+
+    show($("paymentSection"));
+
+    return;
+  }
+
+
+  if (status === "payment_submitted") {
+
+    show($("submittedSection"));
+
+    return;
+  }
+
+
+  if (status === "paid") {
+
+    show($("paidSection"));
+
+
+    /*
+      The backend may return:
+
+        verification_hash
+
+      or:
+
+        receipt_hash
+
+      or:
+
+        verification_url
+    */
+
+    let verifyURL = null;
+
+
+    if (invoice.verification_url) {
+
+      verifyURL =
+        invoice.verification_url;
+
+    }
+
+    else if (invoice.verification_hash) {
+
+      verifyURL =
+        "verify.html?hash=" +
+        encodeURIComponent(
+          invoice.verification_hash
+        );
+
+    }
+
+    else if (invoice.receipt_hash) {
+
+      verifyURL =
+        "verify.html?hash=" +
+        encodeURIComponent(
+          invoice.receipt_hash
+        );
+
+    }
+
+
+    if (verifyURL) {
+
+      $("verifyLink").href =
+        verifyURL;
+
+      show($("verifyLink"));
+
+    } else {
+
+      hide($("verifyLink"));
+
+    }
+
+    return;
+  }
+
+
+  /*
+    If an unexpected state is returned,
+    don't allow a customer to submit payment.
+  */
+
+}
+
+
+/* ------------------------------------------------------------
+   CUSTOMER PAYMENT CONFIRMATION
+------------------------------------------------------------ */
+
+async function confirmPayment() {
+
+  const button =
+    $("confirmButton");
+
+  const message =
+    $("paymentMessage");
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Submitting…";
+
+
+  message.className =
+    "message";
+
+
+  try {
+
+    const token =
+      getToken();
+
+
+    const response =
+      await fetch(
+        PUBLIC_INVOICE_ENDPOINT,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            action: "confirm_payment",
+            token: token
+          }),
+
+          cache: "no-store"
+        }
+      );
+
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data?.error ||
+        data?.message ||
+        "Payment confirmation failed."
+      );
+
+    }
+
+
+    const status =
+      cleanText(
+        data?.status ||
+        data?.invoice?.status
+      ).toLowerCase();
+
+
+    if (status === "paid") {
+
+      setMessage(
+        message,
+        "success",
+        "This invoice has already been confirmed as paid."
+      );
+
+
+      /*
+        Reload after a short delay so the
+        page can retrieve the official
+        receipt/verification information.
+      */
+
+      setTimeout(() => {
+        loadInvoice();
+      }, 800);
+
+      return;
+    }
+
+
+    if (
+      status === "payment_submitted" ||
+      data?.ok === true
+    ) {
+
+      setMessage(
+        message,
+        "success",
+        "Payment confirmation received. The merchant will now review the payment before issuing the official receipt."
+      );
+
+
+      hide($("confirmButton"));
+      hide($("showPopButton"));
+
+      return;
+    }
+
+
+    throw new Error(
+      "Unexpected payment confirmation response."
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Payment confirmation failed:",
+      error
+    );
+
+
+    setMessage(
+      message,
+      "error",
+      friendlyError(error)
+    );
+
+
+    button.disabled = false;
+
+    button.textContent =
+      "✓ I've Paid — Confirm Payment";
+
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   POP TOGGLE
+------------------------------------------------------------ */
+
+function togglePop() {
+
+  $("popArea")
+    .classList.toggle("show");
+
+}
+
+
+/* ------------------------------------------------------------
+   POP UPLOAD
+------------------------------------------------------------ */
+
+async function uploadPOP() {
+
+  const fileInput =
+    $("popFile");
+
+  const button =
+    $("uploadButton");
+
+  const message =
+    $("paymentMessage");
+
+
+  const file =
+    fileInput.files?.[0];
+
+
+  if (!file) {
+
+    setMessage(
+      message,
+      "error",
+      "Please select your proof of payment first."
+    );
+
+    return;
+  }
+
+
+  const maxSize =
+    10 * 1024 * 1024;
+
+
+  if (file.size < 1) {
+
+    setMessage(
+      message,
+      "error",
+      "The selected file is empty."
+    );
+
+    return;
+  }
+
+
+  if (file.size > maxSize) {
+
+    setMessage(
+      message,
+      "error",
+      "The file is too large. Maximum size is 10MB."
+    );
+
+    return;
+  }
+
+
+  const allowedTypes = [
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+  ];
+
+
+  if (
+    file.type &&
+    !allowedTypes.includes(file.type)
+  ) {
+
+    setMessage(
+      message,
+      "error",
+      "Only PDF, JPG, PNG and WEBP files are accepted."
+    );
+
+    return;
+  }
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "Uploading…";
+
+
+  try {
+
+    const token =
+      getToken();
+
+
+    const formData =
+      new FormData();
+
+
+    formData.append(
+      "token",
+      token
+    );
+
+
+    formData.append(
+      "file",
+      file
+    );
+
+
+    const response =
+      await fetch(
+        POP_UPLOAD_ENDPOINT,
+        {
+          method: "POST",
+          body: formData,
+          cache: "no-store"
+        }
+      );
+
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data?.error ||
+        data?.message ||
+        "Proof of payment upload failed."
+      );
+
+    }
+
+
+    setMessage(
+      message,
+      "success",
+      "Proof of payment uploaded successfully. Your payment is now under merchant review."
+    );
+
+
+    hide($("confirmButton"));
+    hide($("showPopButton"));
+    hide($("popArea"));
+
+
+    show($("submittedSection"));
+
+
+  } catch (error) {
+
+    console.error(
+      "POP upload failed:",
+      error
+    );
+
+
+    setMessage(
+      message,
+      "error",
+      friendlyError(error)
+    );
+
+
+    button.disabled = false;
+
+    button.textContent =
+      "Upload Proof of Payment";
+
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   FRIENDLY ERRORS
+------------------------------------------------------------ */
+
+function friendlyError(error) {
+
+  const message =
+    cleanText(error?.message)
+      .toLowerCase();
+
+
+  if (
+    message.includes("missing_token")
+  ) {
+
+    return "This invoice link is missing its secure access token.";
+
+  }
+
+
+  if (
+    message.includes("invalid_token")
+  ) {
+
+    return "This invoice link is invalid or incomplete.";
+
+  }
+
+
+  if (
+    message.includes("invoice_not_found")
+  ) {
+
+    return "This invoice could not be found or is no longer available.";
+
+  }
+
+
+  if (
+    message.includes("abort") ||
+    message.includes("timeout")
+  ) {
+
+    return "The secure invoice is taking too long to respond. Please refresh and try again.";
+
+  }
+
+
+  if (
+    message.includes("failed to fetch") ||
+    message.includes("network")
+  ) {
+
+    return "We couldn't connect to the secure invoice service. Please check your connection and try again.";
+
+  }
+
+
+  return (
+    error?.message ||
+    "Something went wrong. Please refresh the invoice and try again."
+  );
+
+}
+
+
+/* ------------------------------------------------------------
+   LOAD
+------------------------------------------------------------ */
+
+async function loadInvoice() {
+
+  hide($("errorBox"));
+  hide($("invoiceContent"));
+
+  show($("loading"));
+
+
+  try {
+
+    const token =
+      getToken();
+
+
+    const payload =
+      await requestInvoice(token);
+
+
+    const invoice =
+      normalizeInvoice(payload);
+
+
+    renderInvoice(invoice);
+
+
+  } catch (error) {
+
+    console.error(
+      "Secure invoice load failed:",
+      error
+    );
+
+
+    hide($("loading"));
+    hide($("invoiceContent"));
+
+    show($("errorBox"));
+
+
+    const message =
+      cleanText(error?.message)
+        .toLowerCase();
+
+
+    if (
+      message.includes("invoice_not_found")
+    ) {
+
+      $("errorTitle").textContent =
+        "Invoice not found";
+
+
+      $("errorText").textContent =
+        "This invoice could not be found or is no longer available.";
+
+    }
+
+    else if (
+      message.includes("missing_token") ||
+      message.includes("invalid_token")
+    ) {
+
+      $("errorTitle").textContent =
+        "Invalid invoice link";
+
+
+      $("errorText").textContent =
+        "The secure invoice link is missing or invalid. Please ask the merchant to send you the invoice link again.";
+
+    }
+
+    else {
+
+      $("errorTitle").textContent =
+        "Unable to load secure invoice";
+
+
+      $("errorText").textContent =
+        friendlyError(error);
+
+    }
+
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   START
+------------------------------------------------------------ */
+
+loadInvoice();
+
+</script>
+
+</body>
+</html>
