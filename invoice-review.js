@@ -22,19 +22,13 @@ function showMessage(text, type = '') {
 }
 
 async function findInvoice() {
-  let query = db
-    .from('invoices')
-    .select('id,invoice_no,customer_name,total,status,payment_submitted_at,pop_path');
-
   if (/^[0-9a-f-]{36}$/i.test(invoiceId || '')) {
-    query = query.eq('id', invoiceId);
-  } else if (invoiceNumber) {
-    query = query.eq('invoice_no', invoiceNumber);
-  } else {
-    return { data: null, error: { message: 'Missing invoice reference.' } };
+    return db.rpc('get_merchant_invoice', { p_invoice_id: invoiceId }).maybeSingle();
   }
-
-  return query.maybeSingle();
+  if (invoiceNumber) {
+    return { data: null, error: { message: 'Invoice-number lookup is no longer supported on the merchant review route. Open Review from Invoice Vault or Invoice Centre.' } };
+  }
+  return { data: null, error: { message: 'Missing invoice reference.' } };
 }
 
 async function loadPop(accessToken) {
@@ -161,7 +155,7 @@ async function confirmPayment() {
 
   showMessage('Payment confirmed. Receipt created successfully.', 'success');
   setTimeout(() => {
-    window.location.href = `digital-receipts.html?hash=${encodeURIComponent(hash)}`;
+    window.location.href = `verify.html?hash=${encodeURIComponent(hash)}`;
   }, 700);
 }
 
