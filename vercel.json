@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/home.html" }
+    { "source": "/", "destination": "/home.html" },
+    { "source": "/s/:code", "destination": "https://pddjualtnhgmplampucn.supabase.co/functions/v1/short-link?code=:code" }
   ],
   "headers": [
     {
