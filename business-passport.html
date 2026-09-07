@@ -7,6 +7,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' https://cdn.jsdelivr.net;connect-src 'self' https://pddjualtnhgmplampucn.supabase.co;img-src 'self' data: https://quickchart.io;style-src 'self' 'unsafe-inline';base-uri 'none';form-action 'self';frame-ancestors 'none'">
 <title>ValoraTap | Business Passport</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="business-passport.js" defer></script>
 <style>
 :root{--gold:#c7a24a;--ink:#171717;--paper:#f5f2eb;--line:#e5dfd2}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}.top{background:#171717;color:#fff}.topin,.wrap{max-width:1080px;margin:auto}.topin{padding:16px 20px;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:950;letter-spacing:.18em}.btn{border:0;border-radius:11px;padding:11px 15px;font-size:11px;font-weight:900;text-decoration:none;cursor:pointer}.ghost{background:#fff;color:#171717}.wrap{padding:38px 20px 65px}.eyebrow,.label{font-size:9px;font-weight:950;letter-spacing:.16em;text-transform:uppercase;color:#918a7d}.gold{color:var(--gold)}h1{font-size:38px;line-height:1.03;margin:8px 0}.muted{color:#777;font-size:12px}.hero{background:#fff;border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:0 8px 30px rgba(30,24,12,.05);position:relative;overflow:hidden}.hero:after{content:'';position:absolute;width:240px;height:240px;border:1px solid #eadfca;border-radius:50%;right:-100px;top:-110px}.badge{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:999px;background:#edf8f0;color:#19703c;font-size:10px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#faf8f3;border:1px solid #eee9df;border-radius:18px;padding:18px}.num{font-size:28px;font-weight:950;margin-top:7px}.cards{display:grid;grid-template-columns:1.3fr .7fr;gap:16px;margin-top:16px}.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px}.row{display:flex;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid #eeeae2;font-size:12px}.row:last-child{border-bottom:0}.value{font-weight:900;text-align:right}.trust{display:flex;gap:10px;align-items:flex-start;margin-top:16px}.check{width:28px;height:28px;border-radius:9px;background:#f8f0dc;color:#9a7729;display:flex;align-items:center;justify-content:center;font-weight:950;flex:none}.error{background:#fff0ef;border:1px solid #edc6c0;color:#a33a30;padding:14px;border-radius:14px;font-size:12px}.hidden{display:none!important}.sharebox{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.sharebox p{margin:0}.sharebtn{background:var(--gold);color:#fff}.qr{width:112px;height:112px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:7px;object-fit:contain}@media(max-width:760px){h1{font-size:30px}.grid{grid-template-columns:repeat(4,1fr)}.cards{grid-template-columns:1fr}.hero{padding:23px}}@media(max-width:430px){.grid{grid-template-columns:repeat(2,1fr)}.num{font-size:23px}.topin{padding:14px}.wrap{padding:28px 14px 50px}}@media print{.no-print{display:none!important}body{background:#fff}.hero,.card{box-shadow:none}}
 </style>
@@ -45,103 +46,5 @@
   </section>
   <p class="muted" style="text-align:center;margin-top:22px;font-size:9px;text-transform:uppercase;letter-spacing:.14em">ValoraTap Business Passport · Private merchant view</p>
 </main>
-<script>
-(() => {
-  const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
-  const $ = id => document.getElementById(id);
-  const showError = message => { $('error').textContent = message; $('error').classList.remove('hidden'); };
-  const hideError = () => $('error').classList.add('hidden');
-  let db = null;
-  let publicUrl = '';
-
-  async function init() {
-    try {
-      if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-        throw new Error('Supabase client library failed to load.');
-      }
-      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-      const { data: { session }, error: sessionError } = await db.auth.getSession();
-      if (sessionError) throw sessionError;
-      if (!session?.user?.id) {
-        window.location.replace('login.html');
-        return;
-      }
-
-      const { data: r, error } = await db.rpc('get_business_passport', { p_merchant_id: session.user.id });
-      if (error) throw error;
-      if (!r || typeof r !== 'object') throw new Error('Business Passport returned no profile data.');
-
-      hideError();
-      $('app').classList.remove('hidden');
-      $('business').textContent = r.business_name || 'Verified Business';
-      $('profile-name').textContent = r.business_name || '—';
-      $('phone').textContent = r.business_phone || 'Not provided';
-      $('email').textContent = r.business_email || 'Not provided';
-      $('receipts').textContent = Number(r.receipt_count || 0).toLocaleString('en-ZA');
-      $('issued').textContent = Number(r.issued_receipts || 0).toLocaleString('en-ZA');
-      $('paid').textContent = Number(r.paid_invoice_count || 0).toLocaleString('en-ZA');
-      $('webhooks').textContent = Number(r.webhook_endpoint_count || 0).toLocaleString('en-ZA');
-      $('keys').textContent = Number(r.api_key_count || 0).toLocaleString('en-ZA');
-      $('since').textContent = r.active_since ? new Date(r.active_since).toLocaleDateString('en-ZA') : 'Active merchant profile';
-    } catch (err) {
-      console.error('Business Passport init failed:', err);
-      showError('Business Passport could not load. Please refresh. If this continues, the page will show the technical error below.');
-      const detail = err?.message || err?.code || 'Unknown error';
-      $('error').textContent += ' (' + detail + ')';
-    }
-  }
-
-  async function sharePassport() {
-    if (!db) return showError('Passport is still initializing. Please try again in a moment.');
-    const b = $('share-btn');
-    b.disabled = true;
-    b.textContent = 'Generating…';
-    try {
-      const { data: r, error } = await db.rpc('rotate_business_passport_token');
-      if (error) throw error;
-      if (!r?.public_token) throw new Error('No secure Passport token was returned.');
-      publicUrl = new URL('business-passport-public.html?token=' + encodeURIComponent(r.public_token), location.href).href;
-      $('qr').src = 'https://quickchart.io/qr?size=240&margin=1&text=' + encodeURIComponent(publicUrl);
-      $('qr-wrap').classList.remove('hidden');
-      $('share-status').textContent = 'Secure Passport link generated. The previous public link is now invalid.';
-      $('share-status').classList.remove('hidden');
-      const data = { title: 'ValoraTap Business Passport', text: 'View the verified business identity for ' + (r.business_name || 'this business') + '.', url: publicUrl };
-      if (navigator.share) { try { await navigator.share(data); } catch (_) {} }
-      else { try { await navigator.clipboard.writeText(publicUrl); $('share-status').textContent = 'Secure Passport link generated and copied to clipboard.'; } catch (_) { prompt('Copy this secure Passport link:', publicUrl); } }
-    } catch (err) {
-      console.error('Passport link generation failed:', err);
-      $('share-status').textContent = 'Could not generate a secure Passport link: ' + (err?.message || 'unknown error');
-      $('share-status').classList.remove('hidden');
-    } finally {
-      b.disabled = false;
-      b.textContent = 'Generate New Secure Link';
-    }
-  }
-
-  async function logout() {
-    const b = $('logout-btn');
-    b.disabled = true;
-    b.textContent = 'Signing out…';
-    try {
-      if (!db) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      const { error } = await db.auth.signOut({ scope: 'local' });
-      if (error) throw error;
-      window.location.replace('login.html');
-    } catch (err) {
-      console.error('Sign out failed:', err);
-      showError('Sign out failed: ' + (err?.message || 'unknown error'));
-      b.disabled = false;
-      b.textContent = 'Sign out';
-    }
-  }
-
-  $('logout-btn').addEventListener('click', logout);
-  $('share-btn').addEventListener('click', sharePassport);
-  $('print-btn').addEventListener('click', () => window.print());
-  init();
-})();
-</script>
 </body>
 </html>
