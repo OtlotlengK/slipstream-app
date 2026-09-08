@@ -1,0 +1,3 @@
+-- ValoraTap: payment-intent endpoint rate limiting is implemented in the
+-- public Edge Function. This migration records the launch hardening checkpoint.
+-- The endpoint limits requests by client IP and invoice public token.
