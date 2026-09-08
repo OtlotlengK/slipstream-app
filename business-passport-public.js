@@ -11,6 +11,43 @@
     }
   }
 
+  function addProfileCard(row) {
+    const values = [
+      ['Trading name', row.trading_name],
+      ['Industry', row.industry],
+      ['Description', row.description],
+      ['Location', [row.city, row.province, row.country].filter(Boolean).join(', ')],
+      ['Operating address', row.operating_address],
+      ['Website', row.website],
+      ['Business email', row.business_email]
+    ].filter(([, value]) => value);
+
+    if (!values.length) return;
+
+    const card = document.createElement('section');
+    card.className = 'card';
+    const label = document.createElement('div');
+    label.className = 'label gold';
+    label.textContent = 'Business details';
+    const heading = document.createElement('h2');
+    heading.textContent = 'Public profile';
+    card.append(label, heading);
+
+    values.forEach(([name, value]) => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      const nameEl = document.createElement('span');
+      nameEl.textContent = name;
+      const valueEl = document.createElement('span');
+      valueEl.className = 'value';
+      valueEl.textContent = value;
+      rowEl.append(nameEl, valueEl);
+      card.appendChild(rowEl);
+    });
+
+    $('app').appendChild(card);
+  }
+
   async function init() {
     try {
       if (!window.supabase || typeof window.supabase.createClient !== 'function') {
@@ -45,7 +82,7 @@
 
       $('app').classList.remove('hidden');
       $('business').textContent = row.business_name;
-      $('profile').textContent = row.business_name;
+      $('profile').textContent = row.trading_name || row.business_name;
       $('phone').textContent = row.business_phone || 'Not provided';
       $('receipts').textContent = Number(row.receipt_count || 0).toLocaleString('en-ZA');
       $('issued').textContent = Number(row.issued_receipts || 0).toLocaleString('en-ZA');
@@ -53,6 +90,7 @@
       $('since').textContent = row.active_since
         ? new Date(row.active_since).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })
         : 'Active merchant profile';
+      addProfileCard(row);
     } catch (err) {
       console.error('Public Business Passport failed:', err);
       fail('This Business Passport could not be loaded. Please try again.');
