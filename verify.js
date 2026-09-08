@@ -14,7 +14,7 @@ async function load(){
  try{
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),10000);
-  const payload=hash?{hash}:{id};
+  const payload=hash?{verification_hash:hash}:{id};
   const response=await fetch(VERIFY_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),cache:'no-store',referrerPolicy:'no-referrer',signal:controller.signal});
   clearTimeout(timer);
   const data=await response.json().catch(()=>null);
