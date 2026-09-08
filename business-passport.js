@@ -19,7 +19,7 @@
       ['VAT status', ({not_registered:'Not VAT registered',registered:'VAT registered',unknown:'Unknown'})[r.vat_status] || r.vat_status],
       ['Year established', r.year_established],
       ['Employees', r.employee_count],
-      ['Business email', r.business_email],
+      ['Business email', r.profile_business_email],
       ['Website', r.website],
       ['Profile visibility', r.profile_visibility === 'public' ? 'Public' : 'Private']
     ].filter(([, value]) => value !== null && value !== undefined && value !== '');
