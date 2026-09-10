@@ -1,6 +1,11 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/home.html" },
+    { "source": "/command-centre.html", "destination": "/centres/command-centre.html" },
+    { "source": "/action-centre.html", "destination": "/centres/action-centre.html" },
+    { "source": "/activity.html", "destination": "/centres/activity.html" },
+    { "source": "/financial-intelligence.html", "destination": "/centres/financial-intelligence.html" },
+    { "source": "/customer-centre.html", "destination": "/centres/customer-centre.html" },
     { "source": "/s/:code", "destination": "https://pddjualtnhgmplampucn.supabase.co/functions/v1/short-link?code=:code" }
   ],
   "headers": [
