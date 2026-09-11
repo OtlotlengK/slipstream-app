@@ -25,6 +25,7 @@
     return result.data.session.user;
   }
   async function core(uid) {
+    if (typeof uid !== 'string' || !/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(uid)) throw new Error('Invalid merchant session identity.');
     const [r,i,m] = await Promise.all([
       db.from('receipts').select('id,receipt_no,customer_name,customer_phone,customer_email,amount,payment_method,status,created_at,verification_hash,description').eq('merchant_id',uid).order('created_at',{ascending:false}),
       db.from('invoices').select('id,invoice_no,customer_name,customer_phone,customer_email,total,currency,status,due_date,created_at,receipt_id').eq('merchant_id',uid).order('created_at',{ascending:false}),
@@ -32,6 +33,7 @@
     ]);
     if (r.error) throw r.error;
     if (i.error) throw i.error;
+    if (m.error) throw m.error;
     return { receipts:r.data||[], invoices:i.data||[], business:m.data?.business_name||'Your business' };
   }
   const link = (href,label='Open') => `<a href="${esc(href)}" class="inline-flex items-center justify-center rounded-xl bg-slate-900 text-white px-3 py-2 text-[10px] font-black">${esc(label)} →</a>`;
@@ -88,8 +90,20 @@
   }
 
   async function main() {
-    try { ready(); const uid=await auth(); if(!uid)return; const kind=document.body.dataset.centre; if(kind==='command')await command(uid); else if(kind==='activity')await activity(uid); else if(kind==='financial')await financial(uid); else if(kind==='customers')await customers(uid); else if(kind==='action')await action(uid); else throw new Error('Unknown ValoraTap centre.'); }
-    catch (e) { errorBox(e?.message || 'ValoraTap could not load this centre.'); }
+    try {
+      ready();
+      const user = await auth();
+      if(!user) return;
+      const uid = user.id;
+      if(!uid) throw new Error('Your authenticated merchant identity is missing.');
+      const kind=document.body.dataset.centre;
+      if(kind==='command')await command(uid);
+      else if(kind==='activity')await activity(uid);
+      else if(kind==='financial')await financial(uid);
+      else if(kind==='customers')await customers(uid);
+      else if(kind==='action')await action(uid);
+      else throw new Error('Unknown ValoraTap centre.');
+    } catch (e) { errorBox(e?.message || 'ValoraTap could not load this centre.'); }
   }
   window.addEventListener('error',e=>{ if(e?.message) errorBox('ValoraTap page error: '+e.message); });
   window.addEventListener('unhandledrejection',e=>{ if(e?.reason) errorBox('ValoraTap data error: '+(e.reason.message||String(e.reason))); });
