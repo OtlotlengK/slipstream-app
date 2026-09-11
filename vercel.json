@@ -6,6 +6,15 @@
     { "source": "/activity.html", "destination": "/centres/activity.html" },
     { "source": "/financial-intelligence.html", "destination": "/centres/financial-intelligence.html" },
     { "source": "/customer-centre.html", "destination": "/centres/customer-centre.html" },
+    { "source": "/passport.html", "destination": "/business-passport.html" },
+    { "source": "/receipt.html", "destination": "/receipts.html" },
+    { "source": "/receipts", "destination": "/receipts.html" },
+    { "source": "/invoices", "destination": "/invoices.html" },
+    { "source": "/command-centre", "destination": "/centres/command-centre.html" },
+    { "source": "/action-centre", "destination": "/centres/action-centre.html" },
+    { "source": "/activity", "destination": "/centres/activity.html" },
+    { "source": "/financial-intelligence", "destination": "/centres/financial-intelligence.html" },
+    { "source": "/customer-centre", "destination": "/centres/customer-centre.html" },
     { "source": "/s/:code", "destination": "https://pddjualtnhgmplampucn.supabase.co/functions/v1/short-link?code=:code" }
   ],
   "headers": [
