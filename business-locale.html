@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ValoraTap | Country & Currency</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>:root{--gold:#d0aa4b;--paper:#f7f5f0;--line:#e7e2d8}body{background:var(--paper);color:#171717}.wrap{max-width:900px;margin:auto}.card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 2px 12px rgba(15,23,42,.04)}.label{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#999287}.input{width:100%;padding:13px 14px;background:#fcfcfb;border:1px solid #ddd8ce;border-radius:12px;font-size:13px}.input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(208,170,75,.12)}.hint{font-size:11px;color:#8c877d;line-height:1.5}</style>
+</head>
+<body class="min-h-screen">
+<header class="bg-[#171717] text-white"><div class="wrap px-4 md:px-6 py-4 flex items-center justify-between"><a href="dashboard-v2.html" class="font-black tracking-[.16em] text-lg">VALORATAP</a><a href="business-profile.html" class="text-xs font-bold px-3 py-2 rounded-xl bg-white/5">← Business Identity</a></div></header>
+<main class="wrap px-4 md:px-6 py-8">
+<section class="mb-6"><div class="label text-[#a47f2b]">Regional settings</div><h1 class="text-3xl md:text-4xl font-black tracking-tight mt-1">Country, region & currency.</h1><p class="text-sm text-slate-500 mt-2 max-w-2xl">Tell ValoraTap where your business operates. Your default currency will follow the country you select and will be used as the starting currency for invoices and financial records.</p></section>
+<section class="card p-5 md:p-7">
+<div class="grid md:grid-cols-2 gap-5">
+<div><label class="label block mb-2 text-slate-600">Country of operation</label><select id="country_code" class="input"><option value="">Select country</option></select><div class="hint mt-2">This sets the ISO country code used by VT.</div></div>
+<div><label class="label block mb-2 text-slate-600">Default currency</label><select id="currency_code" class="input"><option value="">Select country first</option></select><div class="hint mt-2">The default currency is stored on the business profile and copied onto new invoices.</div></div>
+<div><label class="label block mb-2 text-slate-600">Province / State / Region</label><input id="province" maxlength="80" class="input" placeholder="e.g. Gauteng"></div>
+<div><label class="label block mb-2 text-slate-600">City</label><input id="city" maxlength="100" class="input" placeholder="e.g. Pretoria"></div>
+</div>
+<div id="note" class="mt-5 p-4 rounded-xl bg-slate-50 text-xs text-slate-600"></div>
+<div id="message" class="hidden mt-5 p-4 rounded-xl text-xs"></div>
+<button id="save" class="mt-5 w-full bg-[#d0aa4b] hover:bg-[#d8b84c] text-[#151515] font-black py-4 rounded-xl">Save Regional Settings</button>
+</section>
+<section class="card p-5 mt-5"><div class="label text-[#a47f2b]">How VT uses this</div><div class="grid md:grid-cols-3 gap-4 mt-4 text-sm"><div><strong>Invoices</strong><p class="hint mt-1">New invoices start in your default business currency.</p></div><div><strong>Receipts</strong><p class="hint mt-1">Payment records retain the currency in which the transaction occurred.</p></div><div><strong>VT Pay</strong><p class="hint mt-1">Payment providers are checked separately for supported settlement currencies.</p></div></div></section>
+</main>
+<script>
+const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let user=null;
+const countries=[['ZA','South Africa','ZAR','R','South African Rand'],['NG','Nigeria','NGN','₦','Nigerian Naira'],['GH','Ghana','GHS','GH₵','Ghanaian Cedi'],['KE','Kenya','KES','KSh','Kenyan Shilling'],['US','United States','USD','$','US Dollar'],['GB','United Kingdom','GBP','£','Pound Sterling'],['EU','Euro Area','EUR','€','Euro'],['BW','Botswana','BWP','P','Botswana Pula'],['NA','Namibia','NAD','N$','Namibian Dollar'],['ZM','Zambia','ZMW','ZK','Zambian Kwacha'],['ZW','Zimbabwe','ZWG','ZiG','Zimbabwe Gold'],['MZ','Mozambique','MZN','MT','Mozambican Metical'],['AU','Australia','AUD','A$','Australian Dollar'],['CA','Canada','CAD','C$','Canadian Dollar'],['IN','India','INR','₹','Indian Rupee'],['AE','United Arab Emirates','AED','د.إ','UAE Dirham'],['DE','Germany','EUR','€','Euro'],['FR','France','EUR','€','Euro'],['IT','Italy','EUR','€','Euro'],['ES','Spain','EUR','€','Euro'],['BR','Brazil','BRL','R$','Brazilian Real'],['MX','Mexico','MXN','$','Mexican Peso']];
+const countrySelect=document.getElementById('country_code'),currencySelect=document.getElementById('currency_code'),note=document.getElementById('note');
+for(const [code,name,currency,symbol,label] of countries){const o=document.createElement('option');o.value=code;o.textContent=`${name} (${code})`;o.dataset.currency=currency;o.dataset.symbol=symbol;o.dataset.label=label;countrySelect.appendChild(o)}
+function setCurrency(code){currencySelect.innerHTML='';const row=countries.find(x=>x[0]===code);if(!row){const o=document.createElement('option');o.textContent='Select country first';currencySelect.appendChild(o);note.textContent='Select a country to set the default currency.';return}const o=document.createElement('option');o.value=row[2];o.textContent=`${row[2]} — ${row[3]} — ${row[4]}`;currencySelect.appendChild(o);note.innerHTML=`<strong>${row[1]}</strong> uses <strong>${row[2]}</strong> as the default currency in VT. This does not force every future payment provider to support that currency.`}
+countrySelect.addEventListener('change',()=>setCurrency(countrySelect.value));
+function show(text,error=false){const e=document.getElementById('message');e.textContent=text;e.className='mt-5 p-4 rounded-xl text-xs '+(error?'bg-red-50 text-red-700':'bg-emerald-50 text-emerald-700');e.classList.remove('hidden')}
+async function load(){const {data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}user=session.user;const {data,error}=await db.from('business_profiles').select('country,country_code,currency_code,province,city').eq('merchant_id',user.id).maybeSingle();if(error){show('Could not load your regional settings.',true);return}if(data){countrySelect.value=data.country_code||'';setCurrency(countrySelect.value);if(data.currency_code)currencySelect.value=data.currency_code;document.getElementById('province').value=data.province||'';document.getElementById('city').value=data.city||''}}
+document.getElementById('save').addEventListener('click',async()=>{const code=countrySelect.value;const row=countries.find(x=>x[0]===code);if(!row){show('Please select a country.',true);return}const {error}=await db.from('business_profiles').upsert({merchant_id:user.id,country:row[1],country_code:code,currency_code:row[2],province:document.getElementById('province').value.trim()||null,city:document.getElementById('city').value.trim()||null,updated_at:new Date().toISOString()},{onConflict:'merchant_id'});if(error){show('Could not save your regional settings. Please try again.',true);return}show(`Saved. ${row[1]} · ${row[2]} is now your default business currency.`)});
+load();
+</script>
+</body></html>
