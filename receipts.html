@@ -30,7 +30,7 @@ const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 const money=n=>`R ${Number(n||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 const hash=h=>{h=String(h||'');return h.length>18?h.slice(0,9)+'…'+h.slice(-7):h||'—'};
 const statusClass=s=>s==='cancelled'||s==='refunded'?'bg-amber-100 text-amber-700':'bg-emerald-100 text-emerald-700';
-const verify=hash=>`verify.html?hash=${encodeURIComponent(hash)}`;const passport=hash=>`passport.html?hash=${encodeURIComponent(hash)}`;const evidence=hash=>`evidence.html?hash=${encodeURIComponent(hash)}`;
+const verify=hash=>`verify.html?hash=${encodeURIComponent(hash)}`;const passport=()=>`business-passport.html`;const evidence=hash=>`evidence.html?hash=${encodeURIComponent(hash)}`;
 const active=r=>!['cancelled','refunded'].includes(String(r.status||'').toLowerCase());
 async function init(){const{data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}user=session.user;const{data,error}=await db.from('receipts').select('id,receipt_no,customer_name,customer_phone,customer_email,description,amount,payment_method,status,created_at,verification_hash,transaction_category').eq('merchant_id',user.id).order('created_at',{ascending:false});if(error){document.getElementById('empty').classList.remove('hidden');document.getElementById('empty').textContent=error.message;return}receipts=data||[];render()}
 function searchable(r){return [r.receipt_no,r.customer_name,r.customer_phone,r.customer_email,r.description,r.amount,r.payment_method,r.verification_hash,r.status,r.transaction_category,labels[r.transaction_category]].join(' ').toLowerCase()}
