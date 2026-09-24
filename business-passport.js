@@ -81,7 +81,7 @@
       addPrivateProfileCard(r);
     } catch (err) {
       console.error('Business Passport init failed:', err);
-      showError('Business Passport could not load. Technical error: ' + (err?.message || err?.code || 'Unknown error'));
+      showError('We couldn’t load your Business Passport. Please refresh and try again.');
     }
   }
 
@@ -109,7 +109,7 @@
       else { try { await navigator.clipboard.writeText(publicUrl); $('share-status').textContent = 'Clean secure Passport link generated and copied to clipboard.'; } catch (_) { prompt('Copy this secure Passport link:', publicUrl); } }
     } catch (err) {
       console.error('Passport link generation failed:', err);
-      $('share-status').textContent = 'Could not generate a secure Passport link: ' + (err?.message || 'unknown error');
+      $('share-status').textContent = 'We couldn’t generate a secure Passport link. Please try again.';
       $('share-status').classList.remove('hidden');
     } finally {
       b.disabled = false;
@@ -128,7 +128,7 @@
       window.location.replace('login.html');
     } catch (err) {
       console.error('Sign out failed:', err);
-      showError('Sign out failed: ' + (err?.message || 'unknown error'));
+      showError('We couldn’t sign you out. Please try again.');
       b.disabled = false;
       b.textContent = 'Sign out';
     }
