@@ -23,12 +23,20 @@ async function load(){
   const r=data.receipt;
   document.getElementById('business').textContent=r.business_name||'Verified Merchant';
   document.getElementById('receipt-no').textContent=r.receipt_no||'—';
-  document.getElementById('amount').textContent=`${r.currency||'ZAR'} ${Number(r.amount||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  const amount=Number(r.amount||0),currency=r.currency||'ZAR';
+  document.getElementById('amount').textContent=`${currency} ${amount.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  document.getElementById('total').textContent=document.getElementById('amount').textContent;
   document.getElementById('method').textContent=r.payment_method||'—';
+  document.getElementById('customer').textContent=r.customer_name||'Customer';
   document.getElementById('description').textContent=r.description||'—';
   document.getElementById('date').textContent=r.issued_at?new Date(r.issued_at).toLocaleString('en-ZA'):'—';
   document.getElementById('hash').textContent=r.verification_hash||'—';
   document.getElementById('category').textContent=labels[r.transaction_category]||labels.other;
+  document.getElementById('business-address').textContent=[r.business_address,r.business_city,r.business_province,r.business_country].filter(Boolean).join(', ');
+  document.getElementById('business-contact').textContent=[r.business_email,r.business_website].filter(Boolean).join(' · ');
+  const logo=document.getElementById('logo'); if(r.business_logo_url){logo.innerHTML='<img src="'+r.business_logo_url+'" alt="Business logo">';}
+  let items=r.line_items||[]; if(typeof items==='string')try{items=JSON.parse(items)}catch{items=[]}; if(!Array.isArray(items))items=[];
+  document.getElementById('items').innerHTML=items.length?items.map(x=>{const q=Number(x.quantity??x.qty??1),u=Number(x.unit_price??x.price??0),a=Number(x.amount??x.total??u*q);return '<div class="item"><div class="font-semibold">'+String(x.description??x.name??x.item??'Item').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))+'</div><div class="text-right">'+q+'</div><div class="right font-bold">'+currency+' '+a.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})+'</div></div>'}).join(''):'<div class="item"><div>'+String(r.description||'Transaction').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))+'</div><div>1</div><div class="right font-bold">'+document.getElementById('amount').textContent+'</div></div>';
   setStatus(r.status==='issued'?'Verified':r.status,true);
  }catch(e){setStatus('Unavailable',false);fail(e?.name==='AbortError'?'Verification timed out. Please try again.':'The verification service is temporarily unavailable. Please try again shortly.')}
 }
