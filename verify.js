@@ -40,7 +40,7 @@ async function load(){
   setStatus(r.status==='issued'?'Verified':r.status,true);
  }catch(e){setStatus('Unavailable',false);fail(e?.name==='AbortError'?'Verification timed out. Please try again.':'The verification service is temporarily unavailable. Please try again shortly.')}
 }
-async function copyVerificationLink(){try{await navigator.clipboard.writeText(verificationUrl);alert('Verification link copied.')}catch(e){window.prompt('Copy this verification link:',verificationUrl)}}
+async function copyVerificationLink(){const f=document.getElementById('copy-feedback');try{await navigator.clipboard.writeText(verificationUrl);if(f){f.textContent='Verification link copied.';setTimeout(()=>{f.textContent=''},2500)}}catch(e){if(f){f.textContent='Copy is unavailable. Use your browser share option.'}}}
 async function shareVerification(){if(navigator.share){try{await navigator.share({title:'ValoraTap Verified Receipt',text:'Verify this transaction independently:',url:verificationUrl})}catch(e){}}else window.open('https://wa.me/?text='+encodeURIComponent('Verify this ValoraTap receipt: '+verificationUrl),'_blank')}
 document.getElementById('copy-link')?.addEventListener('click',copyVerificationLink);
 document.getElementById('share-receipt')?.addEventListener('click',shareVerification);
