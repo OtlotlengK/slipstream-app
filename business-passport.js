@@ -68,7 +68,15 @@
       if (!r || typeof r !== 'object') throw new Error('Business Passport returned no profile data.');
       hideError();
       $('app').classList.remove('hidden');
-      $('business').textContent = r.business_name || 'Verified Business';
+      $('business').textContent = r.business_name || r.trading_name || 'Verified Business';
+      const logo = $('hero-logo');
+      if (logo) {
+        const url = r.business_logo_url || r.logo_url || '';
+        logo.innerHTML = url ? '<img src="' + String(url).replace(/"/g,'&quot;') + '" alt="Business logo" style="width:100%;height:100%;object-fit:contain">' : String(r.trading_name || r.business_name || 'BUSINESS').slice(0,28);
+      }
+      $('industry').textContent = r.industry || 'Not specified';
+      $('location').textContent = [r.city,r.province,r.country].filter(Boolean).join(', ') || 'Not specified';
+      $('profile-description').textContent = r.description || '';
       $('profile-name').textContent = r.trading_name || r.business_name || '—';
       $('phone').textContent = r.business_phone || 'Not provided';
       $('email').textContent = r.business_email || 'Not provided';
