@@ -4,10 +4,14 @@
   const $ = id => document.getElementById(id);
 
   function fail(message) {
+    const invalid = $('invalid');
+    const invalidMessage = $('invalidMessage');
+    if (invalid) invalid.classList.remove('hidden');
+    if (invalidMessage) invalidMessage.textContent = message;
     const error = $('error');
     if (error) {
       error.textContent = message;
-      error.classList.remove('hidden');
+      error.classList.add('hidden');
     }
   }
 
@@ -96,6 +100,15 @@
     if (assurance) assurance.textContent = verified ? 'Identity verified by ValoraTap' : 'Identity record available';
   }
 
+  function addContactActions(row) {
+    const box = $('contactActions'); if (!box) return;
+    const add = (label, href, primary=false) => { const a=document.createElement('a'); a.className='action'+(primary?' primary':''); a.href=href; a.textContent=label; if(href.startsWith('http')) { a.target='_blank'; a.rel='noopener noreferrer'; } box.appendChild(a); };
+    if (row.website && /^https?:\\/\\//i.test(row.website)) add('Visit website', row.website, true);
+    if (row.business_email) add('Email business', 'mailto:'+row.business_email);
+    if (row.business_phone) add('Call business', 'tel:'+row.business_phone);
+    if (box.children.length) box.classList.remove('hidden');
+  }
+
   function formatDate(value) {
     if (!value) return 'Active merchant profile';
     const date = new Date(value);
@@ -152,6 +165,7 @@
       setVerificationState(row.verification_ready === true);
 
       addHeroMeta(row);
+      addContactActions(row);
       addPublicProfile(row);
     } catch (err) {
       console.error('Public Business Passport failed:', err);
