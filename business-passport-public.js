@@ -85,7 +85,18 @@
     });
   }
 
-  function setVerificationState(verified) {\n    const badges = document.querySelectorAll('[data-verification-badge]');\n    const title = document.querySelector('[data-verification-title]');\n    const assurance = document.querySelector('[data-verification-assurance]');\n    badges.forEach(b => { b.textContent = verified ? '✓ Verified' : 'Verification pending'; b.classList.toggle('pending', !verified); });\n    if (title) title.textContent = verified ? 'Verified identity' : 'Business identity';\n    if (assurance) assurance.textContent = verified ? 'Identity verified by ValoraTap' : 'Identity record available';\n  }\n\n  function formatDate(value) {
+  function renderLogo(row) { const logo = $('logo'); if (!logo) return; const url = row.business_logo_url || ''; if (url) { const img = document.createElement('img'); img.src = url; img.alt = 'Business logo'; logo.replaceChildren(img); } else { logo.textContent = String(row.trading_name || row.business_name || 'BUSINESS').slice(0, 28); } }
+
+  function setVerificationState(verified) {
+    const badges = document.querySelectorAll('[data-verification-badge]');
+    const title = document.querySelector('[data-verification-title]');
+    const assurance = document.querySelector('[data-verification-assurance]');
+    badges.forEach(b => { b.textContent = verified ? '✓ Verified' : 'Verification pending'; b.classList.toggle('pending', !verified); });
+    if (title) title.textContent = verified ? 'Verified identity' : 'Business identity';
+    if (assurance) assurance.textContent = verified ? 'Identity verified by ValoraTap' : 'Identity record available';
+  }
+
+  function formatDate(value) {
     if (!value) return 'Active merchant profile';
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return 'Active merchant profile';
@@ -130,12 +141,15 @@
 
       $('app').classList.remove('hidden');
       $('business').textContent = row.business_name;
+      renderLogo(row);
+      $('intro').textContent = row.description || 'A public Business Passport for this business identity and its ValoraTap verification infrastructure.';
       $('profile').textContent = row.trading_name || row.business_name;
       $('phone').textContent = row.business_phone || 'Not provided';
       $('receipts').textContent = Number(row.receipt_count || 0).toLocaleString('en-ZA');
       $('issued').textContent = Number(row.issued_receipts || 0).toLocaleString('en-ZA');
       $('paid').textContent = Number(row.paid_invoice_count || 0).toLocaleString('en-ZA');
-      $('since').textContent = formatDate(row.active_since);\n      setVerificationState(row.verification_ready === true);
+      $('since').textContent = formatDate(row.active_since);
+      setVerificationState(row.verification_ready === true);
 
       addHeroMeta(row);
       addPublicProfile(row);
