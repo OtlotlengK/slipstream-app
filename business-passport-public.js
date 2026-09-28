@@ -123,7 +123,7 @@
         auth: { persistSession: false, autoRefreshToken: false }
       });
 
-      const { data, error } = await db.rpc('get_public_business_passport_by_token', {
+      const { data, error } = await db.rpc('get_public_business_passport_v2', {
         p_public_token: token
       });
 
