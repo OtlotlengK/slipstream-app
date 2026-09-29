@@ -43,7 +43,6 @@ async function init(){
     if(error) throw error;
 
     rows=Array.isArray(data)?data:[];
-    bindControls();
     render();
   }catch(error){
     console.error('Invoice Command Centre failed to load',error);
@@ -143,5 +142,8 @@ async function logout(){
   location.href='login.html';
 }
 
-document.addEventListener('DOMContentLoaded',init);
+document.addEventListener('DOMContentLoaded',()=>{
+  bindControls();
+  init();
+});
 </script></body></html>
