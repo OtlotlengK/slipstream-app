@@ -93,6 +93,12 @@
     }
   }
 
+  async function copyPassportLink() {
+    if (!publicUrl) return showError('Generate a secure Passport link first.');
+    try { await navigator.clipboard.writeText(publicUrl); $('share-status').textContent='Passport link copied to clipboard.'; $('share-status').classList.remove('hidden'); }
+    catch (_) { prompt('Copy this secure Passport link:', publicUrl); }
+  }
+
   async function sharePassport() {
     if (!db) return showError('Passport is still initializing. Please try again in a moment.');
     const b = $('share-btn');
@@ -110,6 +116,8 @@
       publicUrl = new URL('/s/' + code, location.origin).href;
       $('qr').src = 'https://quickchart.io/qr?size=240&margin=1&text=' + encodeURIComponent(publicUrl);
       $('qr-wrap').classList.remove('hidden');
+      $('copy-btn').disabled = false;
+      $('copy-btn').textContent = 'Copy Link';
       $('share-status').textContent = 'Clean secure Passport link generated. The previous public Passport link is now invalid.';
       $('share-status').classList.remove('hidden');
       const data = { title: 'ValoraTap Business Passport', text: 'View the verified business identity for ' + (r.business_name || 'this business') + '.', url: publicUrl };
@@ -145,6 +153,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     $('logout-btn').addEventListener('click', logout);
     $('share-btn').addEventListener('click', sharePassport);
+    $('copy-btn').addEventListener('click', copyPassportLink);
     $('print-btn').addEventListener('click', () => window.print());
     init();
   });
