@@ -13,8 +13,12 @@ const showMessage=(message,type='error')=>{
   clearTimeout(showMessage.timer);
   showMessage.timer=setTimeout(()=>el.classList.add('hidden'),5000);
 };
-const money=n=>new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(Number(n)||0);
-const overdue=r=>r.status==='issued'&&r.due_date&&new Date(r.due_date+'T23:59:59')<new Date();
+let currencyCode='ZAR';
+const money=n=>{try{return new Intl.NumberFormat('en-ZA',{style:'currency',currency:currencyCode,minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0)}catch{return currencyCode+' '+Number(n||0).toFixed(2)}};
+const normalizedStatus=r=>{
+  if(r.status==='issued'&&r.due_date&&new Date(r.due_date+'T23:59:59')<new Date()) return 'overdue';
+  return r.status;
+};
 
 function esc(s){
   return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -38,10 +42,14 @@ async function init(){
     if(sessionError) throw sessionError;
     if(!session){location.href='login.html';return;}
 
+    const {data:profile,error:profileError}=await db.from('business_profiles').select('currency_code').eq('merchant_id',session.user.id).maybeSingle();
+    if(profileError) console.warn('Business currency lookup failed',profileError);
+    if(profile?.currency_code) currencyCode=String(profile.currency_code).toUpperCase();
+
     const {data,error}=await db.rpc('get_merchant_invoices');
     if(error) throw error;
 
-    rows=Array.isArray(data)?data:[];
+    rows=(Array.isArray(data)?data:[]).map(r=>({...r,calculated_status:normalizedStatus(r)}));
     render();
   }catch(error){
     console.error('Invoice Command Centre failed to load',error);
@@ -78,32 +86,35 @@ function setFilter(x){
 function render(){
   const counts={issued:0,payment_submitted:0,paid:0,overdue:0};
   rows.forEach(r=>{
-    if(r.status==='issued')counts.issued++;
-    if(r.status==='payment_submitted')counts.payment_submitted++;
-    if(r.status==='paid')counts.paid++;
-    if(overdue(r))counts.overdue++;
+    const s=r.calculated_status||normalizedStatus(r);
+    if(s==='issued')counts.issued++;
+    if(s==='payment_submitted')counts.payment_submitted++;
+    if(s==='paid')counts.paid++;
+    if(s==='overdue')counts.overdue++;
   });
   $('#issued').textContent=counts.issued;
   $('#submitted').textContent=counts.payment_submitted;
   $('#paid').textContent=counts.paid;
   $('#overdue').textContent=counts.overdue;
-  $('#outstanding').textContent=money(rows.filter(r=>r.status!=='paid').reduce((s,r)=>s+Number(r.total||0),0));
+  $('#outstanding').textContent=money(rows.filter(r=>(r.calculated_status||normalizedStatus(r))!=='paid').reduce((s,r)=>s+Number(r.total||0),0));
 
   const q=($('#search').value||'').trim().toLowerCase();
   const visible=rows.filter(r=>{
-    const matchesFilter=filter==='all'||(filter==='overdue'?overdue(r):r.status===filter);
+    const status=r.calculated_status||normalizedStatus(r);
+    const matchesFilter=filter==='all'||status===filter;
     const hay=[r.invoice_no,r.customer_name,r.customer_email].map(x=>String(x||'').toLowerCase()).join(' ');
     return matchesFilter&&(!q||hay.includes(q));
   });
 
   $('#empty').classList.toggle('hidden',visible.length>0);
   $('#queue').innerHTML=visible.map(r=>{
-    const od=overdue(r);
-    let cls='bg-slate-100 text-slate-600',label=String(r.status||'').replace('_',' ');
-    if(r.status==='payment_submitted'){cls='bg-amber-100 text-amber-800';label='payment under review';}
-    if(r.status==='paid'){cls='bg-emerald-100 text-emerald-800';label='paid';}
+    const od=(r.calculated_status||normalizedStatus(r))==='overdue';
+    const status=r.calculated_status||normalizedStatus(r);
+    let cls='bg-slate-100 text-slate-600',label=String(status||'').replace('_',' ');
+    if(status==='payment_submitted'){cls='bg-amber-100 text-amber-800';label='payment under review';}
+    if(status==='paid'){cls='bg-emerald-100 text-emerald-800';label='paid';}
     if(od){cls='bg-red-100 text-red-700';label='overdue';}
-    const review=r.status==='payment_submitted'?'<a class="btn primary" href="invoice-review.html?id='+encodeURIComponent(r.id)+'">Review POP →</a>':'';
+    const review=status==='payment_submitted'?'<a class="btn primary" href="invoice-review.html?id='+encodeURIComponent(r.id)+'">Review POP →</a>':'';
     const open='<a class="btn ghost" href="invoice-preview.html?id='+encodeURIComponent(r.id)+'">Open Invoice</a>';
     const timeline='<a class="btn ghost" href="invoice-timeline.html?id='+encodeURIComponent(r.id)+'">Timeline</a>';
     const share='<button type="button" class="btn ghost" data-share-id="'+esc(r.id)+'">Share</button>';
