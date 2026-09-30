@@ -103,7 +103,7 @@
   function addContactActions(row) {
     const box = $('contactActions'); if (!box) return;
     const add = (label, href, primary=false) => { const a=document.createElement('a'); a.className='action'+(primary?' primary':''); a.href=href; a.textContent=label; if(href.startsWith('http')) { a.target='_blank'; a.rel='noopener noreferrer'; } box.appendChild(a); };
-    if (row.website && /^https?:\\/\\//i.test(row.website)) add('Visit website', row.website, true);
+    if (row.website && /^https?:\/\//i.test(row.website)) add('Visit website', row.website, true);
     if (row.business_email) add('Email business', 'mailto:'+row.business_email);
     if (row.business_phone) add('Call business', 'tel:'+row.business_phone);
     if (box.children.length) box.classList.remove('hidden');
