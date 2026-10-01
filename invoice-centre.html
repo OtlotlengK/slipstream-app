@@ -126,7 +126,7 @@ function render(){
     if(status==='payment_submitted'){cls='bg-amber-100 text-amber-800';label='payment under review';}
     if(status==='paid'){cls='bg-emerald-100 text-emerald-800';label='paid';}
     if(od){cls='bg-red-100 text-red-700';label='overdue';}
-    const review=status==='payment_submitted'?'<a class="btn primary" href="invoice-review.html?id='+encodeURIComponent(r.id)+'">Review POP →</a>':'';
+    const review=status==='payment_submitted'&&r.id?'<a class="btn primary" href="invoice-review.html?id='+encodeURIComponent(r.id)+'">Review POP →</a>':'';
     const open='<a class="btn ghost" href="invoice-preview.html?id='+encodeURIComponent(r.id)+'">Open Invoice</a>';
     const timeline='<a class="btn ghost" href="invoice-timeline.html?id='+encodeURIComponent(r.id)+'">Timeline</a>';
     const share='<button type="button" class="btn ghost" data-share-id="'+esc(r.id)+'">Share</button>';
