@@ -93,6 +93,14 @@ async function init() {
       return;
     }
 
+    if (!invoiceId && !invoiceNumber) {
+      showMessage('No payment was selected. Opening the payment review queue…', 'error');
+      setTimeout(() => {
+        window.location.href = 'invoice-centre.html?filter=payment_submitted';
+      }, 350);
+      return;
+    }
+
     const { data, error } = await findInvoice();
 
     if (error) {
