@@ -47,10 +47,13 @@ async function init(){
     if(profileError) console.warn('Business currency lookup failed',profileError);
     if(profile?.currency_code) currencyCode=String(profile.currency_code).toUpperCase();
 
-    const {data,error}=await db.rpc('get_merchant_invoices');
-    if(error) throw error;
+    const rpc=await db.rpc('get_merchant_invoices');
+    if(rpc.error){
+      console.warn('get_merchant_invoices failed; using authenticated table fallback',rpc.error);
+    }else{
+      rows=(Array.isArray(rpc.data)?rpc.data:[]).map(r=>({...r,calculated_status:normalizedStatus(r)}));
+    }
 
-    rows=(Array.isArray(data)?data:[]).map(r=>({...r,calculated_status:normalizedStatus(r)}));
     if(!rows.length){
       const fallback=await db.from('invoices')
         .select('id,invoice_no,customer_name,customer_email,total,status,issue_date,due_date,payment_submitted_at,payment_confirmed_at,receipt_verification_hash,created_at,updated_at')
