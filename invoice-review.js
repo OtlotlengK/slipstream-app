@@ -1,15 +1,16 @@
 const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
 
+if (!window.supabase?.createClient) { throw new Error('ValoraTap secure connection library failed to load. Please refresh the page.'); }
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const params = new URLSearchParams(window.location.search);
 const invoiceId = params.get('id');
 const invoiceNumber = params.get('invoice');
 let invoice = null;
 
-const money = (value) => new Intl.NumberFormat('en-ZA', {
+const money = (value, currency = 'ZAR') => new Intl.NumberFormat('en-ZA', {
   style: 'currency',
-  currency: 'ZAR'
+  currency: /^[A-Z]{3}$/.test(String(currency)) ? String(currency) : 'ZAR'
 }).format(Number(value) || 0);
 
 const $ = (selector) => document.querySelector(selector);
@@ -123,7 +124,7 @@ async function init() {
     $('#content').classList.remove('hidden');
     $('#invoiceNo').textContent = data.invoice_no || '—';
     $('#client').textContent = data.customer_name || '—';
-    $('#total').textContent = money(data.total);
+    $('#total').textContent = money(data.total, data.currency);
     $('#submitted').textContent = data.payment_submitted_at
       ? new Date(data.payment_submitted_at).toLocaleString('en-ZA')
       : '—';
