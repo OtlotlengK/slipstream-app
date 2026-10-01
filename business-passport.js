@@ -68,7 +68,15 @@
       if (!r || typeof r !== 'object') throw new Error('Business Passport returned no profile data.');
       hideError();
       $('app').classList.remove('hidden');
-      $('business').textContent = r.business_name || 'Verified Business';
+      $('business').textContent = r.business_name || r.trading_name || 'Verified Business';
+      const logo = $('hero-logo');
+      if (logo) {
+        const url = r.business_logo_url || r.logo_url || '';
+        logo.innerHTML = url ? '<img src="' + String(url).replace(/"/g,'&quot;') + '" alt="Business logo" style="width:100%;height:100%;object-fit:contain">' : String(r.trading_name || r.business_name || 'BUSINESS').slice(0,28);
+      }
+      $('industry').textContent = r.industry || 'Not specified';
+      $('location').textContent = [r.city,r.province,r.country].filter(Boolean).join(', ') || 'Not specified';
+      $('profile-description').textContent = r.description || '';
       $('profile-name').textContent = r.trading_name || r.business_name || '—';
       $('phone').textContent = r.business_phone || 'Not provided';
       $('email').textContent = r.business_email || 'Not provided';
@@ -83,6 +91,12 @@
       console.error('Business Passport init failed:', err);
       showError('We couldn’t load your Business Passport. Please refresh and try again.');
     }
+  }
+
+  async function copyPassportLink() {
+    if (!publicUrl) return showError('Generate a secure Passport link first.');
+    try { await navigator.clipboard.writeText(publicUrl); $('share-status').textContent='Passport link copied to clipboard.'; $('share-status').classList.remove('hidden'); }
+    catch (_) { prompt('Copy this secure Passport link:', publicUrl); }
   }
 
   async function sharePassport() {
@@ -102,6 +116,8 @@
       publicUrl = new URL('/s/' + code, location.origin).href;
       $('qr').src = 'https://quickchart.io/qr?size=240&margin=1&text=' + encodeURIComponent(publicUrl);
       $('qr-wrap').classList.remove('hidden');
+      $('copy-btn').disabled = false;
+      $('copy-btn').textContent = 'Copy Link';
       $('share-status').textContent = 'Clean secure Passport link generated. The previous public Passport link is now invalid.';
       $('share-status').classList.remove('hidden');
       const data = { title: 'ValoraTap Business Passport', text: 'View the verified business identity for ' + (r.business_name || 'this business') + '.', url: publicUrl };
@@ -137,6 +153,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     $('logout-btn').addEventListener('click', logout);
     $('share-btn').addEventListener('click', sharePassport);
+    $('copy-btn').addEventListener('click', copyPassportLink);
     $('print-btn').addEventListener('click', () => window.print());
     init();
   });

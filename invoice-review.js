@@ -1,15 +1,16 @@
 const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
 
+if (!window.supabase?.createClient) { throw new Error('ValoraTap secure connection library failed to load. Please refresh the page.'); }
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const params = new URLSearchParams(window.location.search);
 const invoiceId = params.get('id');
 const invoiceNumber = params.get('invoice');
 let invoice = null;
 
-const money = (value) => new Intl.NumberFormat('en-ZA', {
+const money = (value, currency = 'ZAR') => new Intl.NumberFormat('en-ZA', {
   style: 'currency',
-  currency: 'ZAR'
+  currency: /^[A-Z]{3}$/.test(String(currency)) ? String(currency) : 'ZAR'
 }).format(Number(value) || 0);
 
 const $ = (selector) => document.querySelector(selector);
@@ -26,7 +27,15 @@ async function findInvoice() {
     return db.rpc('get_merchant_invoice', { p_invoice_id: invoiceId }).maybeSingle();
   }
   if (invoiceNumber) {
-    return { data: null, error: { message: 'Invoice-number lookup is no longer supported on the merchant review route. Open Review from Invoice Vault or Invoice Centre.' } };
+    const { data: invoices, error: listError } = await db.rpc('get_merchant_invoices');
+    if (listError) return { data: null, error: listError };
+    const match = (invoices || []).find(item =>
+      String(item.invoice_no || '').toLowerCase() === String(invoiceNumber).toLowerCase()
+    );
+    if (!match?.id) {
+      return { data: null, error: { message: 'Invoice not found or you do not have access to it.' } };
+    }
+    return db.rpc('get_merchant_invoice', { p_invoice_id: match.id }).maybeSingle();
   }
   return { data: null, error: { message: 'Missing invoice reference.' } };
 }
@@ -93,6 +102,14 @@ async function init() {
       return;
     }
 
+    if (!invoiceId && !invoiceNumber) {
+      showMessage('No payment was selected. Opening the payment review queue…', 'error');
+      setTimeout(() => {
+        window.location.href = 'invoice-centre.html?filter=payment_submitted';
+      }, 350);
+      return;
+    }
+
     const { data, error } = await findInvoice();
 
     if (error) {
@@ -115,7 +132,7 @@ async function init() {
     $('#content').classList.remove('hidden');
     $('#invoiceNo').textContent = data.invoice_no || '—';
     $('#client').textContent = data.customer_name || '—';
-    $('#total').textContent = money(data.total);
+    $('#total').textContent = money(data.total, data.currency);
     $('#submitted').textContent = data.payment_submitted_at
       ? new Date(data.payment_submitted_at).toLocaleString('en-ZA')
       : '—';
