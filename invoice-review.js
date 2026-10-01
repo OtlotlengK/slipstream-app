@@ -27,7 +27,15 @@ async function findInvoice() {
     return db.rpc('get_merchant_invoice', { p_invoice_id: invoiceId }).maybeSingle();
   }
   if (invoiceNumber) {
-    return { data: null, error: { message: 'Invoice-number lookup is no longer supported on the merchant review route. Open Review from Invoice Vault or Invoice Centre.' } };
+    const { data: invoices, error: listError } = await db.rpc('get_merchant_invoices');
+    if (listError) return { data: null, error: listError };
+    const match = (invoices || []).find(item =>
+      String(item.invoice_no || '').toLowerCase() === String(invoiceNumber).toLowerCase()
+    );
+    if (!match?.id) {
+      return { data: null, error: { message: 'Invoice not found or you do not have access to it.' } };
+    }
+    return db.rpc('get_merchant_invoice', { p_invoice_id: match.id }).maybeSingle();
   }
   return { data: null, error: { message: 'Missing invoice reference.' } };
 }
