@@ -138,7 +138,7 @@ async function shareInvoice(id){
       await navigator.clipboard.writeText(link);
       showMessage('ValoraTap invoice link copied to your clipboard.','success');
     }else{
-      window.prompt('Copy this invoice link:',link);
+      showMessage('Sharing is not available in this browser. Copy the invoice link below: '+link,'success');
     }
   }catch(e){
     if(e?.name!=='AbortError')showMessage(e?.message||'Unable to share invoice link.');
