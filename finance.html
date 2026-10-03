@@ -4,4 +4,141 @@
 <a href="invoice-centre.html" class="action-card"><div class="flex items-start gap-3"><div class="action-icon">I</div><div><div class="font-black text-sm">Invoice Centre</div><div class="text-[10px] text-slate-500 mt-1">Manage invoices and payment reviews.</div><div class="text-[10px] font-black gold mt-3">Open →</div></div></div></a>
 <a href="receipts.html" class="action-card"><div class="flex items-start gap-3"><div class="action-icon">R</div><div><div class="font-black text-sm">Receipt Vault</div><div class="text-[10px] text-slate-500 mt-1">Find, verify and export receipts.</div><div class="text-[10px] font-black gold mt-3">Open →</div></div></div></a>
 <a href="revenue.html" class="action-card"><div class="flex items-start gap-3"><div class="action-icon">$</div><div><div class="font-black text-sm">Revenue</div><div class="text-[10px] text-slate-500 mt-1">Review confirmed transaction totals.</div><div class="text-[10px] font-black gold mt-3">Open →</div></div></div></a>
-</div></section></main><footer class="text-center py-5 text-[10px] text-slate-400">ValoraTap © 2026 · Finance</footer><script>const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co',KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH',db=supabase.createClient(SUPABASE_URL,KEY);let user,currencyCode='ZAR';const money=v=>{const n=Number(v||0);try{return new Intl.NumberFormat('en-ZA',{style:'currency',currency:currencyCode,minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}catch{return `${currencyCode} ${n.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}`}},esc=v=>String(v??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m])),status=s=>s==='payment_submitted'?'Payment under review':s==='paid'?'Paid':s==='overdue'?'Overdue':s==='rejected'?'Payment rejected':'Awaiting payment',pill=s=>`<span class="pill ${s==='paid'?'paid':s==='overdue'?'overdue':'attention'}">${esc(status(s))}</span>`;async function init(){try{const{data:{session},error:sessionError}=await db.auth.getSession();if(sessionError)throw sessionError;if(!session){location.href='login.html';return}user=session.user;document.getElementById('welcome').textContent=user.email+' · Live financial operations';const profileResults=await Promise.allSettled([db.from('merchants').select('business_name').eq('id',user.id).maybeSingle(),db.from('business_profiles').select('currency_code').eq('merchant_id',user.id).maybeSingle()]);const merchantResult=profileResults[0]?.status==='fulfilled'?profileResults[0].value:null;const profileResult=profileResults[1]?.status==='fulfilled'?profileResults[1].value:null;if(profileResult?.data?.currency_code)currencyCode=String(profileResult.data.currency_code).toUpperCase();if(merchantResult?.data?.business_name)document.getElementById('welcome').textContent=merchantResult.data.business_name+' · Live financial operations';document.getElementById('currencyLabel').textContent=currencyCode;await Promise.allSettled([loadRevenue(),loadInvoices()])}catch(error){console.error('Finance initialization failed',error);document.getElementById('payment-operations').innerHTML='<div class="p-6 text-xs text-red-600">Finance couldn’t load. <button type="button" onclick="location.reload()" class="underline font-black ml-1">Retry</button></div>'}}async function loadRevenue(){try{const{data,error}=await db.from('receipts').select('amount').eq('merchant_id',user.id);if(error)throw error;const r=data||[];document.getElementById('revenue').textContent=money(r.reduce((a,x)=>a+Number(x.amount||0),0))}catch(error){console.warn('receipt summary failed',error);document.getElementById('receipts').textContent='—';document.getElementById('revenue').textContent='—'}}async function loadInvoices(){try{let{data,error}=await db.rpc('get_merchant_invoices');if(error||!data?.length){const fallback=await db.from('invoices').select('id,invoice_no,customer_name,customer_email,total,status,issue_date,due_date,payment_submitted_at,payment_confirmed_at,receipt_verification_hash,created_at,updated_at').eq('merchant_id',user.id).order('created_at',{ascending:false});if(fallback.error)throw fallback.error;data=fallback.data||[]}const rows=(data||[]).map(x=>{let s=x.status;if(s==='issued'&&x.due_date&&new Date(`${x.due_date}T23:59:59`)<new Date())s='overdue';return {...x,status:s}}),open=rows.filter(x=>x.status==='issued'||x.status==='overdue'),review=rows.filter(x=>x.status==='payment_submitted'),overdue=rows.filter(x=>x.status==='overdue'),paid=rows.filter(x=>x.status==='paid').sort((a,b)=>new Date(b.payment_confirmed_at||b.updated_at)-new Date(a.payment_confirmed_at||a.updated_at)).slice(0,6);document.getElementById('outstanding').textContent=money(open.reduce((a,x)=>a+Number(x.total||0),0));document.getElementById('outstandingCount').textContent=`${open.length} invoice${open.length===1?'':'s'}`;document.getElementById('review').textContent=review.length;document.getElementById('overdue').textContent=overdue.length;document.getElementById('payment-operations').innerHTML=`<div class="p-5 md:p-6"><div class="flex items-end justify-between gap-3 mb-4"><div><div class="label gold">Live queue</div><h2 class="text-xl md:text-2xl font-black mt-1">Needs your attention.</h2><p class="text-xs text-slate-400 mt-1 max-w-2xl">Only active payment reviews and overdue receivables appear here.</p></div><span class="text-[10px] font-black text-slate-400">${review.length+overdue.length} open</span></div><div class="grid lg:grid-cols-2 gap-5"><div><div class="label mb-3">Action queue</div>${[...review,...overdue].slice(0,8).map(x=>`<a href="${x.status==='payment_submitted'?\`invoice-review.html?id=${encodeURIComponent(x.id)}\`:'invoice-centre.html'}" class="ops-item flex items-center justify-between gap-3 mb-2 block"><div class="min-w-0"><div class="font-black text-xs">${esc(x.invoice_no)} ${pill(x.status)}</div><div class="text-[10px] text-slate-500 mt-1 truncate">${esc(x.customer_name)} · ${money(x.total)}${x.due_date?' · Due '+esc(x.due_date):''}</div></div><span class="text-[10px] font-black gold whitespace-nowrap">${x.status==='payment_submitted'?'Review →':'Follow up →'}</span></a>`).join('')||'<div class="ops-empty text-xs text-slate-400">Nothing needs your attention right now.</div>'}</div><div><div class="flex items-center justify-between gap-3 mb-3"><div class="label">Recent confirmed</div><a href="receipts.html" class="text-[10px] font-black gold">Receipt Vault →</a></div>${paid.map(x=>`<a href="${x.receipt_verification_hash?\`verify.html?hash=${encodeURIComponent(x.receipt_verification_hash)}\`:'invoice-centre.html'}" class="ops-item flex items-center justify-between gap-3 mb-2 block"><div class="min-w-0"><div class="font-black text-xs">${esc(x.invoice_no)} ${pill('paid')}</div><div class="text-[10px] text-slate-500 mt-1 truncate">${esc(x.customer_name)} · ${money(x.total)}</div></div><span class="text-[10px] font-black gold whitespace-nowrap">${x.receipt_verification_hash?'Receipt →':'Invoice →'}</span></a>`).join('')||'<div class="ops-empty text-xs text-slate-400">No confirmed payments yet.</div>'}</div></div></div>`; }catch(error){console.error('Finance invoice load failed',error);document.getElementById('outstanding').textContent='—';document.getElementById('outstandingCount').textContent='Unable to load';document.getElementById('review').textContent='—';document.getElementById('overdue').textContent='—';document.getElementById('payment-operations').innerHTML='<div class="p-6 text-xs text-red-600">We couldn’t load financial operations. <button type="button" onclick="location.reload()" class="underline font-black ml-1">Retry</button></div>'}}async function logout(){await db.auth.signOut();location.href='login.html'}init();</script></body></html>
+</div></section></main><footer class="text-center py-5 text-[10px] text-slate-400">ValoraTap © 2026 · Finance</footer><script>
+const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
+const KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+const db=supabase.createClient(SUPABASE_URL,KEY);
+let user=null;
+let currencyCode='ZAR';
+
+const money=v=>{
+  const n=Number(v||0);
+  try{return new Intl.NumberFormat('en-ZA',{style:'currency',currency:currencyCode,minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}
+  catch{return currencyCode+' '+n.toFixed(2)}
+};
+const esc=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const statusLabel=s=>s==='payment_submitted'?'Payment under review':s==='paid'?'Paid':s==='overdue'?'Overdue':s==='rejected'?'Payment rejected':'Awaiting payment';
+const pill=s=>'<span class="pill '+(s==='paid'?'paid':s==='overdue'?'overdue':'attention')+'">'+esc(statusLabel(s))+'</span>';
+
+function setWelcome(text){
+  const el=document.getElementById('welcome');
+  if(el)el.textContent=text;
+}
+
+function renderOperations(review,overdue,paid){
+  const box=document.getElementById('payment-operations');
+  const attention=[...review,...overdue];
+  const actionHtml=attention.slice(0,8).map(x=>{
+    const href=x.status==='payment_submitted'
+      ?'invoice-review.html?id='+encodeURIComponent(x.id)
+      :'invoice-centre.html';
+    return '<a href="'+href+'" class="ops-item flex items-center justify-between gap-3 mb-2 block">'+
+      '<div class="min-w-0"><div class="font-black text-xs">'+esc(x.invoice_no)+' '+pill(x.status)+'</div>'+
+      '<div class="text-[10px] text-slate-500 mt-1 truncate">'+esc(x.customer_name)+' · '+money(x.total)+(x.due_date?' · Due '+esc(x.due_date):'')+'</div></div>'+
+      '<span class="text-[10px] font-black gold whitespace-nowrap">'+(x.status==='payment_submitted'?'Review →':'Follow up →')+'</span></a>';
+  }).join('');
+
+  const paidHtml=paid.map(x=>{
+    const href=x.receipt_verification_hash
+      ?'verify.html?hash='+encodeURIComponent(x.receipt_verification_hash)
+      :'invoice-centre.html';
+    return '<a href="'+href+'" class="ops-item flex items-center justify-between gap-3 mb-2 block">'+
+      '<div class="min-w-0"><div class="font-black text-xs">'+esc(x.invoice_no)+' '+pill('paid')+'</div>'+
+      '<div class="text-[10px] text-slate-500 mt-1 truncate">'+esc(x.customer_name)+' · '+money(x.total)+'</div></div>'+
+      '<span class="text-[10px] font-black gold whitespace-nowrap">'+(x.receipt_verification_hash?'Receipt →':'Invoice →')+'</span></a>';
+  }).join('');
+
+  if(!attention.length && !paid.length){
+    box.innerHTML='<div class="p-6 md:p-7 text-center">'+
+      '<div class="mx-auto w-11 h-11 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">✓</div>'+
+      '<h2 class="text-base md:text-lg font-black mt-3">You’re all clear</h2>'+
+      '<p class="text-xs text-slate-500 mt-1">No payments need your attention and no recent confirmations to review.</p>'+
+      '<div class="mt-4"><a href="invoice-centre.html" class="text-[11px] font-black gold">Open Invoice Centre →</a></div></div>';
+    return;
+  }
+
+  box.innerHTML='<div class="p-5 md:p-6">'+
+    '<div class="flex items-end justify-between gap-3 mb-4"><div><div class="label gold">Live queue</div>'+
+    '<h2 class="text-xl md:text-2xl font-black mt-1">Needs your attention.</h2>'+
+    '<p class="text-xs text-slate-400 mt-1 max-w-2xl">Only active payment reviews and overdue receivables appear here.</p></div>'+
+    '<span class="text-[10px] font-black text-slate-400">'+attention.length+' open</span></div>'+
+    '<div class="grid lg:grid-cols-2 gap-5">'+
+    '<div><div class="label mb-3">Action queue</div>'+(actionHtml||'<div class="ops-empty text-xs text-slate-400">Nothing needs your attention right now.</div>')+'</div>'+
+    '<div><div class="flex items-center justify-between gap-3 mb-3"><div class="label">Recent confirmed</div><a href="receipts.html" class="text-[10px] font-black gold">Receipt Vault →</a></div>'+
+    (paidHtml||'<div class="ops-empty text-xs text-slate-400">No confirmed payments yet.</div>')+'</div></div></div>';
+}
+
+async function loadRevenue(){
+  const {data,error}=await db.from('receipts').select('amount').eq('merchant_id',user.id).eq('status','issued');
+  if(error)throw error;
+  const total=(data||[]).reduce((sum,row)=>sum+Number(row.amount||0),0);
+  document.getElementById('revenue').textContent=money(total);
+}
+
+async function loadInvoices(){
+  let {data,error}=await db.rpc('get_merchant_invoices');
+  if(error){
+    const fallback=await db.from('invoices')
+      .select('id,invoice_no,customer_name,total,status,due_date,payment_confirmed_at,receipt_verification_hash,updated_at,created_at')
+      .eq('merchant_id',user.id).order('created_at',{ascending:false});
+    if(fallback.error)throw fallback.error;
+    data=fallback.data||[];
+  }
+
+  const rows=(data||[]).map(x=>{
+    let s=x.status;
+    if(s==='issued'&&x.due_date&&new Date(x.due_date+'T23:59:59')<new Date())s='overdue';
+    return {...x,status:s};
+  });
+
+  const open=rows.filter(x=>x.status==='issued'||x.status==='overdue');
+  const review=rows.filter(x=>x.status==='payment_submitted');
+  const overdue=rows.filter(x=>x.status==='overdue');
+  const paid=rows.filter(x=>x.status==='paid')
+    .sort((a,b)=>new Date(b.payment_confirmed_at||b.updated_at||b.created_at)-new Date(a.payment_confirmed_at||a.updated_at||a.created_at))
+    .slice(0,6);
+
+  document.getElementById('outstanding').textContent=money(open.reduce((sum,x)=>sum+Number(x.total||0),0));
+  document.getElementById('outstandingCount').textContent=open.length+' invoice'+(open.length===1?'':'s');
+  document.getElementById('review').textContent=review.length;
+  document.getElementById('overdue').textContent=overdue.length;
+  renderOperations(review,overdue,paid);
+}
+
+async function init(){
+  const box=document.getElementById('payment-operations');
+  try{
+    const {data:{session},error}=await db.auth.getSession();
+    if(error)throw error;
+    if(!session){location.href='login.html';return;}
+    user=session.user;
+
+    const profileResults=await Promise.all([
+      db.from('merchants').select('business_name').eq('id',user.id).maybeSingle(),
+      db.from('business_profiles').select('currency_code').eq('merchant_id',user.id).maybeSingle()
+    ]);
+
+    const merchant=profileResults[0]?.data;
+    const profile=profileResults[1]?.data;
+    if(profile?.currency_code)currencyCode=String(profile.currency_code).toUpperCase();
+
+    document.getElementById('currencyLabel').textContent=currencyCode;
+    setWelcome((merchant?.business_name||user.email)+' · Live financial operations');
+
+    const results=await Promise.allSettled([loadRevenue(),loadInvoices()]);
+    const failed=results.filter(r=>r.status==='rejected');
+    if(failed.length){
+      console.error('Finance data load failed',failed.map(r=>r.reason));
+      if(failed.length===2){
+        box.innerHTML='<div class="p-6 text-center"><div class="text-xs text-red-600">Financial data could not be loaded.</div><button type="button" onclick="location.reload()" class="text-[11px] font-black gold mt-2 underline">Retry</button></div>';
+      }
+    }
+  }catch(error){
+    console.error('Finance initialization failed',error);
+    setWelcome('Unable to load financial operations');
+    box.innerHTML='<div class="p-6 text-center"><div class="text-xs text-red-600">Financial data could not be loaded.</div><button type="button" onclick="location.reload()" class="text-[11px] font-black gold mt-2 underline">Retry</button></div>';
+  }
+}
+
+init();
+</script></body></html>
