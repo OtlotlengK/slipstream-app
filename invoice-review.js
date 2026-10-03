@@ -236,7 +236,7 @@ async function loadShield() {
 
 async function confirmPayment() {
   if (!invoice) return;
-  if (!window.confirm('Confirm that this payment has been received? ValoraTap will create the final receipt.')) return;
+  const confirmBox = $('#confirmBox'); if (confirmBox) { confirmBox.classList.remove('hidden'); confirmBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } return;
 
   const button = $('#confirm');
   button.disabled = true;
@@ -301,6 +301,9 @@ async function logout() {
 
 window.addEventListener('DOMContentLoaded', () => {
   $('#confirm')?.addEventListener('click', confirmPayment);
+$('#confirmYes')?.addEventListener('click', () => { $('#confirmBox')?.classList.add('hidden'); confirmPayment(); });
+$('#confirmCancel')?.addEventListener('click', () => $('#confirmBox')?.classList.add('hidden'));
+$('#rejectConfirm')?.addEventListener('click', () => { const box=$('#rejectBox'); if(box) box.dataset.approved='1'; rejectPayment(); });
   $('#rejectShow')?.addEventListener('click', showReject);
   $('#rejectConfirm')?.addEventListener('click', rejectPayment);
   $('#rejectCancel')?.addEventListener('click', () => $('#rejectBox').classList.add('hidden'));
