@@ -169,7 +169,7 @@ async function loadShield() {
       ['Invoice match', checks.invoice_match],
       ['File integrity', checks.file_integrity],
       ['Duplicate check', checks.duplicate === false],
-      ['Settlement confirmed', checks.settlement_confirmed]
+      ['Evidence extracted', checks.evidence_extracted],['Amount match', checks.amount_checked],['Currency match', checks.currency_checked],['Reference found', checks.reference_checked],['Settlement confirmed', checks.settlement_confirmed]
     ].map(([label,ok]) => '<div class="shield-check"><span>'+label+'</span><strong class="'+(ok?'ok':'pending')+'">'+(ok?'✓ Passed':'— Pending')+'</strong></div>').join('');
   }
 }
