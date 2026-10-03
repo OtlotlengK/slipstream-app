@@ -236,7 +236,13 @@ async function loadShield() {
 
 async function confirmPayment() {
   if (!invoice) return;
-  const confirmBox = $('#confirmBox'); if (confirmBox) { confirmBox.classList.remove('hidden'); confirmBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } return;
+  const confirmBox = $('#confirmBox');
+  if (!confirmBox?.dataset.approved) {
+    confirmBox?.classList.remove('hidden');
+    confirmBox?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+  delete confirmBox.dataset.approved;
 
   const button = $('#confirm');
   button.disabled = true;
@@ -275,8 +281,15 @@ function showReject() {
 async function rejectPayment() {
   if (!invoice) return;
 
+  const box = $('#rejectBox');
+  if (!box?.dataset.approved) {
+    box?.classList.remove('hidden');
+    box?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
+  delete box.dataset.approved;
+
   const reason = $('#reason').value.trim();
-  if (!window.confirm('Reject this payment submission? The invoice will return to awaiting payment.')) return;
 
   const { error } = await db.rpc('reject_invoice_payment', {
     p_invoice_id: invoice.id,
@@ -303,9 +316,9 @@ window.addEventListener('DOMContentLoaded', () => {
   $('#confirm')?.addEventListener('click', confirmPayment);
 $('#confirmYes')?.addEventListener('click', () => { const box=$('#confirmBox'); if(box){ box.dataset.approved='1'; box.classList.add('hidden'); } confirmPayment(); });
 $('#confirmCancel')?.addEventListener('click', () => $('#confirmBox')?.classList.add('hidden'));
-$('#rejectConfirm')?.addEventListener('click', () => { const box=$('#rejectBox'); if(box) box.dataset.approved='1'; rejectPayment(); });
+$('#rejectConfirm')?.addEventListener('click', () => { const box=$('#rejectBox'); if(box){ box.dataset.approved='1'; box.classList.add('hidden'); } rejectPayment(); });
   $('#rejectShow')?.addEventListener('click', showReject);
-  $('#rejectConfirm')?.addEventListener('click', rejectPayment);
+  
   $('#rejectCancel')?.addEventListener('click', () => $('#rejectBox').classList.add('hidden'));
   $('#logoutBtn')?.addEventListener('click', logout);
   init();
