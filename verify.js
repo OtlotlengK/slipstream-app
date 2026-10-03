@@ -1,5 +1,7 @@
 const VERIFY_ENDPOINT='https://pddjualtnhgmplampucn.supabase.co/functions/v1/public-verify';
 const verificationUrl=window.location.href;
+const currencyLocales={ZAR:'en-ZA',NGN:'en-NG',GHS:'en-GH',KES:'en-KE',USD:'en-US',GBP:'en-GB',EUR:'en-IE',BWP:'en-US',NAD:'en-NA',ZMW:'en-US',ZWG:'en-ZW',MZN:'pt-MZ',AUD:'en-AU',CAD:'en-CA',INR:'en-IN',AED:'en-AE',BRL:'pt-BR',MXN:'es-MX'};
+const formatMoney=(n,currency)=>{const c=String(currency||'ZAR').toUpperCase();try{return new Intl.NumberFormat(currencyLocales[c]||'en-US',{style:'currency',currency:c,minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0)}catch{return c+' '+Number(n||0).toFixed(2)}};
 const labels={physical_goods:'Physical goods',professional_service:'Professional service',digital_product:'Digital product',appointment:'Appointment / session',delivery:'Delivery',subscription:'Subscription',rental:'Rental',other:'Transaction'};
 function setStatus(text,ok=true){const b=document.getElementById('status-badge');b.textContent=text;b.className=ok?'px-3 py-1.5 rounded-full bg-emerald-950 text-emerald-300 text-[9px] font-black uppercase tracking-widest':'px-3 py-1.5 rounded-full bg-red-950 text-red-300 text-[9px] font-black uppercase tracking-widest'}
 function fail(message){document.getElementById('receipt-shell').classList.add('hidden');document.getElementById('failure').classList.remove('hidden');document.getElementById('failure-message').textContent=message||'The receipt could not be verified.'}
@@ -23,8 +25,8 @@ async function load(){
   const r=data.receipt;
   document.getElementById('business').textContent=r.business_name||'Verified Merchant';
   document.getElementById('receipt-no').textContent=r.receipt_no||'—';
-  const amount=Number(r.amount||0),currency=r.currency||'ZAR';
-  document.getElementById('amount').textContent=`${currency} ${amount.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  const amount=Number(r.amount||0),currency=String(r.currency||'ZAR').toUpperCase();
+  document.getElementById('amount').textContent=formatMoney(amount,currency);
   document.getElementById('total').textContent=document.getElementById('amount').textContent;
   document.getElementById('method').textContent=r.payment_method||'—';
   document.getElementById('customer').textContent=r.customer_name||'Customer';
@@ -36,7 +38,7 @@ async function load(){
   document.getElementById('business-contact').textContent=[r.business_email,r.business_website].filter(Boolean).join(' · ');
   const logo=document.getElementById('logo'); if(r.business_logo_url){logo.innerHTML='<img src="'+r.business_logo_url+'" alt="Business logo">';}
   let items=r.line_items||[]; if(typeof items==='string')try{items=JSON.parse(items)}catch{items=[]}; if(!Array.isArray(items))items=[];
-  document.getElementById('items').innerHTML=items.length?items.map(x=>{const q=Number(x.quantity??x.qty??1),u=Number(x.unit_price??x.price??0),a=Number(x.amount??x.total??u*q);return '<div class="item"><div class="font-semibold">'+String(x.description??x.name??x.item??'Item').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))+'</div><div class="text-right">'+q+'</div><div class="right font-bold">'+currency+' '+a.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})+'</div></div>'}).join(''):'<div class="item"><div>'+String(r.description||'Transaction').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))+'</div><div>1</div><div class="right font-bold">'+document.getElementById('amount').textContent+'</div></div>';
+  document.getElementById('items').innerHTML=items.length?items.map(x=>{const q=Number(x.quantity??x.qty??1),u=Number(x.unit_price??x.price??0),a=Number(x.amount??x.total??u*q);return '<div class="item"><div class="font-semibold">'+String(x.description??x.name??x.item??'Item').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))+'</div><div class="text-right">'+q+'</div><div class="right font-bold">'+formatMoney(a,currency)+'</div></div>'}).join(''):'<div class="item"><div>'+String(r.description||'Transaction').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))+'</div><div>1</div><div class="right font-bold">'+document.getElementById('amount').textContent+'</div></div>';
   setStatus(r.status==='issued'?'Verified':r.status,true);
  }catch(e){setStatus('Unavailable',false);fail(e?.name==='AbortError'?'Verification timed out. Please try again.':'The verification service is temporarily unavailable. Please try again shortly.')}
 }
