@@ -301,7 +301,7 @@ async function logout() {
 
 window.addEventListener('DOMContentLoaded', () => {
   $('#confirm')?.addEventListener('click', confirmPayment);
-$('#confirmYes')?.addEventListener('click', () => { $('#confirmBox')?.classList.add('hidden'); confirmPayment(); });
+$('#confirmYes')?.addEventListener('click', () => { const box=$('#confirmBox'); if(box){ box.dataset.approved='1'; box.classList.add('hidden'); } confirmPayment(); });
 $('#confirmCancel')?.addEventListener('click', () => $('#confirmBox')?.classList.add('hidden'));
 $('#rejectConfirm')?.addEventListener('click', () => { const box=$('#rejectBox'); if(box) box.dataset.approved='1'; rejectPayment(); });
   $('#rejectShow')?.addEventListener('click', showReject);
