@@ -15,5 +15,19 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
   ]
 }
