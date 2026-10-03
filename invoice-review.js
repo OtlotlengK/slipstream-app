@@ -7,6 +7,7 @@ const params = new URLSearchParams(window.location.search);
 const invoiceId = params.get('id');
 const invoiceNumber = params.get('invoice');
 let invoice = null;
+let popPreviewUrl = '';
 
 const money = (value, currency = 'ZAR') => new Intl.NumberFormat('en-ZA', {
   style: 'currency',
@@ -70,11 +71,15 @@ async function loadPop(accessToken) {
 
     $('#popMeta').textContent = 'Secure preview · link expires in 5 minutes';
     const url = result.signed_url;
+    popPreviewUrl = url;
 
     if (url.toLowerCase().includes('.pdf')) {
       $('#pop').innerHTML = `<iframe title="Proof of payment" src="${url.replace(/"/g, '&quot;')}"></iframe>`;
     } else {
-      $('#pop').innerHTML = `<img alt="Proof of payment" src="${url.replace(/"/g, '&quot;')}">`;
+      $('#pop').innerHTML = `<img id="popImage" alt="Proof of payment" src="${url.replace(/"/g, '&quot;')}">`;
+    }
+    if (!url.toLowerCase().includes('.pdf')) {
+      await runImageOcr();
     }
   } catch (error) {
     $('#popMeta').textContent = 'Proof of payment is on file, but the secure preview is currently unavailable.';
@@ -144,6 +149,47 @@ async function init() {
   }
 }
 
+async function runImageOcr() {
+  if (!window.Tesseract || !invoice) return;
+  const image = document.querySelector('#popImage');
+  if (!image) return;
+
+  try {
+    $('#popMeta').textContent = 'Secure preview · scanning transaction fields…';
+    const worker = await Tesseract.createWorker('eng', 1, {
+      workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+      corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5',
+      langPath: 'https://tessdata.projectnaptha.com/4.0.0',
+      logger: () => {}
+    });
+    const result = await worker.recognize(image, { rotateAuto: true });
+    await worker.terminate();
+
+    const text = String(result?.data?.text || '').trim();
+    if (text.length < 20) {
+      $('#popMeta').textContent = 'Secure preview · OCR could not extract enough text to compare.';
+      return;
+    }
+
+    const { error } = await db.rpc('record_invoice_pop_ocr', {
+      p_invoice_id: invoice.id,
+      p_ocr_text: text.slice(0, 12000)
+    });
+
+    if (error) {
+      console.warn('POP OCR evidence save failed', error);
+      $('#popMeta').textContent = 'Secure preview · OCR completed, but comparison could not be saved.';
+      return;
+    }
+
+    $('#popMeta').textContent = 'Secure preview · transaction fields extracted and compared.';
+    await loadShield();
+  } catch (error) {
+    console.warn('POP OCR failed', error);
+    $('#popMeta').textContent = 'Secure preview · OCR unavailable for this image. Review the proof manually.';
+  }
+}
+
 async function loadShield() {
   const { data, error } = await db.rpc('get_invoice_pop_shield', { p_invoice_id: invoice.id });
   if (error) {
@@ -163,6 +209,13 @@ async function loadShield() {
     el.innerHTML = '<strong>POP Shield · '+meta[0]+'</strong><span>'+meta[1]+'</span>';
   }
   const checks = data?.checks || {};
+  const evidence = data?.evidence || {};
+  const fields = document.querySelector('#evidenceFields');
+  if (fields && evidence?.source === 'ocr') {
+    const fmt = v => v === null || v === undefined || v === '' ? 'Not found' : String(v);
+    fields.classList.remove('hidden');
+    fields.innerHTML = [['Amount', evidence.amount == null ? 'Not found' : money(evidence.amount, data?.currency || invoice.currency)],['Currency',fmt(evidence.currency)],['Reference',fmt(evidence.reference)],['Transaction date',fmt(evidence.transaction_date)]].map(([label,value]) => '<div class="shield-check"><span>'+label+'</span><strong>'+String(value).replace(/[&<>]/g,'')+'</strong></div>').join('');
+  }
   const checksEl = document.querySelector('#shieldChecks');
   if (checksEl) {
     checksEl.innerHTML = [
