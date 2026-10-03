@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { extractText, getDocumentProxy } from 'https://esm.sh/unpdf@0.12.1?target=deno';
 const URL=Deno.env.get('SUPABASE_URL')!; const SERVICE=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!; const db=createClient(URL,SERVICE,{auth:{persistSession:false,autoRefreshToken:false}});
 const CORS={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'content-type','Access-Control-Allow-Methods':'POST,OPTIONS'};
 const H={...CORS,'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'none'; frame-ancestors 'none'"};
