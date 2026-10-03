@@ -138,8 +138,39 @@ async function init() {
       : '—';
 
     await loadPop(session.access_token);
+    await loadShield();
   } catch (error) {
     showMessage(`Unable to load payment review: ${error?.message || 'Unexpected error'}`, 'error');
+  }
+}
+
+async function loadShield() {
+  const { data, error } = await db.rpc('get_invoice_pop_shield', { p_invoice_id: invoice.id });
+  if (error) {
+    console.warn('POP Shield lookup failed', error);
+    return;
+  }
+  const status = data?.status || 'unconfirmed';
+  const meta = {
+    verified: ['Verified Payment','settlement independently confirmed','green'],
+    unconfirmed: ['Unconfirmed','POP is consistent with this invoice, but settlement is not independently confirmed','amber'],
+    suspicious: ['Suspicious','evidence conflicts with invoice or payment information','red'],
+    duplicate: ['Duplicate','this exact POP file has already been submitted','slate']
+  }[status] || ['Unconfirmed','Settlement still needs independent confirmation','amber'];
+  const el = document.querySelector('#shieldStatus');
+  if (el) {
+    el.className = 'shield '+meta[2];
+    el.innerHTML = '<strong>POP Shield · '+meta[0]+'</strong><span>'+meta[1]+'</span>';
+  }
+  const checks = data?.checks || {};
+  const checksEl = document.querySelector('#shieldChecks');
+  if (checksEl) {
+    checksEl.innerHTML = [
+      ['Invoice match', checks.invoice_match],
+      ['File integrity', checks.file_integrity],
+      ['Duplicate check', checks.duplicate === false],
+      ['Settlement confirmed', checks.settlement_confirmed]
+    ].map(([label,ok]) => '<div class="shield-check"><span>'+label+'</span><strong class="'+(ok?'ok':'pending')+'">'+(ok?'✓ Passed':'— Pending')+'</strong></div>').join('');
   }
 }
 
