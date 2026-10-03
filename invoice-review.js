@@ -208,6 +208,13 @@ async function loadShield() {
     el.className = 'shield '+meta[2];
     el.innerHTML = '<strong>POP Shield · '+meta[0]+'</strong><span>'+meta[1]+'</span>';
   }
+  const confirmButton = $('#confirm');
+  const blocked = status === 'suspicious' || status === 'duplicate';
+  if (confirmButton) {
+    confirmButton.disabled = blocked;
+    confirmButton.title = blocked ? 'POP Shield requires this submission to be resolved before confirmation.' : '';
+  }
+
   const checks = data?.checks || {};
   const evidence = data?.evidence || {};
   const fields = document.querySelector('#evidenceFields');
@@ -242,7 +249,7 @@ async function confirmPayment() {
   if (error) {
     button.disabled = false;
     button.textContent = '✓ Confirm Payment & Issue Receipt';
-    showMessage(error.message || 'Payment confirmation failed.', 'error');
+    showMessage(error.message === 'pop_shield_blocked' ? 'POP Shield blocked confirmation because the submitted proof conflicts with the invoice or is a duplicate. Resolve the proof before confirming.' : (error.message || 'Payment confirmation failed.'), 'error');
     return;
   }
 
