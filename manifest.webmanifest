@@ -1,0 +1,19 @@
+{
+  "name": "ValoraTap",
+  "short_name": "ValoraTap",
+  "description": "ValoraTap business receipts, invoices and transaction verification.",
+  "start_url": "/login.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b0d10",
+  "theme_color": "#171717",
+  "icons": [
+    {
+      "src": "/icons/valoratap.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
