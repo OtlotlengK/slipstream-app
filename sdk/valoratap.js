@@ -1,6 +1,6 @@
 /**
  * ValoraTap server-side JavaScript SDK.
- * Keep your vt_live_ API key on the server only.
+ * API keys must stay on your server. Never expose them to browser code.
  */
 export class ValoraTapError extends Error {
   constructor(message, status, body) {
@@ -13,8 +13,8 @@ export class ValoraTapError extends Error {
 
 export class ValoraTap {
   constructor({ apiKey, baseUrl = 'https://pddjualtnhgmplampucn.supabase.co/functions/v1' } = {}) {
-    if (!apiKey || !apiKey.startsWith('vt_live_')) {
-      throw new Error('A valid ValoraTap vt_live_ API key is required.');
+    if (!apiKey || !/^(vt_live_|vt_test_)[A-Za-z0-9_-]{12,}$/.test(apiKey)) {
+      throw new Error('A valid ValoraTap vt_live_ or vt_test_ API key is required.');
     }
     this.apiKey = apiKey;
     this.baseUrl = baseUrl.replace(/\/$/, '');
