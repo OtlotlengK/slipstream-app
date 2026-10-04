@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, content-type","Access-Control-Allow-Methods":"POST, OPTIONS","Content-Type":"application/json","Cache-Control":"no-store"};
 const MAX_BODY_BYTES=32*1024,MAX_METADATA_BYTES=8*1024;
-const ALLOWED_EVENTS=new Set(["CUSTOMER_ACKNOWLEDGED","PAYMENT_CONFIRMED","DELIVERY_CONFIRMED","WARRANTY_ACTIVATED","RETURN_REQUESTED","REFUND_COMPLETED"]);
+const ALLOWED_EVENTS=new Set(["CUSTOMER_ACKNOWLEDGED","PAYMENT_CONFIRMED","DELIVERY_CONFIRMED","FULFILMENT_CONFIRMED","WARRANTY_ACTIVATED","RETURN_REQUESTED","REFUND_COMPLETED"]);
 const ALLOWED_ACTORS=new Set(["system","merchant","customer","api"]);
 const json=(body:unknown,status=200,extra:Record<string,string>={})=>new Response(JSON.stringify(body),{status,headers:{...corsHeaders,...extra}});
 async function sha256Hex(value:string){const bytes=new TextEncoder().encode(value);const digest=await crypto.subtle.digest("SHA-256",bytes);return Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join("");}
