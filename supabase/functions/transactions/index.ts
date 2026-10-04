@@ -16,14 +16,14 @@ serve(async(req)=>{
  if(req.method!=="POST")return json({error:"method_not_allowed"},405,{Allow:"POST, OPTIONS"});
  const cl=Number(req.headers.get("content-length")||"0");if(cl>MAX_BODY_BYTES)return json({error:"request_too_large"},413);
  const m=(req.headers.get("Authorization")||"").match(/^Bearer\s+(.+)$/i);if(!m)return json({error:"missing_api_key",message:"Use Authorization: Bearer vt_live_..."},401);
- const apiKey=m[1].trim();if(!/^(vt_live_|sk_live_)[A-Za-z0-9_-]{12,}$/.test(apiKey)||apiKey.length>256)return json({error:"invalid_api_key"},401);
+ const apiKey=m[1].trim();if(!/^(vt_live_|vt_test_)[A-Za-z0-9_-]{12,}$/.test(apiKey)||apiKey.length>256)return json({error:"invalid_api_key"},401);
  const url=Deno.env.get("SUPABASE_URL"),service=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");if(!url||!service)return json({error:"server_configuration_error"},500);
  const db=createClient(url,service),hash=await sha256Hex(apiKey);
  const{data:key,error:ke}=await db.from("api_keys").select("id,merchant_id,environment,revoked_at,permissions").eq("key_hash",hash).maybeSingle();
  if(ke)return json({error:"authentication_error"},500);
  if(!key||key.revoked_at)return json({error:"invalid_api_key"},401);
- if(key.environment!=="production")return json({error:"sandbox_execution_unavailable",message:"Sandbox keys are reserved for testing credentials. Transaction execution is not enabled in Sandbox yet."},403);
- if(!hasPermission(key.permissions,"receipts","create"))return json({error:"insufficient_permissions"},403);
+ 
+ if(key.environment==="production"&&!hasPermission(key.permissions,"receipts","create"))return json({error:"insufficient_permissions"},403);
  const{data:lr,error:le}=await db.rpc("check_api_key_rate_limit",{p_api_key_id:key.id,p_limit:60,p_window_seconds:60});
  const limit=Array.isArray(lr)?lr[0]:lr;if(le||!limit)return json({error:"rate_limit_check_error"},500);
  if(!limit.allowed)return json({error:"rate_limit_exceeded"},429,{"Retry-After":String(Number(limit.retry_after_seconds)||60)});
@@ -51,7 +51,7 @@ serve(async(req)=>{
  if(reference.length>200)return json({error:"invalid_reference"},400);
  const normalized={amount:Math.round(amount*100)/100,currency,payment_method:pm,customer:{name,email:email||null,phone:phone||null},description,reference:reference||null};
  const requestHash=await sha256Hex(JSON.stringify(normalized));
- const{data,error}=await db.rpc("create_api_transaction_v2",{p_api_key_id:key.id,p_merchant_id:key.merchant_id,p_idempotency_key:idk,p_request_hash:requestHash,p_customer_name:name,p_customer_email:email||null,p_customer_phone:phone||null,p_description:description,p_amount:normalized.amount,p_currency:currency,p_payment_method:pm,p_external_reference:reference||null});
+ const rpcName=key.environment==="sandbox"?"create_sandbox_transaction":"create_api_transaction_v2"; const{data,error}=await db.rpc(rpcName,{p_api_key_id:key.id,p_merchant_id:key.merchant_id,p_idempotency_key:idk,p_request_hash:requestHash,p_customer_name:name,p_customer_email:email||null,p_customer_phone:phone||null,p_description:description,p_amount:normalized.amount,p_currency:currency,p_payment_method:pm,p_external_reference:reference||null});
  if(error){
   const msg=error.message||"";
   if(msg.includes("idempotency_key_reused"))return json({error:"idempotency_key_reused"},409);
@@ -63,7 +63,7 @@ serve(async(req)=>{
   if(msg.includes("invalid_customer_name"))return json({error:"invalid_customer_name"},400);
   return json({error:"transaction_creation_error"},500);
  }
- const result=Array.isArray(data)?data[0]:data;if(!result?.receipt_id)return json({error:"transaction_creation_error"},500);
+ const result=Array.isArray(data)?data[0]:data;if(key.environment==="sandbox"){if(!result?.transaction_id)return json({error:"transaction_creation_error"},500);const status=Number(result.response_status)||(result.replayed?200:201);await db.from("sandbox_integration_logs").insert({merchant_id:key.merchant_id,api_key_id:key.id,direction:"inbound",endpoint:"/functions/v1/transactions",method:"POST",event_type:"transaction.created",idempotency_key:idk,request_hash:requestHash,sandbox_transaction_id:result.transaction_id,status_code:status,duration_ms:Date.now()-started});if(!result.replayed){const{data:tx}=await db.from("sandbox_transactions").select("id,customer_name,amount,currency_code,description,payment_method,verification_hash,external_reference,status,created_at").eq("id",result.transaction_id).eq("merchant_id",key.merchant_id).maybeSingle();fetch(`${url}/functions/v1/webhook-dispatch`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${service}`},body:JSON.stringify({merchant_id:key.merchant_id,environment:"sandbox",event_type:"transaction.created",event_id:result.transaction_id,data:{transaction:tx}})}).catch(()=>{});}return json({success:true,environment:"sandbox",replayed:Boolean(result.replayed),transaction:{id:result.transaction_id,reference:result.transaction_reference,verification_hash:result.verification_hash,status:"simulated",currency},protocol_version:"1.4"},status);}if(!result?.receipt_id)return json({error:"transaction_creation_error"},500);
  const status=Number(result.response_status)||(result.replayed?200:201);
  const verificationPath=`/verify.html?hash=${encodeURIComponent(result.verification_hash)}`;
  await db.from("integration_logs").insert({merchant_id:key.merchant_id,api_key_id:key.id,direction:"inbound",endpoint:"/functions/v1/transactions",method:"POST",event_type:"transaction.created",idempotency_key:idk,request_hash:requestHash,receipt_id:result.receipt_id,status_code:status,duration_ms:Date.now()-started});
@@ -72,5 +72,5 @@ serve(async(req)=>{
   const payload={merchant_id:key.merchant_id,event_type:"transaction.created",event_id:result.receipt_id,data:{receipt}};
   fetch(`${url}/functions/v1/webhook-dispatch`,{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${service}`},body:JSON.stringify(payload)}).catch(()=>{});
  }
- return json({success:true,replayed:Boolean(result.replayed),receipt:{id:result.receipt_id,receipt_no:result.receipt_no,verification_hash:result.verification_hash,verification_path:verificationPath,currency},protocol_version:"1.3"},status);
+ return json({success:true,environment:"production",replayed:Boolean(result.replayed),receipt:{id:result.receipt_id,receipt_no:result.receipt_no,verification_hash:result.verification_hash,verification_path:verificationPath,currency},protocol_version:"1.3"},status);
 });
