@@ -13,7 +13,7 @@ begin
  if p_amount is null or p_amount<=0 or p_amount>999999999.99 then raise exception 'invalid_amount'; end if;
  if v_currency !~ '^[A-Z]{3}$' then raise exception 'invalid_currency'; end if;
  if lower(coalesce(p_payment_method,'')) not in ('cash','eft','card','online') then raise exception 'invalid_payment_method'; end if;
- select upper(coalesce(bp.currency,'ZAR')) into v_business_currency from public.business_profiles bp where bp.id=p_merchant_id limit 1;
+ select upper(coalesce(bp.currency_code,'ZAR')) into v_business_currency from public.business_profiles bp where bp.id=p_merchant_id limit 1;
  if v_business_currency is null then v_business_currency:='ZAR'; end if;
  if v_currency<>v_business_currency then raise exception 'currency_mismatch'; end if;
  select * into existing from public.api_idempotency_keys where api_key_id=p_api_key_id and idempotency_key=trim(p_idempotency_key) for update;
