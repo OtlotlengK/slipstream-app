@@ -12,8 +12,8 @@ serve(async(req)=>{
  if(req.method==="OPTIONS")return new Response("ok",{headers:corsHeaders});
  if(req.method!=="POST")return json({error:"method_not_allowed"},405);
  const contentLength=Number(req.headers.get("content-length")||"0");if(contentLength>MAX_BODY_BYTES)return json({error:"request_too_large"},413);
- const auth=req.headers.get("Authorization")||"";const match=auth.match(/^Bearer\s+(.+)$/i);if(!match)return json({error:"missing_api_key",message:"Use Authorization: Bearer sk_live_..."},401);
- const apiKey=match[1].trim();if(!/^(vt_live_|sk_live_)[A-Za-z0-9_-]{12,}$/.test(apiKey)||apiKey.length>256)return json({error:"invalid_api_key"},401);
+ const auth=req.headers.get("Authorization")||"";const match=auth.match(/^Bearer\s+(.+)$/i);if(!match)return json({error:"missing_api_key",message:"Use Authorization: Bearer vt_live_..."},401);
+ const apiKey=match[1].trim();if(!/^(vt_live_)[A-Za-z0-9_-]{12,}$/.test(apiKey)||apiKey.length>256)return json({error:"invalid_api_key"},401);
  const supabaseUrl=Deno.env.get("SUPABASE_URL"),serviceRoleKey=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");if(!supabaseUrl||!serviceRoleKey)return json({error:"server_configuration_error"},500);
  const db=createClient(supabaseUrl,serviceRoleKey),keyHash=await sha256Hex(apiKey);
  const {data:key,error:keyError}=await db.from("api_keys").select("id,merchant_id,environment,revoked_at,permissions").eq("key_hash",keyHash).maybeSingle();
