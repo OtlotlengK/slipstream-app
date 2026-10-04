@@ -208,14 +208,14 @@ def verify_valoratap_webhook(raw_body, signature, secret):
 <div class="chip gold">Errors</div><h2 class="text-3xl font-black mt-2">Predictable failures</h2>
 <div class="mt-6 bg-white border rounded-3xl overflow-hidden">
 <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-left"><tr><th class="p-4">HTTP</th><th class="p-4">Code</th><th class="p-4">Meaning</th></tr></thead><tbody class="divide-y">
-<tr><td class="p-4 mono">400</td><td class="p-4 mono">invalid_json / invalid_amount / invalid_currency / invalid_payment_method / …</td><td class="p-4 text-slate-500">The request is malformed or a field failed validation.</td></tr>
+<tr><td class="p-4 mono">400</td><td class="p-4 mono">missing_or_invalid_idempotency_key / invalid_json / invalid_request_body / invalid_amount / invalid_currency / invalid_payment_method / invalid_customer_name / invalid_customer_email / invalid_customer_phone / invalid_description / invalid_reference</td><td class="p-4 text-slate-500">The request is malformed or a field failed validation.</td></tr>
 <tr><td class="p-4 mono">401</td><td class="p-4 mono">missing_api_key / invalid_api_key</td><td class="p-4 text-slate-500">Authentication failed.</td></tr>
 <tr><td class="p-4 mono">403</td><td class="p-4 mono">insufficient_permissions</td><td class="p-4 text-slate-500">The key is valid but does not have the required permission.</td></tr>
 <tr><td class="p-4 mono">404</td><td class="p-4 mono">receipt_not_found</td><td class="p-4 text-slate-500">The requested receipt does not exist for the authenticated merchant.</td></tr>
-<tr><td class="p-4 mono">409</td><td class="p-4 mono">idempotency_key_reused / currency_mismatch</td><td class="p-4 text-slate-500">The request conflicts with an existing operation or merchant configuration.</td></tr>
-<tr><td class="p-4 mono">413</td><td class="p-4 mono">request_too_large / metadata_too_large</td><td class="p-4 text-slate-500">The request exceeded the endpoint size limit.</td></tr>
+<tr><td class="p-4 mono">409</td><td class="p-4 mono">idempotency_key_reused / currency_mismatch</td><td class="p-4 text-slate-500">The request conflicts with an existing operation or merchant configuration. Reusing an idempotency key with a different payload is rejected.</td></tr>
+<tr><td class="p-4 mono">413</td><td class="p-4 mono">request_too_large</td><td class="p-4 text-slate-500">The request exceeded the endpoint size limit.</td></tr>
 <tr><td class="p-4 mono">429</td><td class="p-4 mono">rate_limit_exceeded</td><td class="p-4 text-slate-500">Rate limit reached. Respect the Retry-After header.</td></tr>
-<tr><td class="p-4 mono">500</td><td class="p-4 mono">*_error / server_configuration_error</td><td class="p-4 text-slate-500">ValoraTap could not complete the operation. Retry safely where applicable.</td></tr>
+<tr><td class="p-4 mono">500</td><td class="p-4 mono">authentication_error / rate_limit_check_error / transaction_creation_error / server_configuration_error</td><td class="p-4 text-slate-500">ValoraTap could not complete the operation. Retry only when the failure is safe to retry.</td></tr>
 </tbody></table></div></div>
 <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mt-5 text-sm"><b>Retry rule:</b> retry network failures and 5xx responses with the same <span class="mono">Idempotency-Key</span>. Do not generate a new idempotency key for the same logical transaction.</div>
 </section>
