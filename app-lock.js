@@ -9,7 +9,7 @@
 
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
   const write = v => localStorage.setItem(KEY, JSON.stringify(v));
-  const bytesToB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
+  const bytesToB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));\n  const bytesToB64Url = bytes => bytesToB64(bytes).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');
   const b64ToBytes = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   const randomBytes = n => crypto.getRandomValues(new Uint8Array(n));
 
@@ -83,7 +83,7 @@
 
   function lock() {
     const s = read();
-    if (!s.enabled || document.visibilityState === 'visible' && !s.locked) return;
+    if (!s.enabled) return;
     ensureOverlay();
     s.locked = true;
     write(s);
@@ -133,7 +133,7 @@
       if(!cred){ throw new Error('No credential returned'); }
       const response=cred.response;
       const clientData=JSON.parse(new TextDecoder().decode(response.clientDataJSON));
-      if(clientData.type!=='webauthn.get' || clientData.origin!==location.origin || clientData.challenge!==bytesToB64(challenge)){
+      if(clientData.type!=='webauthn.get' || clientData.origin!==location.origin || clientData.challenge!==bytesToB64Url(challenge)){
         throw new Error('Invalid biometric assertion');
       }
       const data=response.authenticatorData;
