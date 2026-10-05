@@ -31,7 +31,7 @@
 <div class="settings-actions mt-4">
 <button id="set-pin-btn" onclick="setPin()" class="inline-flex bg-[#0F766E] text-white font-black px-4 py-2.5 rounded-xl text-xs">Set / Change PIN</button>
 <button id="bio-btn" onclick="enableBiometric()" class="inline-flex bg-slate-800 text-white font-black px-4 py-2.5 rounded-xl text-xs">Enable fingerprint / Face ID</button>
-<button onclick="lockVT()" class="inline-flex bg-amber-500 text-[#17201F] font-black px-4 py-2.5 rounded-xl text-xs">Lock now</button>
+<button onclick="lockVT()" class="inline-flex bg-amber-500 text-[#17201F] font-black px-4 py-2.5 rounded-xl text-xs">Lock now</button>\n<button onclick="disableLock()" class="inline-flex bg-red-950/60 border border-red-800 text-red-300 font-black px-4 py-2.5 rounded-xl text-xs">Turn off app lock</button>
 </div>
 <p id="security-message" class="text-xs text-slate-500 mt-3"></p>
 </section>
@@ -44,7 +44,7 @@ function securityMessage(text,error=false){const el=document.getElementById('sec
 function refreshLockStatus(){const s=window.ValoraAppLock?.status?.()||{};const el=document.getElementById('lock-status');if(!el)return;if(!s.enabled){el.textContent='App lock: Off';el.className='inline-flex items-center px-3 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300'}else{const methods=[s.pin?'PIN':'',s.biometric?'Fingerprint / Face ID':''].filter(Boolean).join(' + ');el.textContent='App lock: On · '+methods;el.className='inline-flex items-center px-3 py-2 rounded-xl bg-emerald-950/60 border border-emerald-800 text-xs font-bold text-emerald-300'} }
 async function setPin(){const pin=prompt('Choose a 6–8 digit ValoraTap PIN.');if(pin===null)return;const confirmPin=prompt('Enter the PIN again to confirm.');if(confirmPin!==pin){securityMessage('The PINs did not match.',true);return}try{await window.ValoraAppLock.setupPin(pin);securityMessage('VT PIN enabled on this device.');refreshLockStatus()}catch(e){securityMessage(e.message||'Could not set the PIN.',true)}}
 async function enableBiometric(){try{await window.ValoraAppLock.setupBiometric();securityMessage('Device biometric unlock is enabled.');refreshLockStatus()}catch(e){securityMessage(e.message||'Biometric unlock could not be enabled.',true)}}
-function lockVT(){window.ValoraAppLock?.lockNow()}
+function lockVT(){window.ValoraAppLock?.lockNow()}\nfunction disableLock(){if(!confirm('Turn off the ValoraTap app lock on this device?'))return;window.ValoraAppLock?.disable();securityMessage('App lock is off on this device.');refreshLockStatus()}
 async function init(){const{data:{session},error:sessionError}=await db.auth.getSession();if(sessionError||!session){location.href='login.html';return}user=session.user;document.getElementById('account-email').textContent=user.email||'';refreshLockStatus()}
 async function logout(){await db.auth.signOut();location.href='login.html'}window.addEventListener('DOMContentLoaded',init);
 </script></body></html>
