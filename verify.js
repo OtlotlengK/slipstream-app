@@ -11,12 +11,11 @@ async function load(){
  renderQr();
  const params=new URLSearchParams(location.search);
  const hash=(params.get('hash')||'').trim();
- const id=(params.get('id')||'').trim();
- if(!hash&&!/^[0-9a-fA-F-]{36}$/.test(id)){setStatus('Unavailable',false);return fail('This verification reference is invalid. Please scan the original ValoraTap QR code again.')}
+ if(!/^(?:[a-f0-9]{16}|[a-f0-9]{64})$/.test(hash)){setStatus('Unavailable',false);return fail('This verification reference is invalid. Please scan the original ValoraTap QR code again.')}
  try{
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),10000);
-  const payload=hash?{verification_hash:hash}:{id};
+  const payload={verification_hash:hash};
   const response=await fetch(VERIFY_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),cache:'no-store',referrerPolicy:'no-referrer',signal:controller.signal});
   clearTimeout(timer);
   const data=await response.json().catch(()=>null);
