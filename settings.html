@@ -5,6 +5,7 @@
 <title>ValoraTap | Business Settings</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/app-lock.js" defer></script>
 <style>
 .settings-card{min-width:0;overflow:hidden}.settings-actions{display:flex;gap:10px;flex-wrap:wrap}.settings-actions>*{min-width:0}
 @media(max-width:640px){main{padding-left:16px!important;padding-right:16px!important}.settings-card{padding:20px!important}.settings-actions{flex-direction:column}.settings-actions>*{width:100%;justify-content:center;text-align:center}.settings-card input{min-width:0}.settings-title{font-size:22px!important;line-height:1.15}}
@@ -22,12 +23,28 @@
 <div class="settings-actions mt-4"><a href="developers.html" class="inline-flex bg-[#0F766E] text-[#17201F] font-bold px-4 py-2.5 rounded-xl text-xs">Open Developer Console →</a></div>
 </section>
 <section class="settings-card bg-[#17201F] border border-slate-800 rounded-2xl p-6">
-<div class="text-xs uppercase tracking-wider text-[#14B8A6] font-black">Account</div><h2 class="text-xl font-black mt-2">Signed-in account</h2><p class="text-xs text-slate-400 mt-2">Signed in as <span id="account-email"></span></p><div class="mt-4 pt-4 border-t border-slate-800"><button onclick="logout()" class="text-xs font-bold text-red-300 hover:text-red-200">Log out</button></div>
+<div class="text-xs uppercase tracking-wider text-[#14B8A6] font-black">App security</div><h2 class="text-xl font-black mt-2">Lock ValoraTap on this device</h2>
+<p class="text-sm text-slate-400 mt-2 leading-relaxed">Keep your ValoraTap session signed in while requiring a device PIN or fingerprint / Face ID when the app has been away for a short period.</p>
+<div class="mt-4 flex flex-wrap gap-2">
+<span id="lock-status" class="inline-flex items-center px-3 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300">Checking…</span>
+</div>
+<div class="settings-actions mt-4">
+<button id="set-pin-btn" onclick="setPin()" class="inline-flex bg-[#0F766E] text-white font-black px-4 py-2.5 rounded-xl text-xs">Set / Change PIN</button>
+<button id="bio-btn" onclick="enableBiometric()" class="inline-flex bg-slate-800 text-white font-black px-4 py-2.5 rounded-xl text-xs">Enable fingerprint / Face ID</button>
+<button onclick="lockVT()" class="inline-flex bg-amber-500 text-[#17201F] font-black px-4 py-2.5 rounded-xl text-xs">Lock now</button>\n<button onclick="disableLock()" class="inline-flex bg-red-950/60 border border-red-800 text-red-300 font-black px-4 py-2.5 rounded-xl text-xs">Turn off app lock</button>
+</div>
+<p id="security-message" class="text-xs text-slate-500 mt-3"></p>
+</section>
+<section class="settings-card bg-[#17201F] border border-slate-800 rounded-2xl p-6">
+<div class="text-xs uppercase tracking-wider text-[#14B8A6] font-black">Account</div><h2 class="text-xl font-black mt-2">Signed-in account</h2><p class="text-xs text-slate-400 mt-2">Signed in as <span id="account-email"></span></p><div class="mt-4 pt-4 border-t border-slate-800"><button onclick="logout()" class="text-xs font-bold text-red-300 hover:text-red-200">Log out completely</button></div>
 </section>
 </main><script>
 const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';const{createClient}=supabase;const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let user=null;
-function showMessage(text,error=false){const el=document.getElementById('message');el.textContent=text;el.className='mt-5 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');el.classList.remove('hidden');if(!error)setTimeout(()=>el.classList.add('hidden'),2500)}
-async function init(){const{data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}user=session.user;document.getElementById('email').value=user.email||'';document.getElementById('account-email').textContent=user.email||'';const{data,error}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).single();if(error||!data){showMessage('We couldn’t load your business profile.',true);return}document.getElementById('business-name').value=data.business_name||'';document.getElementById('owner-name').value=data.owner_name||'';document.getElementById('phone').value=data.phone||''}
-async function saveProfile(){const business_name=document.getElementById('business-name').value.trim(),owner_name=document.getElementById('owner-name').value.trim(),phone=document.getElementById('phone').value.trim();if(!business_name){showMessage('Business name is required.',true);return}const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Saving…';const{error}=await db.from('merchants').update({business_name,owner_name,phone}).eq('id',user.id);if(error){showMessage('We couldn’t save your changes. Please try again.',true);btn.disabled=false;btn.textContent='Save Changes';return}showMessage('Changes saved.');btn.disabled=false;btn.textContent='Save Changes'}
+function securityMessage(text,error=false){const el=document.getElementById('security-message');if(el){el.textContent=text;el.className='text-xs mt-3 '+(error?'text-red-300':'text-slate-400')}}
+function refreshLockStatus(){const s=window.ValoraAppLock?.status?.()||{};const el=document.getElementById('lock-status');if(!el)return;if(!s.enabled){el.textContent='App lock: Off';el.className='inline-flex items-center px-3 py-2 rounded-xl bg-slate-800 text-xs font-bold text-slate-300'}else{const methods=[s.pin?'PIN':'',s.biometric?'Fingerprint / Face ID':''].filter(Boolean).join(' + ');el.textContent='App lock: On · '+methods;el.className='inline-flex items-center px-3 py-2 rounded-xl bg-emerald-950/60 border border-emerald-800 text-xs font-bold text-emerald-300'} }
+async function setPin(){const pin=prompt('Choose a 6–8 digit ValoraTap PIN.');if(pin===null)return;const confirmPin=prompt('Enter the PIN again to confirm.');if(confirmPin!==pin){securityMessage('The PINs did not match.',true);return}try{await window.ValoraAppLock.setupPin(pin);securityMessage('VT PIN enabled on this device.');refreshLockStatus()}catch(e){securityMessage(e.message||'Could not set the PIN.',true)}}
+async function enableBiometric(){try{await window.ValoraAppLock.setupBiometric();securityMessage('Device biometric unlock is enabled.');refreshLockStatus()}catch(e){securityMessage(e.message||'Biometric unlock could not be enabled.',true)}}
+function lockVT(){window.ValoraAppLock?.lockNow()}\nfunction disableLock(){if(!confirm('Turn off the ValoraTap app lock on this device?'))return;window.ValoraAppLock?.disable();securityMessage('App lock is off on this device.');refreshLockStatus()}
+async function init(){const{data:{session},error:sessionError}=await db.auth.getSession();if(sessionError||!session){location.href='login.html';return}user=session.user;document.getElementById('account-email').textContent=user.email||'';refreshLockStatus()}
 async function logout(){await db.auth.signOut();location.href='login.html'}window.addEventListener('DOMContentLoaded',init);
 </script></body></html>
