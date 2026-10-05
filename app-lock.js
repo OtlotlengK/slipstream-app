@@ -192,9 +192,9 @@
   function lockNow(){ ensureOverlay(); const s=read(); if(s.enabled){s.locked=true;write(s);document.getElementById('vt-lock-overlay').hidden=false;const b=document.getElementById('vt-lock-biometric');if(b)b.classList.toggle('hidden',!s.biometric);} }
   function status(){const s=read();return {enabled:Boolean(s.enabled),pin:Boolean(s.pin),biometric:Boolean(s.biometric),locked:Boolean(s.locked)};}
   function removePin(){const s=read();delete s.pin;setLockEnabled();}
-  function removeBiometric(){const s=read();delete s.biometric;setLockEnabled();}
+  function removeBiometric(){const s=read();delete s.biometric;setLockEnabled();}\n  function disable(){localStorage.removeItem(KEY);localStorage.removeItem(HIDDEN_AT);const o=document.getElementById('vt-lock-overlay');if(o)o.hidden=true;}
 
-  window.ValoraAppLock={setupPin,setupBiometric,lockNow,status,removePin,removeBiometric,lock};
+  window.ValoraAppLock={setupPin,setupBiometric,lockNow,status,removePin,removeBiometric,disable,lock};
   document.addEventListener('DOMContentLoaded',()=>{
     ensureOverlay();
     const s=read();
