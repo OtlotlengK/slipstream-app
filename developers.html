@@ -1,6 +1,236 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ValoraTap | Developer Console</title><meta name="description" content="ValoraTap Developer Console"><script src="https://cdn.tailwindcss.com"></script><style>@import url('developer-console.css');body{background:#F8FAFC}.gold{color:#0F766E}.gold-bg{background:#0F766E}.gold-bg:hover{background:#115E59}.chip{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}</style></head><body class="text-slate-800 antialiased"><div class="min-h-screen flex"><aside class="hidden md:flex w-64 shrink-0 bg-slate-950 text-white flex-col sticky top-0 h-screen"><div class="p-6 border-b border-white/10"><a href="developers.html" class="font-black tracking-[.2em]">VALORATAP</a><div class="text-[10px] text-slate-500 uppercase tracking-widest mt-2">Developer Console</div></div><nav class="p-4 space-y-1 text-sm"><div class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-600 font-black">Build</div><a href="developers.html" class="block px-3 py-2.5 rounded-xl bg-white/10 font-bold">Overview</a><a href="api-keys.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">API Keys</a><a href="webhooks.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">Webhooks</a><div class="px-3 py-2 mt-4 text-[10px] uppercase tracking-widest text-slate-600 font-black">Observe</div><a href="webhook-deliveries.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">Delivery history</a><a href="api-logs.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">API Logs</a><div class="px-3 py-2 mt-4 text-[10px] uppercase tracking-widest text-slate-600 font-black">Resources</div><a href="developers.html#endpoint" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">API Reference</a><a href="developers.html#quickstart" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">Quickstart</a></nav><div class="mt-auto p-4 border-t border-white/10"><a href="dashboard-v2.html" class="block text-center bg-white/10 rounded-xl py-2.5 text-sm font-bold">← Business Dashboard</a></div></aside><main class="flex-1 min-w-0"><header class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur border-b px-4 py-4"><div class="flex items-center justify-between"><a href="developers.html" class="font-black tracking-[.16em]">VALORATAP</a><a href="dashboard-v2.html" class="text-sm font-bold">← Overview</a></div><div class="flex gap-1 overflow-x-auto mt-3"><a href="developers.html" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-900 text-white text-xs font-bold">Overview</a><a href="api-keys.html" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">API Keys</a><a href="webhooks.html" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">Webhooks</a><a href="webhook-deliveries.html" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">Deliveries</a><a href="api-logs.html" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">API Logs</a></div></header><div class="max-w-7xl mx-auto px-5 py-8 md:py-12"><section class="bg-slate-950 text-white rounded-3xl p-7 md:p-10"><div class="max-w-3xl"><div class="chip gold">Developer Platform</div><h1 class="text-4xl md:text-6xl font-black tracking-tight mt-3">Build with ValoraTap.</h1><p class="text-slate-300 text-lg leading-relaxed mt-5">Everything you need to connect receipts, transaction verification and business events to your own software.</p><div class="flex flex-wrap gap-3 mt-7"><a href="api-keys.html" class="gold-bg px-5 py-3 rounded-xl font-bold">Manage API Keys</a><a href="webhooks.html" class="bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-bold">Manage Webhooks</a><a href="api-logs.html" class="bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-bold">View API Logs</a></div></div></section><section class="mt-8"><div><div class="chip gold">Developer Console</div><h2 class="text-2xl md:text-3xl font-black mt-1">Your integration workspace</h2></div><div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-6"><a href="api-keys.html" class="bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition"><div class="w-10 h-10 rounded-xl bg-slate-950 text-white grid place-items-center">⌁</div><h3 class="font-black text-lg mt-4">API Keys</h3><p class="text-sm text-slate-500 mt-2">Create, rotate and revoke Production and Sandbox credentials. Secrets are shown once.</p><span class="inline-block gold font-bold text-xs mt-5">Manage keys →</span></a><a href="webhooks.html" class="bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition"><div class="w-10 h-10 rounded-xl bg-slate-950 text-white grid place-items-center">↗</div><h3 class="font-black text-lg mt-4">Webhooks</h3><p class="text-sm text-slate-500 mt-2">Configure HTTPS endpoints, event subscriptions, active state and signing-secret rotation.</p><span class="inline-block gold font-bold text-xs mt-5">Manage endpoints →</span></a><a href="api-logs.html" class="bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition"><div class="w-10 h-10 rounded-xl bg-slate-950 text-white grid place-items-center">≡</div><h3 class="font-black text-lg mt-4">API Logs</h3><p class="text-sm text-slate-500 mt-2">Inspect inbound and outbound integration activity without exposing credentials or bodies.</p><span class="inline-block gold font-bold text-xs mt-5">Open logs →</span></a></div></section><section id="quickstart" class="mt-10 bg-white border rounded-3xl p-7"><div class="chip gold">Quickstart</div><h2 class="text-2xl font-black mt-2">Connect in three steps.</h2><div class="grid md:grid-cols-3 gap-5 mt-6"><div><span class="gold text-2xl font-black">01</span><h3 class="font-black mt-2">Create a key</h3><p class="text-sm text-slate-500 mt-1">Keep the secret on your server and never ship it to browser code.</p></div><div><span class="gold text-2xl font-black">02</span><h3 class="font-black mt-2">Send transactions</h3><p class="text-sm text-slate-500 mt-1">Use the REST transaction endpoint with a unique idempotency key.</p></div><div><span class="gold text-2xl font-black">03</span><h3 class="font-black mt-2">Receive events</h3><p class="text-sm text-slate-500 mt-1">Configure HTTPS webhooks and verify ValoraTap signatures before processing.</p></div></div></section><section id="endpoint" class="mt-8 bg-slate-950 text-white rounded-3xl p-7 md:p-10"><div class="chip gold">API Reference</div><h2 class="text-2xl md:text-3xl font-black mt-2">Transactions</h2><p class="text-slate-400 mt-3">Create a transaction after your payment system confirms payment. Use Production keys for live traffic; Sandbox execution remains isolated until enabled.</p><pre class="mt-6 bg-slate-900 rounded-2xl p-5 overflow-auto text-xs md:text-sm leading-6 text-slate-200">POST /functions/v1/transactions
-Authorization: Bearer vt_live_••••••••
-Content-Type: application/json
-Idempotency-Key: order_2026_00124
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ValoraTap | Developer Console</title>
+<meta name="description" content="ValoraTap API Quickstart and reference for receipts, transaction verification and webhooks.">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('developer-console.css');
+body{background:#F8FAFC}.gold{color:#0F766E}.gold-bg{background:#0F766E}.gold-bg:hover{background:#115E59}
+.chip{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+.code{background:#0B1220;color:#E2E8F0}.copy{cursor:pointer}.anchor{scroll-margin-top:90px}
+</style>
+</head>
+<body class="text-slate-800 antialiased">
+<div class="min-h-screen flex">
+<aside class="hidden md:flex w-64 shrink-0 bg-slate-950 text-white flex-col sticky top-0 h-screen">
+<div class="p-6 border-b border-white/10"><a href="developers.html" class="font-black tracking-[.2em]">VALORATAP</a><div class="text-[10px] text-slate-500 uppercase tracking-widest mt-2">Developer Console</div></div>
+<nav class="p-4 space-y-1 text-sm">
+<div class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-600 font-black">Build</div>
+<a href="developers.html" class="block px-3 py-2.5 rounded-xl bg-white/10 font-bold">Overview</a>
+<a href="api-keys.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">API Keys</a>
+<a href="webhooks.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">Webhooks</a>
+<div class="px-3 py-2 mt-4 text-[10px] uppercase tracking-widest text-slate-600 font-black">Observe</div>
+<a href="webhook-deliveries.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">Delivery history</a>
+<a href="api-logs.html" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">API Logs</a>
+<div class="px-3 py-2 mt-4 text-[10px] uppercase tracking-widest text-slate-600 font-black">Resources</div>
+<a href="#reference" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">API Reference</a>
+<a href="#quickstart" class="block px-3 py-2.5 rounded-xl hover:bg-white/5">Quickstart</a>
+</nav>
+<div class="mt-auto p-4 border-t border-white/10"><a href="dashboard-v2.html" class="block text-center bg-white/10 rounded-xl py-2.5 text-sm font-bold">← Business Dashboard</a></div>
+</aside>
+<main class="flex-1 min-w-0">
+<header class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur border-b px-4 py-4">
+<div class="flex items-center justify-between"><a href="developers.html" class="font-black tracking-[.16em]">VALORATAP</a><a href="dashboard-v2.html" class="text-xs font-bold">← Dashboard</a></div>
+<div class="flex gap-1 overflow-x-auto mt-3">
+<a href="#quickstart" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-900 text-white text-xs font-bold">Quickstart</a>
+<a href="#reference" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">Reference</a>
+<a href="#webhooks" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">Webhooks</a>
+<a href="api-keys.html" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">API Keys</a>
+</div></header>
 
-{"amount":1250.00,"currency":"ZAR","payment_method":"card","description":"Towing service","reference":"MOS-2026-00124"}</pre></section><section class="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border rounded-2xl bg-amber-50 border-amber-200 p-5"><div><b>Security first.</b><p class="text-sm text-slate-600 mt-1">Developer credentials are separate from merchant settings and are never displayed in plaintext after creation.</p></div><a href="api-keys.html" class="gold font-bold text-sm">Review API Keys →</a></section></div></main></div></body></html>
+<div class="max-w-7xl mx-auto px-5 py-8 md:py-12">
+<section class="bg-slate-950 text-white rounded-3xl p-7 md:p-10 anchor">
+<div class="max-w-4xl"><div class="chip gold">Developer Platform</div>
+<h1 class="text-4xl md:text-6xl font-black tracking-tight mt-3">Build with ValoraTap.</h1>
+<p class="text-slate-300 text-lg leading-relaxed mt-5">Connect your software to receipts, transaction verification and signed business events. Start in Sandbox with a <span class="mono">vt_test_</span> key; switch to Production when you are ready for live traffic.</p>
+<div class="flex flex-wrap gap-3 mt-7">
+<a href="#quickstart" class="gold-bg px-5 py-3 rounded-xl font-bold">Start Quickstart</a>
+<a href="api-keys.html" class="bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-bold">Create API key</a>
+<a href="#reference" class="bg-white/10 border border-white/10 px-5 py-3 rounded-xl font-bold">API Reference</a>
+</div></div></section>
+
+<section id="quickstart" class="mt-8 anchor">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4"><div><div class="chip gold">Quickstart</div><h2 class="text-3xl md:text-4xl font-black mt-2">Your first Sandbox transaction.</h2><p class="text-slate-500 mt-2 max-w-3xl">The Sandbox uses the same HTTPS API contract as Production, but writes only isolated test data. Nothing created with a <span class="mono">vt_test_</span> key becomes a live receipt.</p></div><span class="px-3 py-2 rounded-full bg-slate-100 text-slate-600 text-xs font-bold mono">API v1.4</span></div>
+
+<div class="grid lg:grid-cols-3 gap-5 mt-7">
+<article class="bg-white border rounded-2xl p-6"><span class="gold text-2xl font-black">01</span><h3 class="font-black text-lg mt-2">Create a Sandbox key</h3><p class="text-sm text-slate-500 mt-2">Open API Keys, choose <b>Sandbox</b>, grant the permissions your integration needs, and copy the secret. It is shown once.</p><a href="api-keys.html" class="inline-block mt-5 gold font-bold text-sm">Open API Keys →</a></article>
+<article class="bg-white border rounded-2xl p-6"><span class="gold text-2xl font-black">02</span><h3 class="font-black text-lg mt-2">Send a transaction</h3><p class="text-sm text-slate-500 mt-2">Use your <span class="mono">vt_test_</span> key in the Authorization header and send a unique <span class="mono">Idempotency-Key</span>.</p><a href="#transactions" class="inline-block mt-5 gold font-bold text-sm">View endpoint →</a></article>
+<article class="bg-white border rounded-2xl p-6"><span class="gold text-2xl font-black">03</span><h3 class="font-black text-lg mt-2">Connect events</h3><p class="text-sm text-slate-500 mt-2">Add a Sandbox webhook endpoint to receive signed <span class="mono">transaction.created</span> events and verify the signature before processing.</p><a href="#webhooks" class="inline-block mt-5 gold font-bold text-sm">Webhook guide →</a></article>
+</div>
+
+<div class="bg-white border rounded-3xl mt-6 overflow-hidden">
+<div class="px-6 py-5 border-b"><div class="chip gold">Environment</div><h3 class="font-black text-xl mt-1">Use the same API host</h3><p class="text-sm text-slate-500 mt-1">The key prefix determines the environment. Do not change the endpoint when moving from Sandbox to Production.</p></div>
+<div class="p-6"><div class="grid md:grid-cols-2 gap-4">
+<div class="bg-slate-50 rounded-2xl p-4"><div class="text-xs font-black uppercase tracking-wider text-slate-400">Sandbox</div><div class="mono text-sm mt-2">vt_test_…</div><p class="text-xs text-slate-500 mt-2">Simulated transactions and isolated webhook deliveries.</p></div>
+<div class="bg-slate-50 rounded-2xl p-4"><div class="text-xs font-black uppercase tracking-wider text-slate-400">Production</div><div class="mono text-sm mt-2">vt_live_…</div><p class="text-xs text-slate-500 mt-2">Live transaction records and production webhook deliveries.</p></div>
+</div></div></div>
+
+<div class="mt-6"><div class="flex items-center justify-between mb-2"><div><div class="chip text-slate-400">Terminal</div><h3 class="font-black mt-1">Copy, paste, run</h3></div><button class="copy border px-3 py-1.5 rounded-lg text-xs font-bold" data-copy="quick-curl">Copy</button></div>
+<pre id="quick-curl" class="code rounded-2xl p-5 overflow-auto text-xs md:text-sm leading-6 mono">curl https://pddjualtnhgmplampucn.supabase.co/functions/v1/transactions \
+  -X POST \
+  -H "Authorization: Bearer vt_test_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: order_demo_001" \
+  -d '{
+    "amount": 1250.00,
+    "currency": "ZAR",
+    "payment_method": "card",
+    "customer": {
+      "name": "John Doe",
+      "email": "john@example.com"
+    },
+    "description": "Towing service",
+    "reference": "DEMO-001"
+  }'</pre></div>
+
+<div class="mt-5 grid lg:grid-cols-2 gap-5">
+<div><div class="chip text-slate-400">Expected response</div><pre class="code rounded-2xl p-5 overflow-auto text-xs leading-6 mono mt-2">{
+  "success": true,
+  "environment": "sandbox",
+  "replayed": false,
+  "transaction": {
+    "id": "…",
+    "reference": "TEST-…",
+    "verification_hash": "…",
+    "status": "simulated",
+    "currency": "ZAR"
+  },
+  "protocol_version": "1.4"
+}</pre></div>
+<div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 self-start"><b class="text-emerald-900">You are integrated.</b><p class="text-sm text-emerald-800 mt-2">The transaction is stored in Sandbox, the request is visible in API Logs, and subscribed Sandbox webhook endpoints can receive <span class="mono">transaction.created</span>.</p><p class="text-xs text-emerald-700 mt-3">Repeat the same request with the same idempotency key to safely test retry handling.</p></div>
+</div>
+</section>
+
+<section id="reference" class="mt-12 anchor">
+<div class="chip gold">API Reference</div><h2 class="text-3xl md:text-4xl font-black mt-2">REST API</h2><p class="text-slate-500 mt-2 max-w-3xl">All authenticated API requests use a ValoraTap API key in the Bearer Authorization header. Keep keys on your server. The browser and mobile app must never receive a secret API key.</p>
+<div class="mt-7 bg-white border rounded-3xl overflow-hidden">
+<div class="p-6 border-b"><div class="flex flex-wrap items-center gap-2"><span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-black mono">POST</span><span class="mono text-sm font-bold">/functions/v1/transactions</span></div><h3 id="transactions" class="font-black text-xl mt-4 anchor">Create a transaction</h3><p class="text-sm text-slate-500 mt-2">Creates a verified transaction record in Production or an isolated simulated transaction in Sandbox.</p></div>
+<div class="p-6 grid lg:grid-cols-2 gap-7">
+<div><h4 class="font-black">Headers</h4><div class="mt-3 space-y-2 text-sm"><div class="flex justify-between gap-4 border-b pb-2"><span class="mono">Authorization</span><span class="text-slate-500">Bearer API key</span></div><div class="flex justify-between gap-4 border-b pb-2"><span class="mono">Content-Type</span><span class="text-slate-500">application/json</span></div><div class="flex justify-between gap-4 border-b pb-2"><span class="mono">Idempotency-Key</span><span class="text-slate-500">Required, max 128 chars</span></div></div>
+<h4 class="font-black mt-7">Body</h4><div class="mt-3 space-y-2 text-sm"><div><span class="mono font-bold">amount</span> — positive number, max 999999999.99</div><div><span class="mono font-bold">currency</span> — three-letter ISO currency code; must match the merchant currency</div><div><span class="mono font-bold">payment_method</span> — <span class="mono">cash</span>, <span class="mono">eft</span>, <span class="mono">card</span>, or <span class="mono">online</span></div><div><span class="mono font-bold">customer.name</span> — required, 1–160 characters</div><div><span class="mono font-bold">customer.email</span> — optional</div><div><span class="mono font-bold">customer.phone</span> — optional</div><div><span class="mono font-bold">description</span> — required, max 2000 characters</div><div><span class="mono font-bold">reference</span> — optional, max 200 characters</div></div></div>
+<div><div class="flex items-center justify-between mb-2"><h4 class="font-black">Node.js</h4><button class="copy border px-3 py-1.5 rounded-lg text-xs font-bold" data-copy="node-tx">Copy</button></div><pre id="node-tx" class="code rounded-2xl p-5 overflow-auto text-xs leading-6 mono">const response = await fetch(
+  'https://pddjualtnhgmplampucn.supabase.co/functions/v1/transactions',
+  {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.VALORATAP_API_KEY}`,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': 'order_12345'
+    },
+    body: JSON.stringify({
+      amount: 1250.00,
+      currency: 'ZAR',
+      payment_method: 'card',
+      customer: { name: 'John Doe' },
+      description: 'Towing service',
+      reference: 'ORDER-12345'
+    })
+  }
+);
+
+const data = await response.json();
+if (!response.ok) throw new Error(data.error);
+console.log(data);</pre></div>
+</div>
+</div>
+
+<div class="mt-5 bg-white border rounded-3xl overflow-hidden">
+<div class="p-6 border-b"><div class="flex flex-wrap items-center gap-2"><span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-black mono">POST</span><span class="mono text-sm font-bold">/functions/v1/transaction-events</span></div><h3 class="font-black text-xl mt-4">Append a Proof Chain event</h3><p class="text-sm text-slate-500 mt-2">Production endpoint for recording validated transaction lifecycle events against a receipt.</p></div>
+<div class="p-6 grid lg:grid-cols-2 gap-7">
+<div class="text-sm space-y-2"><div><span class="mono font-bold">receipt_id</span> — required UUID</div><div><span class="mono font-bold">event_type</span> — <span class="mono">CUSTOMER_ACKNOWLEDGED</span>, <span class="mono">PAYMENT_CONFIRMED</span>, <span class="mono">DELIVERY_CONFIRMED</span>, <span class="mono">FULFILMENT_CONFIRMED</span>, <span class="mono">WARRANTY_ACTIVATED</span>, <span class="mono">RETURN_REQUESTED</span>, or <span class="mono">REFUND_COMPLETED</span></div><div><span class="mono font-bold">actor_type</span> — system, merchant, customer, or api</div><div><span class="mono font-bold">actor_name</span> — optional, max 120 chars</div><div><span class="mono font-bold">metadata</span> — optional JSON object, max 8 KB</div><div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4"><b>Sandbox note:</b> transaction-events currently accepts Production keys only. Use Sandbox transactions and webhooks to validate an integration before enabling live Proof Chain writes.</div></div>
+<pre class="code rounded-2xl p-5 overflow-auto text-xs leading-6 mono">curl https://pddjualtnhgmplampucn.supabase.co/functions/v1/transaction-events \
+  -X POST \
+  -H "Authorization: Bearer vt_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "receipt_id": "RECEIPT_UUID",
+    "event_type": "DELIVERY_CONFIRMED",
+    "actor_type": "api",
+    "actor_name": "My App",
+    "metadata": {"order_id": "12345"}
+  }'</pre>
+</div></div>
+
+<div class="mt-5 bg-white border rounded-3xl overflow-hidden">
+<div class="p-6 border-b"><div class="flex flex-wrap items-center gap-2"><span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-black mono">POST</span><span class="mono text-sm font-bold">/functions/v1/verify</span></div><h3 class="font-black text-xl mt-4">Verify a receipt</h3><p class="text-sm text-slate-500 mt-2">Checks a receipt belonging to the authenticated merchant. Production only.</p></div>
+<div class="p-6 grid lg:grid-cols-2 gap-7">
+<div class="text-sm space-y-2"><div>Send either <span class="mono font-bold">receipt_id</span> or <span class="mono font-bold">verification_hash</span>.</div><div class="mt-3"><b>Permissions:</b> <span class="mono">verification:read</span>.</div><div class="bg-slate-50 rounded-xl p-4 mt-4">A successful response contains <span class="mono">verified: true</span> and the receipt's amount, currency, payment method, description, verification hash, status and timestamps.</div></div>
+<pre class="code rounded-2xl p-5 overflow-auto text-xs leading-6 mono">curl https://pddjualtnhgmplampucn.supabase.co/functions/v1/verify \
+  -X POST \
+  -H "Authorization: Bearer vt_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"verification_hash":"YOUR_HASH"}'</pre>
+</div></div>
+</section>
+
+<section id="webhooks" class="mt-12 anchor">
+<div class="chip gold">Webhooks</div><h2 class="text-3xl md:text-4xl font-black mt-2">Receive signed events</h2><p class="text-slate-500 mt-2 max-w-3xl">Create a Sandbox or Production endpoint in Developer Console → Webhooks. ValoraTap sends HTTPS POST requests and signs the exact body you receive.</p>
+<div class="grid lg:grid-cols-2 gap-5 mt-7">
+<div class="bg-white border rounded-2xl p-6"><h3 class="font-black text-lg">Headers</h3><div class="mt-4 text-sm space-y-3"><div><span class="mono font-bold">X-ValoraTap-Event</span><p class="text-slate-500">Event type, such as <span class="mono">transaction.created</span>.</p></div><div><span class="mono font-bold">X-ValoraTap-Delivery</span><p class="text-slate-500">Unique delivery ID.</p></div><div><span class="mono font-bold">X-ValoraTap-Signature</span><p class="text-slate-500">Format: <span class="mono">t=TIMESTAMP,v1=HMAC_SHA256</span>.</p></div></div></div>
+<div class="bg-white border rounded-2xl p-6"><h3 class="font-black text-lg">Signature verification</h3><p class="text-sm text-slate-500 mt-2">Compute HMAC-SHA256 over <span class="mono">timestamp + "." + raw_request_body</span> using your webhook signing secret. Compare the result to <span class="mono">v1</span> using a constant-time comparison. Do not parse and re-serialize JSON before hashing.</p></div>
+</div>
+<div class="mt-5 grid lg:grid-cols-2 gap-5">
+<div><div class="flex items-center justify-between mb-2"><div class="chip text-slate-400">Node.js</div><button class="copy border px-3 py-1.5 rounded-lg text-xs font-bold" data-copy="webhook-node">Copy</button></div><pre id="webhook-node" class="code rounded-2xl p-5 overflow-auto text-xs leading-6 mono">import crypto from 'node:crypto';
+
+export function verifyValoraTapWebhook(rawBody, signatureHeader, secret) {
+  const parts = Object.fromEntries(
+    signatureHeader.split(',').map(part => part.split('='))
+  );
+  const signed = `${parts.t}.${rawBody}`;
+  const expected = crypto
+    .createHmac('sha256', secret)
+    .update(signed, 'utf8')
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(expected),
+    Buffer.from(parts.v1 || '')
+  );
+}</pre></div>
+<div><div class="flex items-center justify-between mb-2"><div class="chip text-slate-400">Python</div><button class="copy border px-3 py-1.5 rounded-lg text-xs font-bold" data-copy="webhook-python">Copy</button></div><pre id="webhook-python" class="code rounded-2xl p-5 overflow-auto text-xs leading-6 mono">import hashlib
+import hmac
+
+def verify_valoratap_webhook(raw_body, signature, secret):
+    parts = dict(item.split("=", 1) for item in signature.split(","))
+    signed = f"{parts['t']}.{raw_body}".encode()
+    expected = hmac.new(
+        secret.encode(), signed, hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected, parts.get("v1", ""))</pre></div>
+</div>
+<div class="bg-slate-50 border rounded-2xl p-5 mt-5 text-sm"><b>Webhook delivery behaviour:</b> ValoraTap records each delivery, retries unsuccessful deliveries, and exposes delivery history in Developer Console. Return a <span class="mono">2xx</span> response after successful signature validation and processing. Make your handler idempotent using <span class="mono">X-ValoraTap-Delivery</span>.</div>
+</section>
+
+<section id="errors" class="mt-12 anchor">
+<div class="chip gold">Errors</div><h2 class="text-3xl font-black mt-2">Predictable failures</h2>
+<div class="mt-6 bg-white border rounded-3xl overflow-hidden">
+<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-left"><tr><th class="p-4">HTTP</th><th class="p-4">Code</th><th class="p-4">Meaning</th></tr></thead><tbody class="divide-y">
+<tr><td class="p-4 mono">400</td><td class="p-4 mono">missing_or_invalid_idempotency_key / invalid_json / invalid_request_body / invalid_amount / invalid_currency / invalid_payment_method / invalid_customer_name / invalid_customer_email / invalid_customer_phone / invalid_description / invalid_reference</td><td class="p-4 text-slate-500">The request is malformed or a field failed validation.</td></tr>
+<tr><td class="p-4 mono">401</td><td class="p-4 mono">missing_api_key / invalid_api_key</td><td class="p-4 text-slate-500">Authentication failed.</td></tr>
+<tr><td class="p-4 mono">403</td><td class="p-4 mono">insufficient_permissions</td><td class="p-4 text-slate-500">The key is valid but does not have the required permission.</td></tr>
+<tr><td class="p-4 mono">404</td><td class="p-4 mono">receipt_not_found</td><td class="p-4 text-slate-500">The requested receipt does not exist for the authenticated merchant.</td></tr>
+<tr><td class="p-4 mono">409</td><td class="p-4 mono">idempotency_key_reused / currency_mismatch</td><td class="p-4 text-slate-500">The request conflicts with an existing operation or merchant configuration. Reusing an idempotency key with a different payload is rejected.</td></tr>
+<tr><td class="p-4 mono">413</td><td class="p-4 mono">request_too_large</td><td class="p-4 text-slate-500">The request exceeded the endpoint size limit.</td></tr>
+<tr><td class="p-4 mono">429</td><td class="p-4 mono">rate_limit_exceeded</td><td class="p-4 text-slate-500">Rate limit reached. Respect the Retry-After header.</td></tr>
+<tr><td class="p-4 mono">500</td><td class="p-4 mono">authentication_error / rate_limit_check_error / transaction_creation_error / server_configuration_error</td><td class="p-4 text-slate-500">ValoraTap could not complete the operation. Retry only when the failure is safe to retry.</td></tr>
+</tbody></table></div></div>
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mt-5 text-sm"><b>Retry rule:</b> retry network failures and 5xx responses with the same <span class="mono">Idempotency-Key</span>. Do not generate a new idempotency key for the same logical transaction.</div>
+</section>
+
+<section class="mt-12 grid md:grid-cols-3 gap-5">
+<a href="api-keys.html" class="bg-white border rounded-2xl p-6 hover:shadow-md"><div class="chip gold">Credentials</div><h3 class="font-black text-lg mt-2">API Keys</h3><p class="text-sm text-slate-500 mt-2">Create Sandbox and Production credentials, review permissions and revoke compromised keys.</p></a>
+<a href="webhooks.html" class="bg-white border rounded-2xl p-6 hover:shadow-md"><div class="chip gold">Events</div><h3 class="font-black text-lg mt-2">Webhooks</h3><p class="text-sm text-slate-500 mt-2">Configure signed endpoints and rotate signing secrets.</p></a>
+<a href="api-logs.html" class="bg-white border rounded-2xl p-6 hover:shadow-md"><div class="chip gold">Observe</div><h3 class="font-black text-lg mt-2">API Logs</h3><p class="text-sm text-slate-500 mt-2">Inspect requests, status codes, latency and error codes.</p></a>
+</section>
+</div></main></div>
+<script>
+document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{
+ const el=document.getElementById(button.dataset.copy);if(!el)return;
+ try{await navigator.clipboard.writeText(el.innerText);const old=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=old,1200)}
+ catch{button.textContent='Copy failed';setTimeout(()=>button.textContent='Copy',1200)}
+}));
+</script>
+</body></html>

@@ -1,14 +1,10 @@
 {
   "name": "@valoratap/sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Official server-side JavaScript SDK for the ValoraTap transaction API",
   "type": "module",
   "main": "./valoratap.js",
-  "exports": {
-    ".": "./valoratap.js"
-  },
-  "engines": {
-    "node": ">=18"
-  },
+  "exports": { ".": "./valoratap.js" },
+  "engines": { "node": ">=18" },
   "license": "MIT"
 }
