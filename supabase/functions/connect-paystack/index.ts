@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
     if (existingError) throw existingError;
     if (existing?.status === 'active') return json({ ok: true, status: 'active', provider: 'paystack', settlement_currency: currency });
 
-    const platformPercentage = Math.max(0, Math.min(100, Number(Deno.env.get('VT_PAY_PLATFORM_PERCENTAGE') || '0')));
+    const platformPercentage = 0;
     const businessName = String(profile?.trading_name || merchant.business_name || '').trim().slice(0, 100);
     const contactName = String(merchant.owner_name || authData.user.user_metadata?.full_name || '').trim().slice(0, 100) || undefined;
     const contactEmail = String(profile?.business_email || authData.user.email || '').trim().slice(0, 160) || undefined;
