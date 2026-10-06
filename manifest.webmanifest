@@ -2,7 +2,7 @@
   "name": "ValoraTap",
   "short_name": "VT",
   "description": "ValoraTap business receipts, invoices and transaction verification.",
-  "start_url": "/dashboard-v2.html",
+  "start_url": "/login.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -29,5 +29,6 @@
     "business",
     "finance",
     "productivity"
-  ]
+  ],
+  "id": "/login.html"
 }
