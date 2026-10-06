@@ -1,14 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-<title id="title">ValoraTap VT</title><desc id="desc">ValoraTap VT monogram</desc>
+<title id="title">ValoraTap VT</title>
+<desc id="desc">ValoraTap VT monogram in the ValoraTap brand palette</desc>
 <defs>
-  <linearGradient id="vtg" x1="88" y1="95" x2="420" y2="390" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#8B5CF6"/>
-    <stop offset="0.5" stop-color="#6366F1"/>
-    <stop offset="1" stop-color="#2DD4BF"/>
+  <linearGradient id="vtg" x1="92" y1="92" x2="420" y2="420" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#6C4CF1"/>
+    <stop offset="0.58" stop-color="#2B2A6B"/>
+    <stop offset="1" stop-color="#10B981"/>
   </linearGradient>
 </defs>
-<rect x="28" y="28" width="456" height="456" rx="112" fill="#0B1220"/>
+<rect x="28" y="28" width="456" height="456" rx="112" fill="#0F172A"/>
 <path d="M92 108h74l74 202 74-202h74L272 404h-64L92 108z" fill="url(#vtg)"/>
 <path d="M252 108h168v62h-53v234h-64V170h-51v-62z" fill="url(#vtg)"/>
-<path d="M252 108h168" stroke="#FFFFFF" stroke-opacity=".16" stroke-width="3"/>
+<path d="M252 108h168" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="3"/>
 </svg>
