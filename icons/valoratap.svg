@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0F172A"/><rect x="48" y="48" width="416" height="416" rx="96" fill="#6C4CF1"/><path d="M116 130h280v64H292v188h-72V194H116z" fill="#fff"/><path d="M330 130h66v64h-66z" fill="#10B981"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">ValoraTap VT</title><desc id="desc">ValoraTap VT monogram</desc>
+<defs>
+  <linearGradient id="vtg" x1="88" y1="95" x2="420" y2="390" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#8B5CF6"/>
+    <stop offset="0.5" stop-color="#6366F1"/>
+    <stop offset="1" stop-color="#2DD4BF"/>
+  </linearGradient>
+</defs>
+<rect x="28" y="28" width="456" height="456" rx="112" fill="#0B1220"/>
+<path d="M92 108h74l74 202 74-202h74L272 404h-64L92 108z" fill="url(#vtg)"/>
+<path d="M252 108h168v62h-53v234h-64V170h-51v-62z" fill="url(#vtg)"/>
+<path d="M252 108h168" stroke="#FFFFFF" stroke-opacity=".16" stroke-width="3"/>
+</svg>
