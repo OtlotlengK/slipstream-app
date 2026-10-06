@@ -9,7 +9,8 @@
 
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
   const write = v => localStorage.setItem(KEY, JSON.stringify(v));
-  const bytesToB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));\n  const bytesToB64Url = bytes => bytesToB64(bytes).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');
+  const bytesToB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
+  const bytesToB64Url = bytes => bytesToB64(bytes).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');
   const b64ToBytes = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   const randomBytes = n => crypto.getRandomValues(new Uint8Array(n));
 
@@ -192,7 +193,8 @@
   function lockNow(){ ensureOverlay(); const s=read(); if(s.enabled){s.locked=true;write(s);document.getElementById('vt-lock-overlay').hidden=false;const b=document.getElementById('vt-lock-biometric');if(b)b.classList.toggle('hidden',!s.biometric);} }
   function status(){const s=read();return {enabled:Boolean(s.enabled),pin:Boolean(s.pin),biometric:Boolean(s.biometric),locked:Boolean(s.locked)};}
   function removePin(){const s=read();delete s.pin;setLockEnabled();}
-  function removeBiometric(){const s=read();delete s.biometric;setLockEnabled();}\n  function disable(){localStorage.removeItem(KEY);localStorage.removeItem(HIDDEN_AT);const o=document.getElementById('vt-lock-overlay');if(o)o.hidden=true;}
+  function removeBiometric(){const s=read();delete s.biometric;setLockEnabled();}
+  function disable(){localStorage.removeItem(KEY);localStorage.removeItem(HIDDEN_AT);const o=document.getElementById('vt-lock-overlay');if(o)o.hidden=true;}
 
   window.ValoraAppLock={setupPin,setupBiometric,lockNow,status,removePin,removeBiometric,disable,lock};
   document.addEventListener('DOMContentLoaded',()=>{
