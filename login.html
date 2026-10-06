@@ -28,6 +28,7 @@
 <label class="block mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Password<input id="password" type="password" autocomplete="current-password" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="Minimum 6 characters"></label>
 <div id="message" class="hidden mt-4 p-3 rounded-xl text-xs"></div>
 <button id="submit" class="w-full mt-5 bg-[#6C4CF1] hover:bg-[#8B7CF6] text-[#0F172A] font-black py-3 rounded-xl">Log In</button>
+<button id="forgot" class="w-full mt-3 text-xs text-slate-400 hover:text-white font-bold">Forgot password?</button>
 <button id="resend" class="hidden w-full mt-3 text-xs text-slate-300 hover:text-white font-bold">Resend verification email</button>
 <button id="switch" class="w-full mt-4 text-xs text-[#8B7CF6] hover:text-white font-medium">Don't have an account? Create one</button>
 <button id="install" class="hidden w-full mt-4 bg-white/5 border border-[#6C4CF1]/40 text-[#8B7CF6] font-bold py-3 rounded-xl">Install ValoraTap App</button>
@@ -38,10 +39,11 @@ const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const verifyRedirect=new URL('/confirm-signup.html',location.origin).href;
+const resetRedirect=new URL('/reset-password.html',location.origin).href;
 let signup=new URLSearchParams(location.search).get('mode')==='signup';
 const $=id=>document.getElementById(id);
 function msg(t,error=false){$('message').textContent=t;$('message').className='mt-4 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');}
-function render(){ $('signup-fields').classList.toggle('hidden',!signup);$('title').textContent=signup?'Create your merchant account':'Welcome back';$('subtitle').textContent=signup?'Start issuing verifiable digital receipts.':'Log in to your merchant dashboard.';$('submit').textContent=signup?'Create Merchant Account':'Log In';$('switch').textContent=signup?'Already have an account? Log in':"Don't have an account? Create one"; }
+function render(){ $('signup-fields').classList.toggle('hidden',!signup);$('title').textContent=signup?'Create your merchant account':'Welcome back';$('subtitle').textContent=signup?'Start issuing verifiable digital receipts.':'Log in to your merchant dashboard.';$('submit').textContent=signup?'Create Merchant Account':'Log In';$('switch').textContent=signup?'Already have an account? Log in':"Don't have an account? Create one";$('forgot').classList.toggle('hidden',signup);}
 async function route(){const {data:{user}}=await db.auth.getUser();if(!user){location.href='/login.html';return}const {data}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).maybeSingle();if(!data||!data.business_name||!data.owner_name){location.href='/onboarding.html';return}location.href='/index.html';}
 async function submit(){const email=$('email').value.trim(),password=$('password').value,button=$('submit');if(!email||!password){msg('Please enter your email and password.',true);return}button.disabled=true;button.textContent=signup?'Creating account...':'Logging in...';$('resend').classList.add('hidden');
 if(signup){const business=$('business').value.trim(),owner=$('owner').value.trim();if(!business||!owner){msg('Please enter your business name and your name.',true);button.disabled=false;render();return}
@@ -50,7 +52,10 @@ if(error){msg(error.message,true)}else if(data.session){await route()}else{signu
 }else{const {error}=await db.auth.signInWithPassword({email,password});if(error){msg(error.message,true);if(error.message.toLowerCase().includes('email not confirmed'))$('resend').classList.remove('hidden')}else await route()}
 button.disabled=false;render();}
 async function resend(){const email=$('email').value.trim();if(!email){msg('Enter your email address first.',true);return}const {error}=await db.auth.resend({type:'signup',email,options:{emailRedirectTo:verifyRedirect}});if(error)msg(error.message,true);else msg('Verification email sent. Check your inbox and spam/junk folder.')}
-$('submit').onclick=submit;$('switch').onclick=()=>{signup=!signup;render();$('resend').classList.add('hidden');$('message').classList.add('hidden')};$('resend').onclick=resend;
+$('submit').onclick=submit;
+$('forgot').onclick=()=>{const email=$('email').value.trim();location.href='/reset-password.html'+(email?'?email='+encodeURIComponent(email):'');};
+$('switch').onclick=()=>{signup=!signup;render();$('resend').classList.add('hidden');$('message').classList.add('hidden')};
+$('resend').onclick=resend;
 (async()=>{const {data:{session}}=await db.auth.getSession();if(session)await route();else render()})();
 let deferred=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').classList.remove('hidden')});$('install').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('install').classList.add('hidden')};
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
