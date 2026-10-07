@@ -129,9 +129,9 @@ function render(){
     if(od){cls='bg-red-100 text-red-700';label='overdue';}
     const review=status==='payment_submitted'&&r.id?'<a class="btn primary" href="invoice-review.html?id='+encodeURIComponent(r.id)+'">Review POP →</a>':'';
     const open='<a class="btn ghost" href="invoice-preview.html?id='+encodeURIComponent(r.id)+'">Open Invoice</a>';
-    const timeline='<a class="btn ghost" href="invoice-timeline.html?id='+encodeURIComponent(r.id)+'">Timeline</a>';
+    const timeline='<a class="btn ghost" href="invoice-timeline.html?id='+encodeURIComponent(r.id)+'">Timeline</a>'; const evidenceCase='<a class="btn ghost" href="evidence-case.html?id='+encodeURIComponent(r.id)+'">Evidence</a>';
     const share='<button type="button" class="btn ghost" data-share-id="'+esc(r.id)+'">Share</button>';
-    return '<div class="row p-5 flex flex-col md:flex-row md:items-center gap-4"><div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black">'+esc(r.invoice_no)+'</span><span class="pill '+cls+'">'+esc(label)+'</span></div><div class="text-sm font-bold mt-2">'+esc(r.customer_name)+'</div><div class="text-[10px] text-slate-400 mt-1">Due '+esc(r.due_date||'—')+' · '+esc(r.customer_email||'No email')+'</div></div><div class="text-lg font-black md:text-right">'+money(r.total)+'</div><div class="queue-actions flex flex-wrap gap-2 md:ml-3">'+review+open+timeline+share+'</div></div>';
+    return '<div class="row p-5 flex flex-col md:flex-row md:items-center gap-4"><div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black">'+esc(r.invoice_no)+'</span><span class="pill '+cls+'">'+esc(label)+'</span></div><div class="text-sm font-bold mt-2">'+esc(r.customer_name)+'</div><div class="text-[10px] text-slate-400 mt-1">Due '+esc(r.due_date||'—')+' · '+esc(r.customer_email||'No email')+'</div></div><div class="text-lg font-black md:text-right">'+money(r.total)+'</div><div class="queue-actions flex flex-wrap gap-2 md:ml-3">'+review+open+timeline+evidenceCase+share+'</div></div>';
   }).join('');
 
   bindControls();
