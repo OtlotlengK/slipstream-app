@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' https://cdn.jsdelivr.net;connect-src 'self' https://pddjualtnhgmplampucn.supabase.co;style-src 'self' 'unsafe-inline';img-src 'self' data: blob:;base-uri 'none';form-action 'self';frame-ancestors 'none'">
+<title>ValoraTap | Evidence Case</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/app-lock.js" defer></script>
+<style>
+:root{--brand:#0F766E;--brand2:#14B8A6;--paper:#F6F9F8;--ink:#0F172A;--muted:#64748B;--line:#DDE7E5}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#F7FAF9 0%,#F8FAFC 48%,#F8FAFC 100%);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}
+.top{background:#101C1B;color:#fff}.topin,.wrap{max-width:1120px;margin:auto}.topin{padding:15px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-weight:950;letter-spacing:.16em;color:#fff;text-decoration:none}.btn{border:0;border-radius:11px;padding:10px 13px;font-size:11px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}.dark{background:#17201F;color:#fff}.primary{background:var(--brand);color:#fff}.wrap{padding:28px 18px 60px}.label{font-size:9px;font-weight:950;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}h1{font-size:34px;line-height:1.05;margin:7px 0}h2{font-size:18px;margin:0}.muted{color:var(--muted);font-size:12px;line-height:1.55}.card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 4px 18px rgba(15,23,42,.045)}.pad{padding:22px}.hero{background:linear-gradient(135deg,#10201E,#17443E);color:#fff;border-color:#28534D}.hero .label,.hero .muted{color:#B9D3CE}.hero h1{color:#fff}.hero-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.grid2{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.kv{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid #EDF2F1;font-size:12px}.kv:last-child{border-bottom:0}.health{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:16px}.check{border:1px solid var(--line);background:#F8FBFA;border-radius:14px;padding:11px;min-width:0}.check.ok{border-color:#A7F3D0;background:#ECFDF5}.check.warn{border-color:#FDE68A;background:#FFFBEB}.check.bad{border-color:#FECACA;background:#FEF2F2}.check .mark{font-size:15px;font-weight:950}.check strong{display:block;font-size:11px;margin-top:3px}.check span{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4}.docs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:15px}.doc{border:1px solid var(--line);border-radius:15px;padding:14px;background:#fff}.doc .topline{display:flex;justify-content:space-between;gap:10px}.pill{display:inline-flex;border-radius:999px;padding:5px 8px;font-size:8px;font-weight:950;text-transform:uppercase;letter-spacing:.07em}.green{background:#DCFCE7;color:#166534}.amber{background:#FEF3C7;color:#92400E}.red{background:#FEE2E2;color:#991B1B}.slate{background:#E2E8F0;color:#334155}.timeline{margin-top:16px}.event{display:grid;grid-template-columns:24px 1fr;gap:12px;padding-bottom:18px;position:relative}.event:last-child{padding-bottom:0}.dot{width:11px;height:11px;border-radius:50%;background:var(--brand);margin-top:4px;position:relative;z-index:2}.event:not(:last-child) .dot:after{content:'';position:absolute;left:5px;top:11px;width:1px;height:calc(100% + 18px);background:#DDE7E5}.event-name{font-size:12px;font-weight:950}.event-meta{font-size:10px;color:var(--muted);margin-top:3px}.meta{margin-top:6px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:9px;padding:7px;font-size:9px;word-break:break-word;color:#475569}.notice{padding:13px 14px;border-radius:13px;border:1px solid var(--line);font-size:11px;line-height:1.5}.success{background:#ECFDF5;border-color:#A7F3D0;color:#166534}.warnbox{background:#FFFBEB;border-color:#FDE68A;color:#92400E}.error{background:#FEF2F2;border-color:#FECACA;color:#991B1B}.hidden{display:none!important}.footer-actions{display:flex;gap:8px;flex-wrap:wrap}.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.amount{font-size:28px;font-weight:950}.empty{padding:25px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:780px){.grid2{grid-template-columns:1fr}.health{grid-template-columns:1fr 1fr}.docs{grid-template-columns:1fr}h1{font-size:29px}.wrap{padding:22px 14px 45px}.pad{padding:18px}.topin{padding:13px 14px}.topin .btn{padding:9px 10px}}
+@media(max-width:470px){.health{grid-template-columns:1fr}.hero-actions .btn,.footer-actions .btn{width:100%}.kv{align-items:flex-start}.kv strong{text-align:right;max-width:58%;overflow-wrap:anywhere}}
+@media print{body{background:#fff}.top,.no-print{display:none!important}.wrap{padding:0;max-width:none}.card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}.hero{color:#000;background:#fff;border:1px solid #ddd}.hero h1{color:#000}.hero .label,.hero .muted{color:#64748B}.grid2{grid-template-columns:1fr}.docs{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header class="top no-print"><div class="topin"><a class="brand" href="dashboard-v2.html">VALORATAP</a><div style="display:flex;gap:8px"><a class="btn ghost" href="invoice-centre.html">← Invoice Centre</a><button id="logoutBtn" class="btn dark">Log out</button></div></div></header>
+<main class="wrap">
+<section class="card hero pad">
+  <div class="label">Evidence Case</div>
+  <h1 id="title">Loading transaction…</h1>
+  <div id="subtitle" class="muted">Building the transaction record from invoice, payment, proof and receipt data.</div>
+  <div class="hero-actions no-print"><button id="printBtn" class="btn" style="background:#fff;color:#17201F">Print / Save Evidence Pack</button><a id="reviewBtn" class="btn" style="background:#D1FAE5;color:#065F46" href="#">Review POP</a></div>
+</section>
+
+<div id="message" class="notice hidden" style="margin-top:14px"></div>
+
+<section class="grid2" style="margin-top:18px">
+  <div class="card pad">
+    <div class="section-head"><div><div class="label">Transaction summary</div><h2 style="margin-top:4px">One record. One story.</h2></div><span id="statusPill" class="pill slate">Loading</span></div>
+    <div style="margin-top:12px">
+      <div class="kv"><span>Invoice</span><strong id="invoiceNo">—</strong></div>
+      <div class="kv"><span>Customer</span><strong id="customer">—</strong></div>
+      <div class="kv"><span>Amount</span><strong id="amount" class="amount">—</strong></div>
+      <div class="kv"><span>Payment status</span><strong id="paymentStatus">—</strong></div>
+      <div class="kv"><span>Receipt</span><strong id="receiptNo">Not issued</strong></div>
+      <div class="kv"><span>Issued</span><span id="issued">—</span></div>
+    </div>
+  </div>
+  <div class="card pad">
+    <div class="label">Evidence Health</div><h2 style="margin-top:4px">Transaction consistency</h2>
+    <div id="healthScore" style="font-size:24px;font-weight:950;margin-top:12px">—</div>
+    <div id="healthCopy" class="muted">Checking the evidence chain…</div>
+  </div>
+</section>
+
+<section class="card pad" style="margin-top:18px">
+  <div class="section-head"><div><div class="label">Evidence Health</div><h2 style="margin-top:4px">What VT knows about this transaction</h2></div></div>
+  <div id="health" class="health"></div>
+</section>
+
+<section class="card pad" style="margin-top:18px">
+  <div class="section-head"><div><div class="label">Documents & records</div><h2 style="margin-top:4px">Evidence attached to this case</h2></div><span id="docCount" class="label">0 records</span></div>
+  <div id="docs" class="docs"></div>
+</section>
+
+<section class="card pad" style="margin-top:18px">
+  <div class="section-head"><div><div class="label">Activity</div><h2 style="margin-top:4px">Transaction timeline</h2><div class="muted" style="margin-top:3px">Who or what moved the transaction forward, and when.</div></div><span id="eventCount" class="label">0 events</span></div>
+  <div id="timeline" class="timeline"></div>
+</section>
+
+<section id="fulfilmentCard" class="card pad no-print" style="margin-top:18px">
+  <div class="section-head"><div><div class="label">Fulfilment evidence</div><h2 style="margin-top:4px">Record what happened after payment</h2><div class="muted" style="margin-top:3px">For goods, services, delivery or appointments, this creates a traceable fulfilment milestone.</div></div></div>
+  <div id="fulfilmentState" class="notice warnbox" style="margin-top:14px">No fulfilment event recorded yet.</div>
+  <div style="margin-top:12px"><button id="fulfilmentBtn" class="btn primary">＋ Record fulfilment</button></div>
+</section>
+
+<section class="card pad no-print" style="margin-top:18px;background:#17201F;color:#fff;border-color:#17201F">
+  <div class="footer-actions"><a id="invoiceBtn" class="btn" style="background:#fff;color:#17201F" href="#">Open Invoice</a><a id="receiptBtn" class="btn" style="background:#fff;color:#17201F" href="#">Open Receipt Verification</a><button id="printBtn2" class="btn" style="background:#0F766E;color:#fff">Print / Save Pack</button></div>
+</section>
+<p class="label" style="text-align:center;margin-top:20px">ValoraTap Evidence Protocol · Merchant-only case view</p>
+</main>
+<script>
+const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
+const KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+const db=supabase.createClient(SUPABASE_URL,KEY);
+const id=new URLSearchParams(location.search).get('id');
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const money=(n,c='ZAR')=>{try{return new Intl.NumberFormat('en-ZA',{style:'currency',currency:String(c||'ZAR').toUpperCase(),minimumFractionDigits:2}).format(Number(n)||0)}catch{return String(c||'ZAR')+' '+Number(n||0).toFixed(2)}};
+let invoice=null,pop=null,receipt=null,payment=null,events=[],txEvents=[];
+
+function message(text,type='error'){const el=$('#message');el.textContent=text;el.className='notice '+(type==='success'?'success':type==='warn'?'warnbox':'error');el.classList.remove('hidden')}
+function pill(status){const s=String(status||'').toLowerCase();const map={paid:['Paid','green'],payment_submitted:['Payment submitted','amber'],issued:['Awaiting payment','slate'],cancelled:['Cancelled','red'],refunded:['Refunded','amber']};return map[s]||[s.replaceAll('_',' ')||'Unknown','slate']}
+function fmtDate(v){return v?new Date(v).toLocaleString('en-ZA'):'—'}
+
+async function init(){
+ try{
+  const {data:{session},error:se}=await db.auth.getSession();
+  if(se)throw se;if(!session){location.href='login.html';return}
+  if(!/^[0-9a-f-]{36}$/i.test(id||'')){throw new Error('Invalid invoice reference.')}
+  const inv=await db.rpc('get_merchant_invoice',{p_invoice_id:id});
+  if(inv.error)throw inv.error;invoice=Array.isArray(inv.data)?inv.data[0]:inv.data;
+  if(!invoice)throw new Error('Invoice not found or access denied.');
+
+  const [shield,timeline,receiptRes,paymentRes,popRes]=await Promise.all([
+   db.rpc('get_invoice_pop_shield',{p_invoice_id:id}),
+   db.rpc('get_invoice_timeline',{p_invoice_id:id}),
+   invoice.receipt_id?db.from('receipts').select('id,receipt_no,status,verification_hash,amount,currency_code,created_at,payment_method,transaction_category').eq('id',invoice.receipt_id).maybeSingle():Promise.resolve({data:null,error:null}),
+   db.from('payment_intents').select('id,provider,provider_reference,provider_transaction_id,amount,currency,status,created_at,paid_at').eq('invoice_id',id).order('created_at',{ascending:false}).limit(1).maybeSingle(),
+   db.from('invoice_pop_submissions').select('id,file_sha256,file_size,mime_type,shield_status,checks,evidence,created_at,updated_at').eq('invoice_id',id).order('created_at',{ascending:false}).limit(1).maybeSingle()
+  ]);
+  if(shield.error)console.warn('POP Shield unavailable',shield.error);
+  pop=shield.data||{status:'unconfirmed',has_submission:false,checks:{}};
+  events=timeline.error?[]:(timeline.data||[]);
+  receipt=receiptRes.error?null:receiptRes.data;
+  payment=paymentRes.error?null:paymentRes.data;
+  pop=popRes.error?pop:popRes.data?{...pop,has_submission:true,submission_id:popRes.data.id,file_sha256:popRes.data.file_sha256,file_size:popRes.data.file_size,mime_type:popRes.data.mime_type,shield_status:popRes.data.shield_status,checks:popRes.data.checks,evidence:popRes.data.evidence,created_at:popRes.data.created_at}:pop;
+
+  if(receipt?.id){
+   const tx=await db.from('transaction_events').select('id,event_type,actor_type,actor_name,metadata,created_at').eq('receipt_id',receipt.id).order('created_at',{ascending:true});
+   txEvents=tx.error?[]:(tx.data||[]);
+  }
+  render();
+ }catch(e){message(e?.message||'Unable to load this Evidence Case.');$('#title').textContent='Evidence Case unavailable';$('#fulfilmentCard').classList.add('hidden')}
+}
+
+function render(){
+ const [status,statusClass]=pill(invoice.status);
+ $('#title').textContent=(invoice.invoice_no||'Invoice')+' · Evidence Case';
+ $('#subtitle').textContent='A merchant-side case file connecting the invoice, payment, proof, receipt and transaction history.';
+ $('#invoiceNo').textContent=invoice.invoice_no||'—';$('#customer').textContent=invoice.customer_name||'—';$('#amount').textContent=money(invoice.total,invoice.currency);
+ $('#paymentStatus').textContent=status;$('#receiptNo').textContent=receipt?.receipt_no||'Not issued';$('#issued').textContent=fmtDate(invoice.created_at);
+ $('#statusPill').textContent=status;$('#statusPill').className='pill '+statusClass;
+ $('#invoiceBtn').href='invoice-preview.html?id='+encodeURIComponent(invoice.id);
+ $('#reviewBtn').href='invoice-review.html?id='+encodeURIComponent(invoice.id);
+ $('#reviewBtn').classList.toggle('hidden',!pop?.has_submission);
+ if(receipt?.verification_hash)$('#receiptBtn').href='verify.html?hash='+encodeURIComponent(receipt.verification_hash);else $('#receiptBtn').classList.add('hidden');
+ renderHealth();renderDocs();renderTimeline();renderFulfilment();
+}
+
+function renderHealth(){
+ const checks=[
+  ['Invoice identified',true,'Invoice '+(invoice.invoice_no||'—')+' is linked to this case.'],
+  ['Payment recorded',!!(payment||invoice.payment_submitted_at||invoice.status==='paid'),'VT has a payment state or submission for this invoice.'],
+  ['POP evidence',!!pop?.has_submission,'Proof of payment has been attached to the payment case.'],
+  ['Settlement confirmed',invoice.status==='paid'||payment?.status==='paid'||pop?.status==='verified','Independent settlement/confirmation is recorded.'],
+  ['Receipt issued',!!receipt?.verification_hash,'A receipt verification record exists.'],
+  ['Activity recorded',events.length+txEvents.length>0,'The transaction has traceable activity events.']
+ ];
+ const passed=checks.filter(x=>x[1]).length;
+ $('#healthScore').textContent=passed+'/'+checks.length+' checks passed';
+ $('#healthCopy').textContent=passed===checks.length?'Evidence chain is complete for the records currently available.':passed>=4?'Mostly complete — review the outstanding evidence before treating the case as closed.':'Evidence is incomplete — more transaction evidence is needed.';
+ $('#health').innerHTML=checks.map(([name,ok,copy])=>'<div class="check '+(ok?'ok':'warn')+'"><div class="mark">'+(ok?'✓':'—')+'</div><strong>'+esc(name)+'</strong><span>'+esc(copy)+'</span></div>').join('');
+}
+
+function docCard(title,status,copy,href,meta){
+ const cls=status==='Confirmed'?'green':status==='Review'?'amber':status==='Missing'?'slate':'slate';
+ return '<article class="doc"><div class="topline"><strong style="font-size:12px">'+esc(title)+'</strong><span class="pill '+cls+'">'+esc(status)+'</span></div><div class="muted" style="margin-top:6px">'+esc(copy)+'</div>'+(meta?'<div style="font-size:9px;color:#94A3B8;margin-top:7px">'+esc(meta)+'</div>':'')+(href?'<a class="btn ghost no-print" style="margin-top:10px;width:100%" href="'+href+'">Open record →</a>':'')+'</article>';
+}
+function renderDocs(){
+ const docs=[];
+ docs.push(docCard('Invoice',invoice.status==='paid'||invoice.status==='payment_submitted'||invoice.status==='issued'?'Confirmed':'Review','Original invoice and commercial terms.','invoice-preview.html?id='+encodeURIComponent(invoice.id),'Amount '+money(invoice.total,invoice.currency)));
+ if(pop?.has_submission)docs.push(docCard('Proof of payment',pop.status==='verified'?'Confirmed':(pop.status==='suspicious'||pop.status==='duplicate'?'Review':'Review'),'Submitted POP with file hash and Shield checks.','invoice-review.html?id='+encodeURIComponent(invoice.id),(pop.mime_type||'file')+' · '+((Number(pop.file_size||0)/1024).toFixed(1))+' KB'));
+ else docs.push(docCard('Proof of payment','Missing','No POP submission is attached to this invoice yet.',null,'Payment can still be verified through a supported online settlement.'));
+ if(payment)docs.push(docCard('Payment record',payment.status==='paid'?'Confirmed':'Recorded','Payment intent and provider reference recorded by VT.',null,(payment.provider||'provider')+' · '+(payment.provider_reference||'No reference')));
+ else docs.push(docCard('Payment record','Missing','No online payment intent is currently linked to this invoice.',null,'Manual payment cases may rely on POP evidence.'));
+ if(receipt?.verification_hash)docs.push(docCard('Receipt','Confirmed','Final receipt with a public verification record.','verify.html?hash='+encodeURIComponent(receipt.verification_hash),receipt.receipt_no||'Verified receipt'));
+ else docs.push(docCard('Receipt','Missing','No receipt has been issued yet.',null,'Receipt issuance follows confirmed payment.'));
+ $('#docCount').textContent=docs.length+' records';$('#docs').innerHTML=docs.join('');
+}
+
+function renderTimeline(){
+ const all=[];
+ events.forEach(e=>all.push({type:e.event_type,actor:e.actor_type,meta:e.metadata,at:e.created_at}));
+ txEvents.forEach(e=>all.push({type:e.event_type,actor:e.actor_name||e.actor_type,meta:e.metadata,at:e.created_at}));
+ if(!all.some(e=>e.type==='INVOICE_CREATED'))all.unshift({type:'INVOICE_CREATED',actor:'system',meta:{},at:invoice.created_at});
+ const labels={INVOICE_CREATED:'Invoice created',INVOICE_SENT:'Invoice sent',INVOICE_VIEWED:'Invoice viewed',PAYMENT_SUBMITTED:'Proof of payment submitted',PAYMENT_CONFIRMED:'Payment confirmed',PAYMENT_REJECTED:'Payment rejected',RECEIPT_ISSUED:'Receipt issued',FULFILMENT_CONFIRMED:'Fulfilment recorded',CUSTOMER_ACKNOWLEDGED:'Customer acknowledgement'};
+ all.sort((a,b)=>new Date(a.at)-new Date(b.at));
+ $('#eventCount').textContent=all.length+' event'+(all.length===1?'':'s');
+ $('#timeline').innerHTML=all.length?all.map(e=>'<div class="event"><div class="dot"></div><div><div class="event-name">'+esc(labels[e.type]||String(e.type||'Event').replaceAll('_',' '))+'</div><div class="event-meta">'+esc(fmtDate(e.at))+' · '+esc(e.actor||'system')+'</div>'+(e.meta&&Object.keys(e.meta).length?'<div class="meta">'+esc(JSON.stringify(e.meta))+'</div>':'')+'</div></div>').join(''):'<div class="empty">No activity recorded yet.</div>';
+}
+
+function renderFulfilment(){
+ const f=txEvents.find(e=>e.event_type==='FULFILMENT_CONFIRMED');
+ const state=$('#fulfilmentState'),btn=$('#fulfilmentBtn');
+ if(f){state.className='notice success';state.textContent='Fulfilment recorded '+fmtDate(f.created_at)+' by '+(f.actor_name||'merchant')+'.';btn.disabled=true;btn.textContent='✓ Fulfilment recorded';}
+}
+
+async function recordFulfilment(){
+ if(!receipt?.id){message('A receipt must exist before fulfilment can be added to the Proof Chain.','warn');return}
+ const btn=$('#fulfilmentBtn');btn.disabled=true;btn.textContent='Recording…';
+ const {error}=await db.rpc('record_transaction_event',{p_receipt_id:receipt.id,p_event_type:'FULFILMENT_CONFIRMED',p_actor_type:'merchant',p_actor_name:null,p_metadata:{source:'evidence_case'}});
+ if(error){btn.disabled=false;btn.textContent='＋ Record fulfilment';message(error.message||'Unable to record fulfilment.');return}
+ message('Fulfilment has been added to the transaction Proof Chain.','success');
+ const tx=await db.from('transaction_events').select('id,event_type,actor_type,actor_name,metadata,created_at').eq('receipt_id',receipt.id).order('created_at',{ascending:true});txEvents=tx.error?txEvents:(tx.data||[]);
+ renderHealth();renderTimeline();renderFulfilment();
+}
+
+function printPack(){window.print()}
+$('#printBtn').addEventListener('click',printPack);$('#printBtn2').addEventListener('click',printPack);$('#fulfilmentBtn').addEventListener('click',recordFulfilment);
+$('#logoutBtn').addEventListener('click',async()=>{const {error}=await db.auth.signOut({scope:'global'});if(error){message(error.message);return}location.href='login.html'});
+init();
+</script>
+</body>
+</html>
