@@ -74,11 +74,6 @@ Deno.serve(async (req) => {
     }
     const zeroDecimalCurrencies = new Set(['XOF']);
     const minorUnits = zeroDecimalCurrencies.has(String(intent.currency || currency).toUpperCase()) ? 0 : 2;
-    const minimumAmount = String(intent.currency || currency).toUpperCase() === 'ZAR' ? 1 : 0;
-    if (Number(intent.amount) < minimumAmount) {
-      await db.from('payment_intents').update({ status:'failed', updated_at:new Date().toISOString(), metadata:{source:'valoratap',failure_reason:'amount_below_provider_minimum',minimum_amount:minimumAmount} }).eq('id',intent.payment_intent_id).eq('status','pending');
-      return json({ error:'amount_below_provider_minimum', message:`Online payment minimum for ${String(intent.currency || currency).toUpperCase()} is ${minimumAmount.toFixed(2)}. This invoice can still be settled manually.` },409);
-    }
     const amountSubunit = Math.round(Number(intent.amount) * (10 ** minorUnits));
     if (!Number.isFinite(amountSubunit) || amountSubunit <= 0) {
       await db.from('payment_intents').update({ status:'failed', updated_at:new Date().toISOString(), metadata:{source:'valoratap',failure_reason:'invalid_invoice_amount'} }).eq('id',intent.payment_intent_id).eq('status','pending');
