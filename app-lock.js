@@ -10,7 +10,7 @@
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
   const write = v => localStorage.setItem(KEY, JSON.stringify(v));
   const bytesToB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
-  const bytesToB64Url = bytes => bytesToB64(bytes).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');
+  const bytesToB64Url = bytes => bytesToB64(bytes).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   const b64ToBytes = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
   const randomBytes = n => crypto.getRandomValues(new Uint8Array(n));
 
@@ -107,7 +107,7 @@
   async function unlockWithPin() {
     const s=read(), pin=document.getElementById('vt-lock-pin')?.value||'';
     if(!s.pin){ showMessage('No PIN is configured. Use your device biometric or set a PIN in Settings.',true); return; }
-    if(!/^\\d{6,8}$/.test(pin)){ showMessage('Enter your 6–8 digit VT PIN.',true); return; }
+    if(!/^\d{6,8}$/.test(pin)){ showMessage('Enter your 6–8 digit VT PIN.',true); return; }
     try{
       const salt=b64ToBytes(s.pin.salt);
       const hash=await derivePin(pin,salt,s.pin.iterations||120000);
@@ -158,7 +158,7 @@
   }
 
   async function setupPin(pin) {
-    if(!/^\\d{6,8}$/.test(pin)) throw new Error('PIN must be 6–8 digits.');
+    if(!/^\d{6,8}$/.test(pin)) throw new Error('PIN must be 6–8 digits.');
     const salt=randomBytes(16), iterations=120000, hash=await derivePin(pin,salt,iterations);
     const s=read(); s.pin={salt:bytesToB64(salt),hash:bytesToB64(hash),iterations}; s.enabled=true; s.locked=false; write(s);
     return true;
