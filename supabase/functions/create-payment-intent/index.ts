@@ -33,7 +33,6 @@ Deno.serve(async (req) => {
     if (tokenRetry) return json({ error: 'rate_limited' }, 429, { 'Retry-After': String(tokenRetry) });
     const url = Deno.env.get('SUPABASE_URL'), key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'), paystackKey = Deno.env.get('PAYSTACK_SECRET_KEY');
     if (!url || !key) return json({ error: 'service_configuration_error' }, 500);
-    if (!paystackKey) return json({ error: 'payment_provider_not_configured', message: 'ValoraTap Pay is not configured for payments yet.' }, 503);
     const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
     const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
     const tokenHash = Array.from(new Uint8Array(hash), b => b.toString(16).padStart(2, '0')).join('');
@@ -43,6 +42,7 @@ Deno.serve(async (req) => {
     const { data: merchantSetting, error: merchantSettingError } = await db.from('merchants').select('pay_now_enabled').eq('id', invoice.merchant_id).maybeSingle();
     if (merchantSettingError) throw merchantSettingError;
     if (merchantSetting?.pay_now_enabled !== true) return json({ error: 'pay_now_disabled', message: 'This business has not enabled Pay Now. Please use the manual payment options shown on the invoice.' }, 403);
+    if (!paystackKey) return json({ error: 'payment_provider_not_configured', message: 'ValoraTap Pay is not configured for payments yet.' }, 503);
     if (invoiceError) throw invoiceError;
     if (!invoice) return json({ error: 'invoice_not_found' }, 404);
     if (invoice.status !== 'issued') return json({ error: 'invoice_not_payable', status: invoice.status }, 409);
