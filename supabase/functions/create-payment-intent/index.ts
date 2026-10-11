@@ -40,6 +40,11 @@ Deno.serve(async (req) => {
     const { data: invoice, error: invoiceError } = await db.from('invoices').select('id,merchant_id,invoice_no,customer_name,customer_email,total,currency,status').eq('public_token_hash', tokenHash).maybeSingle();
     if (invoiceError) throw invoiceError;
     if (!invoice) return json({ error: 'invoice_not_found' }, 404);
+    const { data: merchantSetting, error: merchantSettingError } = await db.from('merchants').select('pay_now_enabled').eq('id', invoice.merchant_id).maybeSingle();
+    if (merchantSettingError) throw merchantSettingError;
+    if (merchantSetting?.pay_now_enabled !== true) return json({ error: 'pay_now_disabled', message: 'This business has not enabled Pay Now. Please use the manual payment options shown on the invoice.' }, 403);
+    if (invoiceError) throw invoiceError;
+    if (!invoice) return json({ error: 'invoice_not_found' }, 404);
     if (invoice.status !== 'issued') return json({ error: 'invoice_not_payable', status: invoice.status }, 409);
     if (!invoice.customer_email) return json({ error: 'customer_email_required', message: 'A customer email is required for online payment.' }, 400);
     const currency = String(invoice.currency || 'ZAR').trim().toUpperCase();
