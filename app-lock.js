@@ -44,19 +44,17 @@
       <div class="vt-lock-backdrop">
         <div class="vt-lock-card">
           <div class="vt-lock-mark">V</div>
-          <div class="text-[10px] uppercase tracking-[.18em] text-teal-300 font-black">ValoraTap locked</div>
-          <h1 class="text-2xl font-black text-white mt-2">Welcome back</h1>
-          <p class="text-xs text-slate-400 mt-2">Unlock this device to continue. Your ValoraTap session is still signed in.</p>
-          <div id="vt-lock-pin-wrap" class="mt-5">
-            <label class="block text-[10px] uppercase tracking-wider text-slate-400 font-black mb-2">VT PIN</label>
-            <input id="vt-lock-pin" inputmode="numeric" autocomplete="one-time-code" maxlength="8" type="password"
-              class="w-full px-4 py-3 bg-[#0b0d10] border border-slate-700 rounded-xl text-white text-center tracking-[.45em] text-lg focus:outline-none focus:border-teal-400"
-              placeholder="••••••">
+          <div class="vt-lock-eyebrow">ValoraTap locked</div>
+          <h1 class="vt-lock-title">Welcome back</h1>
+          <p class="vt-lock-subtitle">Unlock this device to continue. Your ValoraTap session is still signed in.</p>
+          <div id="vt-lock-pin-wrap" class="vt-lock-pin-wrap">
+            <label class="vt-lock-label" for="vt-lock-pin">VT PIN</label>
+            <input id="vt-lock-pin" inputmode="numeric" autocomplete="one-time-code" maxlength="8" type="password" class="vt-lock-input" placeholder="Enter your PIN">
           </div>
-          <button id="vt-lock-unlock" type="button" class="w-full mt-3 py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-black text-sm">Unlock</button>
-          <button id="vt-lock-biometric" type="button" class="hidden w-full mt-3 py-3 rounded-xl border border-teal-400/30 bg-teal-400/10 text-teal-200 font-black text-sm">Use fingerprint / Face ID</button>
-          <div id="vt-lock-message" class="text-xs mt-3 text-slate-400"></div>
-          <button id="vt-lock-logout" type="button" class="mt-5 text-[10px] text-slate-500 hover:text-red-300">Log out completely</button>
+          <button id="vt-lock-unlock" type="button" class="vt-lock-button vt-lock-primary">Unlock</button>
+          <button id="vt-lock-biometric" type="button" class="vt-lock-button vt-lock-biometric vt-lock-hidden">Use fingerprint / Face ID</button>
+          <div id="vt-lock-message" class="vt-lock-message"></div>
+          <button id="vt-lock-logout" type="button" class="vt-lock-logout">Log out completely</button>
         </div>
       </div>`;
     const style = document.createElement('style');
@@ -65,7 +63,26 @@
       #vt-lock-overlay[hidden]{display:none!important}
       .vt-lock-backdrop{min-height:100%;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,8,10,.94);backdrop-filter:blur(18px)}
       .vt-lock-card{width:min(390px,100%);padding:28px;border:1px solid rgba(45,212,191,.22);border-radius:24px;background:linear-gradient(145deg,#17201F,#0d1514);box-shadow:0 30px 90px rgba(0,0,0,.5);text-align:center}
-      .vt-lock-mark{width:48px;height:48px;margin:0 auto 14px;border-radius:15px;display:flex;align-items:center;justify-content:center;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.28);color:#5eead4;font-weight:1000;font-size:20px}
+      .vt-lock-mark{width:64px;height:64px;margin:0 auto 22px;border-radius:20px;display:flex;align-items:center;justify-content:center;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.28);color:#5eead4;font-weight:1000;font-size:28px}
+      #vt-lock-overlay,#vt-lock-overlay *{box-sizing:border-box}
+      #vt-lock-overlay{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f8fafc}
+      .vt-lock-hidden{display:none!important}
+      .vt-lock-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#5eead4}
+      .vt-lock-title{margin:10px 0 0;color:#f8fafc;font-size:clamp(25px,6vw,32px);line-height:1.15;font-weight:850;letter-spacing:-.035em}
+      .vt-lock-subtitle{margin:12px 0 0;color:#a1a1aa;font-size:14px;line-height:1.6}
+      .vt-lock-pin-wrap{margin-top:24px;text-align:left}
+      .vt-lock-label{display:block;margin-bottom:9px;color:#a1a1aa;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+      .vt-lock-input{display:block;width:100%;min-height:52px;padding:13px 16px;border:1px solid #374151;border-radius:13px;background:#0b0d10;color:#fff;text-align:center;letter-spacing:.35em;font-size:18px;outline:none;appearance:none;-webkit-appearance:none}
+      .vt-lock-input:focus{border-color:#2dd4bf;box-shadow:0 0 0 3px rgba(45,212,191,.12)}
+      .vt-lock-button{display:block;width:100%;min-height:48px;margin-top:12px;padding:13px 16px;border-radius:13px;font-family:inherit;font-size:14px;font-weight:800;line-height:1.3;cursor:pointer;transition:background .15s,border-color .15s}
+      .vt-lock-primary{border:1px solid #0d9488;background:#0d9488;color:#fff}
+      .vt-lock-primary:hover{background:#0f766e}
+      .vt-lock-biometric{border:1px solid rgba(45,212,191,.35);background:rgba(45,212,191,.1);color:#99f6e4}
+      .vt-lock-biometric:hover{background:rgba(45,212,191,.17)}
+      .vt-lock-message{min-height:18px;margin-top:12px;color:#a1a1aa;font-size:12px;line-height:1.5}
+      .vt-lock-logout{margin-top:22px;padding:8px;border:0;background:transparent;color:#71717a;font-size:12px;font-weight:700;cursor:pointer}
+      .vt-lock-logout:hover{color:#fca5a5}
+      @media(max-width:420px){.vt-lock-backdrop{padding:16px}.vt-lock-card{padding:24px 20px}.vt-lock-mark{width:58px;height:58px;margin-bottom:18px}}
     `;
     document.head.appendChild(style);
     document.body.appendChild(wrap);
@@ -92,7 +109,7 @@
     const input = document.getElementById('vt-lock-pin');
     if (input) { input.value=''; setTimeout(()=>input.focus(),80); }
     const bio = document.getElementById('vt-lock-biometric');
-    if (bio) bio.classList.toggle('hidden', !s.biometric);
+    if (bio) bio.classList.toggle('vt-lock-hidden', !s.biometric);
   }
 
   function unlock() {
@@ -190,7 +207,7 @@
     return true;
   }
 
-  function lockNow(){ ensureOverlay(); const s=read(); if(s.enabled){s.locked=true;write(s);document.getElementById('vt-lock-overlay').hidden=false;const b=document.getElementById('vt-lock-biometric');if(b)b.classList.toggle('hidden',!s.biometric);} }
+  function lockNow(){ ensureOverlay(); const s=read(); if(s.enabled){s.locked=true;write(s);document.getElementById('vt-lock-overlay').hidden=false;const b=document.getElementById('vt-lock-biometric');if(b)b.classList.toggle('vt-lock-hidden',!s.biometric);} }
   function status(){const s=read();return {enabled:Boolean(s.enabled),pin:Boolean(s.pin),biometric:Boolean(s.biometric),locked:Boolean(s.locked)};}
   function removePin(){const s=read();delete s.pin;setLockEnabled();}
   function removeBiometric(){const s=read();delete s.biometric;setLockEnabled();}
