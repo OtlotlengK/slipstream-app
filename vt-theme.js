@@ -38,6 +38,15 @@
     html[data-vt-theme="dark"] body .hero,
     html[data-vt-theme="dark"] body .passport{color:#F8FAFC!important}
     html[data-vt-theme="light"] body .wrap{background:#F1F5F9!important;color:#0F172A!important}
+/* Preserve high contrast inside the dark teal feature cards in light mode. */
+    html[data-vt-theme="light"] body .hero,
+    html[data-vt-theme="light"] body .passport{color:#F8FAFC!important}
+    html[data-vt-theme="light"] body .hero h2,
+    html[data-vt-theme="light"] body .passport h2,
+    html[data-vt-theme="light"] body .hero .text-white,
+    html[data-vt-theme="light"] body .passport .text-white{color:#F8FAFC!important}
+    html[data-vt-theme="light"] body .hero .hero-copy,
+    html[data-vt-theme="light"] body .passport p{color:#CBD5E1!important}
     html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[data-vt-theme="dark"] .doc,html[data-vt-theme="dark"] .panel,html[data-vt-theme="dark"] .notification-panel,html[data-vt-theme="dark"] [class~="bg-white"],html[data-vt-theme="dark"] [class~="bg-slate-50"],html[data-vt-theme="dark"] [class~="bg-gray-50"],html[data-vt-theme="dark"] [class*="bg-[#F"],html[data-vt-theme="dark"] [class*="bg-[#f"]{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
     html[data-vt-theme="dark"] [class~="text-slate-900"],html[data-vt-theme="dark"] [class~="text-slate-800"],html[data-vt-theme="dark"] [class~="text-slate-700"],html[data-vt-theme="dark"] [class~="text-gray-900"],html[data-vt-theme="dark"] [class~="text-gray-800"],html[data-vt-theme="dark"] [class~="text-gray-700"],html[data-vt-theme="dark"] [class~="text-zinc-900"]{color:#E5E7EB!important}
     html[data-vt-theme="dark"] [class~="text-slate-600"],html[data-vt-theme="dark"] [class~="text-slate-500"],html[data-vt-theme="dark"] [class~="text-gray-600"],html[data-vt-theme="dark"] [class~="text-gray-500"]{color:#A8B4C7!important}
