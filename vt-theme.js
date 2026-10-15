@@ -10,7 +10,7 @@
   style.textContent = `
     :root{color-scheme:light}html[data-vt-theme="dark"]{color-scheme:dark}
     html[data-vt-theme="dark"]{--bg:#0B1220;--paper:#0B1220;--card:#151F30;--text:#E5E7EB;--ink:#E5E7EB;--muted:#A8B4C7;--line:#334155;--brand:#0F766E}
-    html[data-vt-theme="light"]{--bg:#F8FAFC;--paper:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0}
+    html[data-vt-theme="light"]{--bg:#F1F5F9;--paper:#F1F5F9;--card:#FFFFFF;--text:#0F172A;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0}
     html[data-vt-theme="light"] body[class*="bg-[#0F172A]"] h1.text-white{color:#0F172A!important}
     html[data-vt-theme="light"] [class~="bg-slate-800"][class~="text-white"]{color:#0F172A!important}
     html[data-vt-theme="light"] [class~="text-slate-300"],html[data-vt-theme="light"] [class~="text-gray-300"]{color:#475569!important}
@@ -37,7 +37,7 @@
     html[data-vt-theme="dark"] body .input::placeholder{color:#94A3B8!important}
     html[data-vt-theme="dark"] body .hero,
     html[data-vt-theme="dark"] body .passport{color:#F8FAFC!important}
-    html[data-vt-theme="light"] body .wrap{background:#F8FAFC!important;color:#0F172A!important}
+    html[data-vt-theme="light"] body .wrap{background:#F1F5F9!important;color:#0F172A!important}
     html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[data-vt-theme="dark"] .doc,html[data-vt-theme="dark"] .panel,html[data-vt-theme="dark"] .notification-panel,html[data-vt-theme="dark"] [class~="bg-white"],html[data-vt-theme="dark"] [class~="bg-slate-50"],html[data-vt-theme="dark"] [class~="bg-gray-50"],html[data-vt-theme="dark"] [class*="bg-[#F"],html[data-vt-theme="dark"] [class*="bg-[#f"]{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
     html[data-vt-theme="dark"] [class~="text-slate-900"],html[data-vt-theme="dark"] [class~="text-slate-800"],html[data-vt-theme="dark"] [class~="text-slate-700"],html[data-vt-theme="dark"] [class~="text-gray-900"],html[data-vt-theme="dark"] [class~="text-gray-800"],html[data-vt-theme="dark"] [class~="text-gray-700"],html[data-vt-theme="dark"] [class~="text-zinc-900"]{color:#E5E7EB!important}
     html[data-vt-theme="dark"] [class~="text-slate-600"],html[data-vt-theme="dark"] [class~="text-slate-500"],html[data-vt-theme="dark"] [class~="text-gray-600"],html[data-vt-theme="dark"] [class~="text-gray-500"]{color:#A8B4C7!important}
@@ -49,7 +49,7 @@
     html[data-vt-theme="dark"] .check.ok{background:#052E2B!important;border-color:#065F46!important}html[data-vt-theme="dark"] .check.warn{background:#3B2A0B!important;border-color:#92400E!important}html[data-vt-theme="dark"] .check.bad{background:#3F151B!important;border-color:#991B1B!important}
     html[data-vt-theme="dark"] .success{background:#052E2B!important;color:#A7F3D0!important;border-color:#065F46!important}html[data-vt-theme="dark"] .warnbox{background:#3B2A0B!important;color:#FDE68A!important;border-color:#92400E!important}html[data-vt-theme="dark"] .error{background:#3F151B!important;color:#FECACA!important;border-color:#991B1B!important}
     html[data-vt-theme="dark"] .top{background:#080F1B!important}html[data-vt-theme="dark"] [class*="bg-[#17201F]"],html[data-vt-theme="dark"] [class*="bg-[#0F172A]"]{background:#080F1B!important}html[data-vt-theme="dark"] [class~="text-slate-100"]{color:#E5E7EB!important}html[data-vt-theme="dark"] [class~="border-slate-800"]{border-color:#334155!important}
-    html[data-vt-theme="light"] body{background:#F8FAFC!important;color:#0F172A!important}
+    html[data-vt-theme="light"] body{background:#F1F5F9!important;color:#0F172A!important}
     html[data-vt-theme="light"] [class*="bg-[#17201F]"],html[data-vt-theme="light"] [class*="bg-[#0F172A]"],html[data-vt-theme="light"] [class~="bg-slate-900"],html[data-vt-theme="light"] [class~="bg-gray-900"]{background:#FFFFFF!important;color:#0F172A!important}
     html[data-vt-theme="light"] [class~="text-slate-100"],html[data-vt-theme="light"] [class~="text-slate-200"],html[data-vt-theme="light"] [class~="text-gray-100"],html[data-vt-theme="light"] [class~="text-gray-200"]{color:#0F172A!important}
     html[data-vt-theme="light"] .card,html[data-vt-theme="light"] .settings-card,html[data-vt-theme="light"] .doc{background:#FFFFFF!important;color:#0F172A!important;border-color:#E2E8F0!important}
