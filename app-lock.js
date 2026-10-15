@@ -182,6 +182,8 @@
   }
 
   async function setupBiometric() {
+    const current = read();
+    if (!current.pin) throw new Error('Set and confirm a VT PIN first. Your PIN is the fallback if fingerprint / Face ID is unavailable.');
     if(!window.isSecureContext || !window.PublicKeyCredential || !navigator.credentials) throw new Error('Device biometric unlock is not supported here.');
     if(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable){
       const available=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
