@@ -43,6 +43,19 @@
     html[data-vt-theme="light"] body header.dark>a{color:#F8FAFC!important}
     html[data-vt-theme="light"] body .notification-bell{background:#4B5563!important;color:#F8FAFC!important;border-color:#6B7280!important;box-shadow:0 2px 8px rgba(15,23,42,.14)}
     html[data-vt-theme="light"] body .notification-bell:hover{background:#374151!important;border-color:#9CA3AF!important}
+/* Quick navigation must follow light mode while preserving contrast and colored icons. */
+    html[data-vt-theme="light"] body .quick-drawer{background:#E2E8F0!important;color:#0F172A!important;border-color:#CBD5E1!important;box-shadow:0 22px 48px rgba(15,23,42,.20)!important}
+    html[data-vt-theme="light"] body .quick-head{border-bottom-color:#CBD5E1!important}
+    html[data-vt-theme="light"] body .quick-head .label{color:#0F766E!important}
+    html[data-vt-theme="light"] body .quick-link{color:#0F172A!important}
+    html[data-vt-theme="light"] body .quick-link:hover{background:#F8FAFC!important;border-color:#CBD5E1!important}
+    html[data-vt-theme="light"] body .quick-sub{color:#475569!important}
+    html[data-vt-theme="light"] body .quick-group-label{color:#64748B!important}
+    html[data-vt-theme="light"] body .quick-divider{background:#CBD5E1!important}
+    html[data-vt-theme="light"] body .quick-toggle{color:#FFFFFF!important}
+    html[data-vt-theme="light"] body .quick-menu.open .quick-toggle span,
+    html[data-vt-theme="light"] body .quick-menu.open .quick-toggle span:before,
+    html[data-vt-theme="light"] body .quick-menu.open .quick-toggle span:after{background:#F8FAFC!important}
 /* Preserve high contrast inside the dark teal feature cards in light mode. */
     html[data-vt-theme="light"] body .hero,
     html[data-vt-theme="light"] body .passport{color:#F8FAFC!important}
