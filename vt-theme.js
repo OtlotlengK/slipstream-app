@@ -15,6 +15,29 @@
     html[data-vt-theme="light"] [class~="bg-slate-800"][class~="text-white"]{color:#0F172A!important}
     html[data-vt-theme="light"] [class~="text-slate-300"],html[data-vt-theme="light"] [class~="text-gray-300"]{color:#475569!important}
     html[data-vt-theme="dark"] body{background:#0B1220!important;color:#E5E7EB!important}
+/* Dashboard-v2 uses custom classes and hard-coded light surfaces rather than utility classes. */
+    html[data-vt-theme="dark"] body,
+    html[data-vt-theme="dark"] body .wrap,
+    html[data-vt-theme="dark"] body main,
+    html[data-vt-theme="dark"] body .page-shell{background:#0B1220!important;color:#E5E7EB!important}
+    html[data-vt-theme="dark"] body .card,
+    html[data-vt-theme="dark"] body .ops-item,
+    html[data-vt-theme="dark"] body .ops-stat,
+    html[data-vt-theme="dark"] body .ops-empty,
+    html[data-vt-theme="dark"] body .metric{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important;box-shadow:none}
+    html[data-vt-theme="dark"] body .label,
+    html[data-vt-theme="dark"] body .metric .label,
+    html[data-vt-theme="dark"] body .text-slate-500{color:#A8B4C7!important}
+    html[data-vt-theme="dark"] body .ops-item:hover,
+    html[data-vt-theme="dark"] body .ops-stat:hover{background:#1E293B!important}
+    html[data-vt-theme="dark"] body .attention{background:#3B2A0B!important;color:#FDE68A!important}
+    html[data-vt-theme="dark"] body .paid{background:#052E2B!important;color:#A7F3D0!important}
+    html[data-vt-theme="dark"] body .overdue{background:#3F151B!important;color:#FECACA!important}
+    html[data-vt-theme="dark"] body .input{background:#0F172A!important;color:#F8FAFC!important;border-color:#475569!important}
+    html[data-vt-theme="dark"] body .input::placeholder{color:#94A3B8!important}
+    html[data-vt-theme="dark"] body .hero,
+    html[data-vt-theme="dark"] body .passport{color:#F8FAFC!important}
+    html[data-vt-theme="light"] body .wrap{background:#F8FAFC!important;color:#0F172A!important}
     html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[data-vt-theme="dark"] .doc,html[data-vt-theme="dark"] .panel,html[data-vt-theme="dark"] .notification-panel,html[data-vt-theme="dark"] [class~="bg-white"],html[data-vt-theme="dark"] [class~="bg-slate-50"],html[data-vt-theme="dark"] [class~="bg-gray-50"],html[data-vt-theme="dark"] [class*="bg-[#F"],html[data-vt-theme="dark"] [class*="bg-[#f"]{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
     html[data-vt-theme="dark"] [class~="text-slate-900"],html[data-vt-theme="dark"] [class~="text-slate-800"],html[data-vt-theme="dark"] [class~="text-slate-700"],html[data-vt-theme="dark"] [class~="text-gray-900"],html[data-vt-theme="dark"] [class~="text-gray-800"],html[data-vt-theme="dark"] [class~="text-gray-700"],html[data-vt-theme="dark"] [class~="text-zinc-900"]{color:#E5E7EB!important}
     html[data-vt-theme="dark"] [class~="text-slate-600"],html[data-vt-theme="dark"] [class~="text-slate-500"],html[data-vt-theme="dark"] [class~="text-gray-600"],html[data-vt-theme="dark"] [class~="text-gray-500"]{color:#A8B4C7!important}
@@ -69,18 +92,23 @@
     box.append(h,p,choices,skip);overlay.appendChild(box);document.body.appendChild(overlay);
   }
   function settingsControl() {
-    const main=document.querySelector('main');if(!main||document.getElementById('vt-appearance-card'))return;
-    const sections=Array.from(main.querySelectorAll('section'));
-    const identity=sections.find(s=>(s.textContent||'').includes('One place for your business identity'));
-    const payment=sections.find(s=>/Payments/.test((s.textContent||'').slice(0,80)));
+    if(document.getElementById('vt-appearance-card'))return;
+    const main=document.querySelector('main,[role="main"],[data-settings-page],.settings-page');
+    if(!main)return;
+    const text=(main.textContent||'').toLowerCase();
+    const looksLikeSettings=/business settings|business profile|account settings|notification settings|security settings/.test(text);
+    if(!looksLikeSettings && !main.querySelector('[data-settings-section],.settings-card'))return;
+    const sections=Array.from(main.querySelectorAll('section,[data-settings-section],.settings-card'));
+    const identity=sections.find(s=>/business identity|business profile/.test((s.textContent||'').toLowerCase()));
+    const payment=sections.find(s=>/payments/.test((s.textContent||'').slice(0,100)));
     const card=document.createElement('section');card.id='vt-appearance-card';card.className='vt-appearance-card';
     const h=document.createElement('h2');h.textContent='Appearance';const p=document.createElement('p');p.textContent='Choose whether ValoraTap follows your phone or uses a fixed theme on this device.';
     const label=document.createElement('label');label.htmlFor='vt-theme-select';label.textContent='Theme preference';
     const select=document.createElement('select');select.id='vt-theme-select';select.setAttribute('data-vt-theme-select','');
     [['system','Follow device settings'],['light','Always light'],['dark','Always dark']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;select.appendChild(o)});
     select.addEventListener('change',()=>apply(select.value));card.append(h,p,label,select);
-    if(identity&&identity.parentNode===main)identity.after(card);else if(payment&&payment.parentNode===main)main.insertBefore(card,payment);else main.prepend(card);
+    if(identity&&identity.parentNode)identity.after(card);else if(payment&&payment.parentNode)main.insertBefore(card,payment);else main.prepend(card);
   }
-  function init(){const p=read();apply(p||'system');settingsControl();if(!/\/invoice\.html$/i.test(location.pathname))onboarding();if(media?.addEventListener)media.addEventListener('change',()=>{if(read()==='system')apply('system')});else if(media?.addListener)media.addListener(()=>{if(read()==='system')apply('system')})}
+  function init(){const p=read();apply(p||'system');settingsControl();const observer=new MutationObserver(()=>settingsControl());observer.observe(document.body,{childList:true,subtree:true});if(!/\/invoice\.html$/i.test(location.pathname))onboarding();if(media?.addEventListener)media.addEventListener('change',()=>{if(read()==='system')apply('system')});else if(media?.addListener)media.addListener(()=>{if(read()==='system')apply('system')})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
