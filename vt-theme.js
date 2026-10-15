@@ -76,6 +76,6 @@
     select.addEventListener('change',()=>apply(select.value));card.append(h,p,label,select);
     if(identity&&identity.parentNode===main)identity.after(card);else if(payment&&payment.parentNode===main)main.insertBefore(card,payment);else main.prepend(card);
   }
-  function init(){const p=read();apply(p||'system');settingsControl();if(!p)onboarding();if(media?.addEventListener)media.addEventListener('change',()=>{if(read()==='system')apply('system')});else if(media?.addListener)media.addListener(()=>{if(read()==='system')apply('system')})}
+  function init(){const p=read();apply(p||'system');settingsControl();if(!p && !/\/invoice\.html$/i.test(location.pathname))onboarding();if(media?.addEventListener)media.addEventListener('change',()=>{if(read()==='system')apply('system')});else if(media?.addListener)media.addListener(()=>{if(read()==='system')apply('system')})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
