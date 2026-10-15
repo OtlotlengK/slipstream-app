@@ -7,7 +7,7 @@
   const resolved = p => p==='dark'||(p==='system'&&media&&media.matches)?'dark':'light';
   const style = document.createElement('style');
   style.id='vt-theme-styles';
-  style.textContent = \`
+  style.textContent = `
     :root{color-scheme:light}html[data-vt-theme="dark"]{color-scheme:dark}
     html[data-vt-theme="dark"] body{background:#0B1220!important;color:#E5E7EB!important}
     html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[data-vt-theme="dark"] .doc,html[data-vt-theme="dark"] .panel,html[data-vt-theme="dark"] .notification-panel,html[data-vt-theme="dark"] [class~="bg-white"],html[data-vt-theme="dark"] [class~="bg-slate-50"],html[data-vt-theme="dark"] [class~="bg-gray-50"],html[data-vt-theme="dark"] [class*="bg-[#F"],html[data-vt-theme="dark"] [class*="bg-[#f"]{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
@@ -35,7 +35,7 @@
     .vt-theme-icon{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:11px;background:#F1EDFF;color:#6C4CF1;font-size:18px}.vt-theme-dismiss{margin-top:13px;width:100%;border:0;background:transparent;color:#64748B;padding:10px;font-size:12px;font-weight:700;cursor:pointer}
     .vt-appearance-card{border:1px solid #DDE7E5;border-radius:16px;padding:18px;background:#fff;color:#0F172A;margin:0 0 20px}.vt-appearance-card h2{font-size:17px;font-weight:900;margin:0}.vt-appearance-card p{color:#64748B;font-size:12px;line-height:1.5;margin:6px 0 13px}.vt-appearance-card label{display:block;font-size:11px;font-weight:800;color:#475569;margin-bottom:6px}.vt-appearance-card select{width:100%;border:1px solid #CBD5E1;border-radius:10px;padding:11px 12px;background:#fff;color:#0F172A}
     html[data-vt-theme="dark"] .vt-appearance-card{background:#151F30;color:#E5E7EB;border-color:#334155}html[data-vt-theme="dark"] .vt-appearance-card p,html[data-vt-theme="dark"] .vt-appearance-card label{color:#A8B4C7}html[data-vt-theme="dark"] .vt-appearance-card select{background:#0F172A;color:#F8FAFC;border-color:#475569}
-  \`;
+  `;
   document.head.appendChild(style);
   function apply(p) {
     p=valid.includes(p)?p:'system';
