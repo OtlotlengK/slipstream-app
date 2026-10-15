@@ -38,6 +38,11 @@
     html[data-vt-theme="dark"] body .hero,
     html[data-vt-theme="dark"] body .passport{color:#F8FAFC!important}
     html[data-vt-theme="light"] body .wrap{background:#F1F5F9!important;color:#0F172A!important}
+/* Keep the dashboard's brand header dark in light mode, with a visible notification control. */
+    html[data-vt-theme="light"] body header.dark{background:#374151!important;color:#F8FAFC!important}
+    html[data-vt-theme="light"] body header.dark>a{color:#F8FAFC!important}
+    html[data-vt-theme="light"] body .notification-bell{background:#4B5563!important;color:#F8FAFC!important;border-color:#6B7280!important;box-shadow:0 2px 8px rgba(15,23,42,.14)}
+    html[data-vt-theme="light"] body .notification-bell:hover{background:#374151!important;border-color:#9CA3AF!important}
 /* Preserve high contrast inside the dark teal feature cards in light mode. */
     html[data-vt-theme="light"] body .hero,
     html[data-vt-theme="light"] body .passport{color:#F8FAFC!important}
