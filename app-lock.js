@@ -1,3 +1,6 @@
+/* Load the shared appearance system on authenticated app pages. */
+(() => { const s=document.createElement('script'); s.src='/vt-theme.js'; s.async=true; document.head.appendChild(s); })();
+
 /* ValoraTap local app lock.
    This is a device-level privacy gate, not a replacement for Supabase Auth.
    The Supabase session remains intact while VT is locked. */
