@@ -9,6 +9,11 @@
   style.id='vt-theme-styles';
   style.textContent = `
     :root{color-scheme:light}html[data-vt-theme="dark"]{color-scheme:dark}
+    html[data-vt-theme="dark"]{--bg:#0B1220;--paper:#0B1220;--card:#151F30;--text:#E5E7EB;--ink:#E5E7EB;--muted:#A8B4C7;--line:#334155;--brand:#0F766E}
+    html[data-vt-theme="light"]{--bg:#F8FAFC;--paper:#F8FAFC;--card:#FFFFFF;--text:#0F172A;--ink:#0F172A;--muted:#64748B;--line:#E2E8F0}
+    html[data-vt-theme="light"] body[class*="bg-[#0F172A]"] h1.text-white{color:#0F172A!important}
+    html[data-vt-theme="light"] [class~="bg-slate-800"][class~="text-white"]{color:#0F172A!important}
+    html[data-vt-theme="light"] [class~="text-slate-300"],html[data-vt-theme="light"] [class~="text-gray-300"]{color:#475569!important}
     html[data-vt-theme="dark"] body{background:#0B1220!important;color:#E5E7EB!important}
     html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[data-vt-theme="dark"] .doc,html[data-vt-theme="dark"] .panel,html[data-vt-theme="dark"] .notification-panel,html[data-vt-theme="dark"] [class~="bg-white"],html[data-vt-theme="dark"] [class~="bg-slate-50"],html[data-vt-theme="dark"] [class~="bg-gray-50"],html[data-vt-theme="dark"] [class*="bg-[#F"],html[data-vt-theme="dark"] [class*="bg-[#f"]{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
     html[data-vt-theme="dark"] [class~="text-slate-900"],html[data-vt-theme="dark"] [class~="text-slate-800"],html[data-vt-theme="dark"] [class~="text-slate-700"],html[data-vt-theme="dark"] [class~="text-gray-900"],html[data-vt-theme="dark"] [class~="text-gray-800"],html[data-vt-theme="dark"] [class~="text-gray-700"],html[data-vt-theme="dark"] [class~="text-zinc-900"]{color:#E5E7EB!important}
@@ -76,6 +81,6 @@
     select.addEventListener('change',()=>apply(select.value));card.append(h,p,label,select);
     if(identity&&identity.parentNode===main)identity.after(card);else if(payment&&payment.parentNode===main)main.insertBefore(card,payment);else main.prepend(card);
   }
-  function init(){const p=read();apply(p||'system');settingsControl();if(!p && !/\/invoice\.html$/i.test(location.pathname))onboarding();if(media?.addEventListener)media.addEventListener('change',()=>{if(read()==='system')apply('system')});else if(media?.addListener)media.addListener(()=>{if(read()==='system')apply('system')})}
+  function init(){const p=read();apply(p||'system');settingsControl();if(!/\/invoice\.html$/i.test(location.pathname))onboarding();if(media?.addEventListener)media.addEventListener('change',()=>{if(read()==='system')apply('system')});else if(media?.addListener)media.addListener(()=>{if(read()==='system')apply('system')})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
