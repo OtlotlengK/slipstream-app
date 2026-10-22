@@ -186,7 +186,7 @@ Deno.serve(async (req) => {
       ].join('\n'),
     }];
     if (submission.mime_type === 'application/pdf') {
-      content.push({ type: 'input_file', filename: 'proof-of-payment.pdf', file_data: dataUrl });
+      content.push({ type: 'input_file', filename: 'proof-of-payment.pdf', file_data: base64 });
     } else {
       content.push({ type: 'input_image', image_url: dataUrl, detail: 'high' });
     }
