@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
     }
     const duplicate = Boolean(prior);
     const ext = file.type === 'application/pdf' ? 'pdf' : file.type.split('/')[1] || 'bin';
-    const path = `invoices/${inv.id}/${crypto.randomUUID()}.${ext}`;
+    const path = `${owner.merchant_id}/invoices/${inv.id}/${crypto.randomUUID()}.${ext}`;
     const { error: uploadErr } = await db.storage.from('pop-files').upload(path, bytes, { contentType: file.type, upsert: false });
     if (uploadErr) return json({ error: 'upload_failed' }, 500);
 
