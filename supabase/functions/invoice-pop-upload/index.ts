@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
     const submittedAt = new Date().toISOString();
     const { data: updated, error: updateErr } = await db.from('invoices')
       .update({ status: 'payment_submitted', payment_submitted_at: submittedAt, pop_path: path, updated_at: submittedAt })
-      .eq('id', inv.id).eq('status', 'issued').is('pop_path', null).select('id').maybeSingle();
+      .eq('id', inv.id).in('status', ['issued', 'payment_submitted']).is('pop_path', null).select('id').maybeSingle();
     if (updateErr || !updated) {
       await db.storage.from('pop-files').remove([path]);
       return json({ error: updateErr ? 'invoice_update_failed' : 'pop_already_submitted' }, updateErr ? 500 : 409);
