@@ -1,5 +1,5 @@
-const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+const SUPABASE_URL = 'https://uvnlihejfwotynxhlvpq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_erwz2gEbNN3sOx7h29B8ew_ObOMUwe2';
 
 if (!window.supabase?.createClient) { throw new Error('ValoraTap secure connection library failed to load. Please refresh the page.'); }
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
