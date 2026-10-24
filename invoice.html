@@ -15,7 +15,7 @@
 <section id="paid" class="paidpanel hidden"><h2 style="color:var(--success);margin-top:0">✓ Payment Confirmed</h2><p style="color:#166534;line-height:1.6">This invoice is paid and the ValoraTap receipt has been issued.</p><a id="verify" class="verify" href="#" target="_blank" rel="noopener">Verify Receipt</a></section>
 </div></section><footer class="footer">Issued through <span class="powered">ValoraTap</span> · Secure invoicing, payment and verification.</footer></main><script>
 'use strict';
-const API='https://pddjualtnhgmplampucn.supabase.co/functions/v1',PUBLIC=API+'/public-invoice',PAY=API+'/create-payment-intent',POP=API+'/invoice-pop-upload',$=id=>document.getElementById(id),show=e=>e.classList.remove('hidden'),hide=e=>e.classList.add('hidden');
+const API='https://uvnlihejfwotynxhlvpq.supabase.co/functions/v1',PUBLIC=API+'/public-invoice',PAY=API+'/create-payment-intent',POP=API+'/invoice-pop-upload',$=id=>document.getElementById(id),show=e=>e.classList.remove('hidden'),hide=e=>e.classList.add('hidden');
 const symbols={ZAR:'R',NGN:'₦',GHS:'GH₵',KES:'KSh',USD:'$',GBP:'£',EUR:'€',BWP:'P',NAD:'N$',ZMW:'ZK',ZWG:'ZiG',MZN:'MT',AUD:'A$',CAD:'C$',INR:'₹',AED:'د.إ',BRL:'R$',MXN:'$'};
 const locales={ZAR:'en-ZA',NGN:'en-NG',GHS:'en-GH',KES:'en-KE',USD:'en-US',GBP:'en-GB',EUR:'en-IE',BWP:'en-BW',NAD:'en-NA',ZMW:'en-ZM',ZWG:'en-ZW',MZN:'en-MZ',AUD:'en-AU',CAD:'en-CA',INR:'en-IN',AED:'en-AE',BRL:'pt-BR',MXN:'es-MX'};
 let invoiceCurrency='ZAR',invoiceTotal=0;
