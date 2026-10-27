@@ -1,5 +1,25 @@
-const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+
+function initThemeToggle() {
+  const root = document.documentElement;
+  const button = document.querySelector('#themeToggle');
+  const saved = (() => { try { return localStorage.getItem('vt-theme'); } catch { return null; } })();
+  const apply = theme => {
+    root.dataset.theme = theme;
+    if (button) {
+      button.textContent = theme === 'dark' ? '☀ Light mode' : '☾ Dark mode';
+      button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+      button.setAttribute('aria-pressed', String(theme === 'dark'));
+    }
+  };
+  apply(saved === 'dark' ? 'dark' : 'light');
+  button?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem('vt-theme', next); } catch {}
+  });
+}
+const SUPABASE_URL = 'https://uvnlihejfwotynxhlvpq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_erwz2gEbNN3sOx7h29B8ew_ObOMUwe2';
 
 if (!window.supabase?.createClient) { throw new Error('ValoraTap secure connection library failed to load. Please refresh the page.'); }
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -313,6 +333,7 @@ async function logout() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
   $('#confirm')?.addEventListener('click', confirmPayment);
 $('#confirmYes')?.addEventListener('click', () => { const box=$('#confirmBox'); if(box){ box.dataset.approved='1'; box.classList.add('hidden'); } confirmPayment(); });
 $('#confirmCancel')?.addEventListener('click', () => $('#confirmBox')?.classList.add('hidden'));
