@@ -22,7 +22,6 @@
     { "source": "/activity", "destination": "/centres/activity.html" },
     { "source": "/financial-intelligence", "destination": "/centres/financial-intelligence.html" },
     { "source": "/customer-centre", "destination": "/centres/customer-centre.html" },
-    { "source": "/s/:code", "destination": "https://pddjualtnhgmplampucn.supabase.co/functions/v1/short-link?code=:code" }
   ],
   "headers": [
     {
