@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script src="/vt-env.js"></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="application-name" content="ValoraTap"><meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#2B2A6B">
@@ -36,8 +37,7 @@
 </section><p class="text-center text-[10px] text-slate-600 mt-5">ValoraTap © 2026</p>
 </div>
 <script>
-const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+const {supabaseUrl:SUPABASE_URL,supabaseKey:SUPABASE_ANON_KEY}=window.VT_ENV;
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const verifyRedirect=new URL('/confirm-signup.html',location.origin).href;
 const resetRedirect=new URL('/reset-password.html',location.origin).href;
