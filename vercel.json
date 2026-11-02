@@ -5,6 +5,18 @@
       "destination": "/home.html"
     },
     {
+      "source": "/business-passport.html",
+      "destination": "/apps/business/business-passport.html"
+    },
+    {
+      "source": "/business-passport-public.html",
+      "destination": "/apps/business/business-passport-public.html"
+    },
+    {
+      "source": "/business-profile.html",
+      "destination": "/apps/business/business-profile.html"
+    },
+    {
       "source": "/receipts.html",
       "destination": "/apps/receipts/receipts.html"
     },
@@ -66,7 +78,7 @@
     },
     {
       "source": "/passport.html",
-      "destination": "/business-passport.html"
+      "destination": "/apps/business/business-passport.html"
     },
     {
       "source": "/receipt.html",
