@@ -21,7 +21,7 @@
     { "source": "/action-centre", "destination": "/centres/action-centre.html" },
     { "source": "/activity", "destination": "/centres/activity.html" },
     { "source": "/financial-intelligence", "destination": "/centres/financial-intelligence.html" },
-    { "source": "/customer-centre", "destination": "/centres/customer-centre.html" },
+    { "source": "/customer-centre", "destination": "/centres/customer-centre.html" }
   ],
   "headers": [
     {
