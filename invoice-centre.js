@@ -1,5 +1,4 @@
-const SUPABASE_URL='https://uvnlihejfwotynxhlvpq.supabase.co';
-const KEY='sb_publishable_erwz2gEbNN3sOx7h29B8ew_ObOMUwe2';
+const {supabaseUrl:SUPABASE_URL,supabaseKey:KEY}=window.VT_ENV;
 let db=null,rows=[],filter=new URLSearchParams(location.search).get('filter')||'all',currentPage=1,pageSize=10;
 
 const $=s=>document.querySelector(s);
