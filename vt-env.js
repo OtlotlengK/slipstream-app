@@ -6,9 +6,6 @@
   const productionHosts = new Set([
     'vynotap.com',
     'www.vynotap.com',
-    'slipstream-app-jbxe.vercel.app',
-    'slipstream-app-jbxe-clips4.vercel.app',
-    'slipstream-app-jbxe-git-main-clips4.vercel.app',
     'slipstream-app-sigma.vercel.app',
     'slipstream-app-clips4.vercel.app',
     'slipstream-app-git-main-clips4.vercel.app'
