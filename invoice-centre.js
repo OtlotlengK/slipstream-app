@@ -1,4 +1,3 @@
-const {supabaseUrl:SUPABASE_URL,supabaseKey:KEY}=window.VT_ENV;
 let db=null,rows=[],filter=new URLSearchParams(location.search).get('filter')||'all',currentPage=1,pageSize=10;
 
 const $=s=>document.querySelector(s);
@@ -34,7 +33,7 @@ async function init(){
     if(!window.supabase?.createClient){
       throw new Error('ValoraTap could not load its secure connection library. Please refresh the page.');
     }
-    db=window.supabase.createClient(SUPABASE_URL,KEY);
+    db=window.VT.createSupabaseClient();
     setLoading(true);
 
     const {data:{session},error:sessionError}=await db.auth.getSession();
