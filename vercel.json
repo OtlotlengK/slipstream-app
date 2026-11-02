@@ -5,6 +5,22 @@
       "destination": "/home.html"
     },
     {
+      "source": "/receipts.html",
+      "destination": "/apps/receipts/receipts.html"
+    },
+    {
+      "source": "/receipt-create.html",
+      "destination": "/apps/receipts/receipt-create.html"
+    },
+    {
+      "source": "/receipt-detail.html",
+      "destination": "/apps/receipts/receipt-detail.html"
+    },
+    {
+      "source": "/verify.html",
+      "destination": "/apps/receipts/verify.html"
+    },
+    {
       "source": "/invoice-centre.html",
       "destination": "/apps/invoices/invoice-centre.html"
     },
@@ -54,19 +70,19 @@
     },
     {
       "source": "/receipt.html",
-      "destination": "/receipts.html"
+      "destination": "/apps/receipts/receipts.html"
     },
     {
       "source": "/receipts",
-      "destination": "/receipts.html"
+      "destination": "/apps/receipts/receipts.html"
     },
     {
       "source": "/receipt-vault",
-      "destination": "/receipts.html"
+      "destination": "/apps/receipts/receipts.html"
     },
     {
       "source": "/centres/receipts.html",
-      "destination": "/receipts.html"
+      "destination": "/apps/receipts/receipts.html"
     },
     {
       "source": "/invoices",
