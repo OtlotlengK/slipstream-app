@@ -18,8 +18,7 @@ function initThemeToggle() {
     try { localStorage.setItem('vt-theme', next); } catch {}
   });
 }
-const SUPABASE_URL = 'https://uvnlihejfwotynxhlvpq.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_erwz2gEbNN3sOx7h29B8ew_ObOMUwe2';
+const {supabaseUrl:SUPABASE_URL,supabaseKey:SUPABASE_KEY}=window.VT_ENV;
 
 if (!window.supabase?.createClient) { throw new Error('ValoraTap secure connection library failed to load. Please refresh the page.'); }
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
