@@ -1,6 +1,5 @@
 (() => {
-  const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+  
   const $ = id => document.getElementById(id);
   const showError = message => { $('error').textContent = message; $('error').classList.remove('hidden'); };
   const hideError = () => $('error').classList.add('hidden');
@@ -59,7 +58,7 @@
   async function init() {
     try {
       if (!window.supabase || typeof window.supabase.createClient !== 'function') throw new Error('Supabase client library failed to load.');
-      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      db = window.VT.createSupabaseClient();
       const { data: { user }, error: userError } = await db.auth.getUser();
       if (userError) throw userError;
       if (!user?.id) { window.location.replace('login.html'); return; }
@@ -138,7 +137,7 @@
     b.disabled = true;
     b.textContent = 'Signing out…';
     try {
-      if (!db) db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      if (!db) db = window.VT.createSupabaseClient();
       const { error } = await db.auth.signOut({ scope: 'local' });
       if (error) throw error;
       window.location.replace('login.html');
