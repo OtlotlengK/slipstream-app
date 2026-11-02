@@ -1,4 +1,4 @@
-const VERIFY_ENDPOINT='https://pddjualtnhgmplampucn.supabase.co/functions/v1/public-verify';
+const VERIFY_ENDPOINT=window.VT_ENV.functionsUrl+'/public-verify';
 const verificationUrl=window.location.href;
 const currencyLocales={ZAR:'en-ZA',NGN:'en-NG',GHS:'en-GH',KES:'en-KE',USD:'en-US',GBP:'en-GB',EUR:'en-IE',BWP:'en-US',NAD:'en-NA',ZMW:'en-US',ZWG:'en-ZW',MZN:'pt-MZ',AUD:'en-AU',CAD:'en-CA',INR:'en-IN',AED:'en-AE',BRL:'pt-BR',MXN:'es-MX'};
 const formatMoney=(n,currency)=>{const c=String(currency||'ZAR').toUpperCase();try{return new Intl.NumberFormat(currencyLocales[c]||'en-US',{style:'currency',currency:c,minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(n)||0)}catch{return c+' '+Number(n||0).toFixed(2)}};
