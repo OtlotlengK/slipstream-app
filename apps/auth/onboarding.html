@@ -29,7 +29,7 @@
     </div>
     <div id="message" class="hidden mt-4 p-3 rounded-xl text-xs"></div>
     <button id="save-btn" onclick="saveProfile()" class="w-full mt-5 bg-[#c9a227] hover:bg-[#8B7CF6] text-[#0b0d10] font-bold py-3 rounded-xl">Save & Continue</button>
-    <button onclick="window.location.href='index.html'" class="w-full mt-3 text-xs text-slate-500 hover:text-white">Skip for now</button>
+    <button onclick="window.location.href='/index.html'" class="w-full mt-3 text-xs text-slate-500 hover:text-white">Skip for now</button>
   </div>
   <p class="text-center text-[10px] text-slate-600 mt-5">ValoraTap © 2026</p>
 </div>
@@ -37,8 +37,8 @@
 const db=window.VT.createSupabaseClient();
 let user=null;
 function msg(text,error=false){const el=document.getElementById('message');el.textContent=text;el.className='mt-4 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');el.classList.remove('hidden');}
-async function init(){const{data:{session}}=await db.auth.getSession();if(!session){location.href='login.html';return}user=session.user;const{data,error}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).single();if(error||!data){msg('We could not load your merchant profile. Please try again.',true);return}document.getElementById('business-name').value=data.business_name||'';document.getElementById('owner-name').value=data.owner_name||'';document.getElementById('phone').value=data.phone||'';}
-async function saveProfile(){const business_name=document.getElementById('business-name').value.trim();const owner_name=document.getElementById('owner-name').value.trim();const phone=document.getElementById('phone').value.trim();if(!business_name){msg('Business name is required.',true);return}const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Saving...';const{error}=await db.from('merchants').update({business_name,owner_name,phone}).eq('id',user.id);if(error){msg(error.message,true);btn.disabled=false;btn.textContent='Save & Continue';return}window.location.href='index.html';}
+async function init(){const{data:{session}}=await db.auth.getSession();if(!session){location.href='/login.html';return}user=session.user;const{data,error}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).single();if(error||!data){msg('We could not load your merchant profile. Please try again.',true);return}document.getElementById('business-name').value=data.business_name||'';document.getElementById('owner-name').value=data.owner_name||'';document.getElementById('phone').value=data.phone||'';}
+async function saveProfile(){const business_name=document.getElementById('business-name').value.trim();const owner_name=document.getElementById('owner-name').value.trim();const phone=document.getElementById('phone').value.trim();if(!business_name){msg('Business name is required.',true);return}const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Saving...';const{error}=await db.from('merchants').update({business_name,owner_name,phone}).eq('id',user.id);if(error){msg(error.message,true);btn.disabled=false;btn.textContent='Save & Continue';return}window.location.href='/index.html';}
 window.addEventListener('DOMContentLoaded',init);
 </script>
 </body>

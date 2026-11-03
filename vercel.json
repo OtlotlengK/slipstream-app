@@ -5,6 +5,22 @@
       "destination": "/home.html"
     },
     {
+      "source": "/login.html",
+      "destination": "/apps/auth/login.html"
+    },
+    {
+      "source": "/confirm-signup.html",
+      "destination": "/apps/auth/confirm-signup.html"
+    },
+    {
+      "source": "/reset-password.html",
+      "destination": "/apps/auth/reset-password.html"
+    },
+    {
+      "source": "/onboarding.html",
+      "destination": "/apps/auth/onboarding.html"
+    },
+    {
       "source": "/business-passport.html",
       "destination": "/apps/business/business-passport.html"
     },
