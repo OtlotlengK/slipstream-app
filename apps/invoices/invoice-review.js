@@ -123,14 +123,14 @@ async function init() {
 
     const session = sessionData?.session;
     if (!session) {
-      window.location.href = 'login.html';
+      window.location.href = '/login.html';
       return;
     }
 
     if (!invoiceId && !invoiceNumber) {
       showMessage('No payment was selected. Opening the payment review queue…', 'error');
       setTimeout(() => {
-        window.location.href = 'invoice-centre.html?filter=payment_submitted';
+        window.location.href = '/invoice-centre.html?filter=payment_submitted';
       }, 350);
       return;
     }
@@ -289,7 +289,7 @@ async function confirmPayment() {
 
   showMessage('Payment confirmed. Receipt created successfully.', 'success');
   setTimeout(() => {
-    window.location.href = `verify.html?hash=${encodeURIComponent(hash)}`;
+    window.location.href = `/verify.html?hash=${encodeURIComponent(hash)}`;
   }, 700);
 }
 
@@ -323,13 +323,13 @@ async function rejectPayment() {
 
   showMessage('Payment submission rejected. The invoice is back in awaiting-payment status.', 'success');
   setTimeout(() => {
-    window.location.href = 'invoice-centre.html';
+    window.location.href = '/invoice-centre.html';
   }, 700);
 }
 
 async function logout() {
   await db.auth.signOut();
-  window.location.href = 'login.html';
+  window.location.href = '/login.html';
 }
 
 window.addEventListener('DOMContentLoaded', () => {

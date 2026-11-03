@@ -38,7 +38,7 @@ async function init(){
 
     const {data:{session},error:sessionError}=await db.auth.getSession();
     if(sessionError) throw sessionError;
-    if(!session){location.href='login.html';return;}
+    if(!session){location.href='/login.html';return;}
 
     const {data:profile,error:profileError}=await db.from('business_profiles').select('currency_code').eq('merchant_id',session.user.id).maybeSingle();
     if(profileError) console.warn('Business currency lookup failed',profileError);
@@ -172,7 +172,7 @@ async function logout(){
   if(!db)return;
   const {error}=await db.auth.signOut();
   if(error){showMessage(error.message||'Unable to sign out.');return;}
-  location.href='login.html';
+  location.href='/login.html';
 }
 
 function start(){
