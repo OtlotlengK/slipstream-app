@@ -61,7 +61,7 @@
       db = window.VT.createSupabaseClient();
       const { data: { user }, error: userError } = await db.auth.getUser();
       if (userError) throw userError;
-      if (!user?.id) { window.location.replace('login.html'); return; }
+      if (!user?.id) { window.location.replace('/login.html'); return; }
       const { data: r, error } = await db.rpc('get_business_passport', { p_merchant_id: user.id });
       if (error) throw error;
       if (!r || typeof r !== 'object') throw new Error('Business Passport returned no profile data.');
@@ -140,7 +140,7 @@
       if (!db) db = window.VT.createSupabaseClient();
       const { error } = await db.auth.signOut({ scope: 'local' });
       if (error) throw error;
-      window.location.replace('login.html');
+      window.location.replace('/login.html');
     } catch (err) {
       console.error('Sign out failed:', err);
       showError('We couldn’t sign you out. Please try again.');

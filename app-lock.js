@@ -108,7 +108,7 @@
           const db = window.supabase.createClient(window.VT_ENV.supabaseUrl, window.VT_ENV.supabaseKey);
           await db.auth.signOut();
         }
-      } finally { location.href='login.html'; }
+      } finally { location.href='/login.html'; }
     };
   }
 
