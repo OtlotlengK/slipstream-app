@@ -1,0 +1,35 @@
+name: Supabase Edge Function checks
+
+on:
+  push:
+    branches:
+      - "feat/ai-pop-shield-foundation-2026-10-22"
+    paths:
+      - "supabase/functions/**"
+      - ".github/workflows/edge-functions-check.yml"
+  pull_request:
+    paths:
+      - "supabase/functions/**"
+      - ".github/workflows/edge-functions-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deno-check:
+    name: Type-check POP Shield functions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Type-check AI POP analysis
+        run: deno check supabase/functions/analyze-pop/index.ts
+
+      - name: Type-check POP upload
+        run: deno check supabase/functions/invoice-pop-upload/index.ts

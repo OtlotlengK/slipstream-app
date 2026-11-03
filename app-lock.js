@@ -95,10 +95,20 @@
     document.getElementById('vt-lock-logout').onclick = async () => {
       try {
         if (window.supabase) {
-          const db = window.supabase.createClient('https://pddjualtnhgmplampucn.supabase.co','sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH');
+          if (!window.VT_ENV) {
+            await new Promise((resolve, reject) => {
+              const script = document.createElement('script');
+              script.src = '/vt-env.js';
+              script.onload = resolve;
+              script.onerror = () => reject(new Error('ValoraTap environment configuration could not load.'));
+              document.head.appendChild(script);
+            });
+          }
+          if (!window.VT_ENV) throw new Error('ValoraTap environment configuration is unavailable.');
+          const db = window.supabase.createClient(window.VT_ENV.supabaseUrl, window.VT_ENV.supabaseKey);
           await db.auth.signOut();
         }
-      } finally { location.href='login.html'; }
+      } finally { location.href='/login.html'; }
     };
   }
 

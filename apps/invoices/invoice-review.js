@@ -1,8 +1,28 @@
-const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
 
-if (!window.supabase?.createClient) { throw new Error('ValoraTap secure connection library failed to load. Please refresh the page.'); }
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function initThemeToggle() {
+  const root = document.documentElement;
+  const button = document.querySelector('#themeToggle');
+  const saved = (() => { try { return localStorage.getItem('vt-theme'); } catch { return null; } })();
+  const apply = theme => {
+    root.dataset.theme = theme;
+    if (button) {
+      button.textContent = theme === 'dark' ? '☀ Light mode' : '☾ Dark mode';
+      button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+      button.setAttribute('aria-pressed', String(theme === 'dark'));
+    }
+  };
+  apply(saved === 'dark' ? 'dark' : 'light');
+  button?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem('vt-theme', next); } catch {}
+  });
+}
+const SUPABASE_URL = window.VT_ENV?.supabaseUrl;
+if (!SUPABASE_URL || !window.VT?.createSupabaseClient) {
+  throw new Error('ValoraTap secure connection configuration failed to load. Please refresh the page.');
+}
+const db = window.VT.createSupabaseClient();
 const params = new URLSearchParams(window.location.search);
 const invoiceId = params.get('id');
 const invoiceNumber = params.get('invoice');
@@ -103,14 +123,14 @@ async function init() {
 
     const session = sessionData?.session;
     if (!session) {
-      window.location.href = 'login.html';
+      window.location.href = '/login.html';
       return;
     }
 
     if (!invoiceId && !invoiceNumber) {
       showMessage('No payment was selected. Opening the payment review queue…', 'error');
       setTimeout(() => {
-        window.location.href = 'invoice-centre.html?filter=payment_submitted';
+        window.location.href = '/invoice-centre.html?filter=payment_submitted';
       }, 350);
       return;
     }
@@ -269,7 +289,7 @@ async function confirmPayment() {
 
   showMessage('Payment confirmed. Receipt created successfully.', 'success');
   setTimeout(() => {
-    window.location.href = `verify.html?hash=${encodeURIComponent(hash)}`;
+    window.location.href = `/verify.html?hash=${encodeURIComponent(hash)}`;
   }, 700);
 }
 
@@ -303,16 +323,17 @@ async function rejectPayment() {
 
   showMessage('Payment submission rejected. The invoice is back in awaiting-payment status.', 'success');
   setTimeout(() => {
-    window.location.href = 'invoice-centre.html';
+    window.location.href = '/invoice-centre.html';
   }, 700);
 }
 
 async function logout() {
   await db.auth.signOut();
-  window.location.href = 'login.html';
+  window.location.href = '/login.html';
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
   $('#confirm')?.addEventListener('click', confirmPayment);
 $('#confirmYes')?.addEventListener('click', () => { const box=$('#confirmBox'); if(box){ box.dataset.approved='1'; box.classList.add('hidden'); } confirmPayment(); });
 $('#confirmCancel')?.addEventListener('click', () => $('#confirmBox')?.classList.add('hidden'));

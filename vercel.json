@@ -1,38 +1,186 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/home.html" },
-    { "source": "/command-centre.html", "destination": "/centres/command-centre.html" },
-    { "source": "/action-centre.html", "destination": "/centres/action-centre.html" },
-    { "source": "/activity.html", "destination": "/centres/activity.html" },
-    { "source": "/financial-intelligence.html", "destination": "/centres/financial-intelligence.html" },
-    { "source": "/customer-centre.html", "destination": "/centres/customer-centre.html" },
-    { "source": "/passport.html", "destination": "/business-passport.html" },
-    { "source": "/receipt.html", "destination": "/receipts.html" },
-    { "source": "/receipts", "destination": "/receipts.html" },
-    { "source": "/receipt-vault", "destination": "/receipts.html" },
-    { "source": "/centres/receipts.html", "destination": "/receipts.html" },
-    { "source": "/invoices", "destination": "/invoice-centre.html" },
-    { "source": "/invoices.html", "destination": "/invoice-centre.html" },
-    { "source": "/invoice-vault", "destination": "/invoice-centre.html" },
-    { "source": "/invoice-vault.html", "destination": "/invoice-centre.html" },
-    { "source": "/invoice-centre", "destination": "/invoice-centre.html" },
-    { "source": "/centres/invoices.html", "destination": "/invoice-centre.html" },
-    { "source": "/command-centre", "destination": "/centres/command-centre.html" },
-    { "source": "/action-centre", "destination": "/centres/action-centre.html" },
-    { "source": "/activity", "destination": "/centres/activity.html" },
-    { "source": "/financial-intelligence", "destination": "/centres/financial-intelligence.html" },
-    { "source": "/customer-centre", "destination": "/centres/customer-centre.html" },
-    { "source": "/s/:code", "destination": "https://pddjualtnhgmplampucn.supabase.co/functions/v1/short-link?code=:code" }
+    {
+      "source": "/",
+      "destination": "/home.html"
+    },
+    {
+      "source": "/login.html",
+      "destination": "/apps/auth/login.html"
+    },
+    {
+      "source": "/confirm-signup.html",
+      "destination": "/apps/auth/confirm-signup.html"
+    },
+    {
+      "source": "/reset-password.html",
+      "destination": "/apps/auth/reset-password.html"
+    },
+    {
+      "source": "/onboarding.html",
+      "destination": "/apps/auth/onboarding.html"
+    },
+    {
+      "source": "/business-passport.html",
+      "destination": "/apps/business/business-passport.html"
+    },
+    {
+      "source": "/business-passport-public.html",
+      "destination": "/apps/business/business-passport-public.html"
+    },
+    {
+      "source": "/business-profile.html",
+      "destination": "/apps/business/business-profile.html"
+    },
+    {
+      "source": "/receipts.html",
+      "destination": "/apps/receipts/receipts.html"
+    },
+    {
+      "source": "/receipt-create.html",
+      "destination": "/apps/receipts/receipt-create.html"
+    },
+    {
+      "source": "/receipt-detail.html",
+      "destination": "/apps/receipts/receipt-detail.html"
+    },
+    {
+      "source": "/verify.html",
+      "destination": "/apps/receipts/verify.html"
+    },
+    {
+      "source": "/invoice-centre.html",
+      "destination": "/apps/invoices/invoice-centre.html"
+    },
+    {
+      "source": "/invoice-create.html",
+      "destination": "/apps/invoices/invoice-create.html"
+    },
+    {
+      "source": "/invoice-review.html",
+      "destination": "/apps/invoices/invoice-review.html"
+    },
+    {
+      "source": "/invoice-timeline.html",
+      "destination": "/apps/invoices/invoice-timeline.html"
+    },
+    {
+      "source": "/invoice-preview.html",
+      "destination": "/apps/invoices/invoice-preview.html"
+    },
+    {
+      "source": "/invoice.html",
+      "destination": "/apps/invoices/invoice.html"
+    },
+    {
+      "source": "/command-centre.html",
+      "destination": "/centres/command-centre.html"
+    },
+    {
+      "source": "/action-centre.html",
+      "destination": "/centres/action-centre.html"
+    },
+    {
+      "source": "/activity.html",
+      "destination": "/centres/activity.html"
+    },
+    {
+      "source": "/financial-intelligence.html",
+      "destination": "/centres/financial-intelligence.html"
+    },
+    {
+      "source": "/customer-centre.html",
+      "destination": "/centres/customer-centre.html"
+    },
+    {
+      "source": "/passport.html",
+      "destination": "/apps/business/business-passport.html"
+    },
+    {
+      "source": "/receipt.html",
+      "destination": "/apps/receipts/receipts.html"
+    },
+    {
+      "source": "/receipts",
+      "destination": "/apps/receipts/receipts.html"
+    },
+    {
+      "source": "/receipt-vault",
+      "destination": "/apps/receipts/receipts.html"
+    },
+    {
+      "source": "/centres/receipts.html",
+      "destination": "/apps/receipts/receipts.html"
+    },
+    {
+      "source": "/invoices",
+      "destination": "/apps/invoices/invoice-centre.html"
+    },
+    {
+      "source": "/invoices.html",
+      "destination": "/apps/invoices/invoice-centre.html"
+    },
+    {
+      "source": "/invoice-vault",
+      "destination": "/apps/invoices/invoice-centre.html"
+    },
+    {
+      "source": "/invoice-vault.html",
+      "destination": "/apps/invoices/invoice-centre.html"
+    },
+    {
+      "source": "/invoice-centre",
+      "destination": "/apps/invoices/invoice-centre.html"
+    },
+    {
+      "source": "/centres/invoices.html",
+      "destination": "/apps/invoices/invoice-centre.html"
+    },
+    {
+      "source": "/command-centre",
+      "destination": "/centres/command-centre.html"
+    },
+    {
+      "source": "/action-centre",
+      "destination": "/centres/action-centre.html"
+    },
+    {
+      "source": "/activity",
+      "destination": "/centres/activity.html"
+    },
+    {
+      "source": "/financial-intelligence",
+      "destination": "/centres/financial-intelligence.html"
+    },
+    {
+      "source": "/customer-centre",
+      "destination": "/centres/customer-centre.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        }
       ]
     }
   ]

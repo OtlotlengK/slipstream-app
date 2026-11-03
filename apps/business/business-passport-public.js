@@ -1,6 +1,5 @@
 (() => {
-  const SUPABASE_URL = 'https://pddjualtnhgmplampucn.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
+
   const $ = id => document.getElementById(id);
 
   function fail(message) {
@@ -122,8 +121,8 @@
 
   async function init() {
     try {
-      if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-        throw new Error('Supabase client library failed to load.');
+      if (!window.VT?.createSupabaseClient) {
+        throw new Error('ValoraTap secure connection configuration failed to load.');
       }
 
       const token = new URLSearchParams(window.location.search).get('token') || '';
@@ -132,7 +131,7 @@
         return;
       }
 
-      const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      const db = window.VT.createSupabaseClient({
         auth: { persistSession: false, autoRefreshToken: false }
       });
 

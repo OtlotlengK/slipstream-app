@@ -1,6 +1,4 @@
-const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
-const KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
-let db=null,rows=[],filter='all';
+let db=null,rows=[],filter=new URLSearchParams(location.search).get('filter')||'all',currentPage=1,pageSize=10;
 
 const $=s=>document.querySelector(s);
 const showMessage=(message,type='error')=>{
@@ -35,21 +33,32 @@ async function init(){
     if(!window.supabase?.createClient){
       throw new Error('ValoraTap could not load its secure connection library. Please refresh the page.');
     }
-    db=window.supabase.createClient(SUPABASE_URL,KEY);
+    db=window.VT.createSupabaseClient();
     setLoading(true);
 
     const {data:{session},error:sessionError}=await db.auth.getSession();
     if(sessionError) throw sessionError;
-    if(!session){location.href='login.html';return;}
+    if(!session){location.href='/login.html';return;}
 
     const {data:profile,error:profileError}=await db.from('business_profiles').select('currency_code').eq('merchant_id',session.user.id).maybeSingle();
     if(profileError) console.warn('Business currency lookup failed',profileError);
     if(profile?.currency_code) currencyCode=String(profile.currency_code).toUpperCase();
 
-    const {data,error}=await db.rpc('get_merchant_invoices');
-    if(error) throw error;
+    const rpc=await db.rpc('get_merchant_invoices');
+    if(rpc.error){
+      console.warn('get_merchant_invoices failed; using authenticated table fallback',rpc.error);
+    }else{
+      rows=(Array.isArray(rpc.data)?rpc.data:[]).map(r=>({...r,calculated_status:normalizedStatus(r)}));
+    }
 
-    rows=(Array.isArray(data)?data:[]).map(r=>({...r,calculated_status:normalizedStatus(r)}));
+    if(!rows.length){
+      const fallback=await db.from('invoices')
+        .select('id,invoice_no,customer_name,customer_email,total,status,issue_date,due_date,payment_submitted_at,payment_confirmed_at,receipt_verification_hash,created_at,updated_at')
+        .eq('merchant_id',session.user.id)
+        .order('created_at',{ascending:false});
+      if(fallback.error) throw fallback.error;
+      rows=(fallback.data||[]).map(r=>({...r,calculated_status:normalizedStatus(r)}));
+    }
     render();
   }catch(error){
     console.error('Invoice Command Centre failed to load',error);
@@ -60,6 +69,11 @@ async function init(){
 }
 
 function bindControls(){
+  const pageSizeSelect=$('#pageSize');
+  if(pageSizeSelect&&!pageSizeSelect.dataset.bound){pageSizeSelect.value=String(pageSize);pageSizeSelect.addEventListener('change',()=>{pageSize=Number(pageSizeSelect.value)||10;currentPage=1;render();});pageSizeSelect.dataset.bound='true';}
+  const prev=$('#prevPage'),next=$('#nextPage');
+  if(prev&&!prev.dataset.bound){prev.addEventListener('click',()=>{if(currentPage>1){currentPage--;render();}});prev.dataset.bound='true';}
+  if(next&&!next.dataset.bound){next.addEventListener('click',()=>{currentPage++;render();});next.dataset.bound='true';}
   const search=$('#search');
   if(search&&!search.dataset.bound){
     search.addEventListener('input',render);
@@ -78,7 +92,7 @@ function bindControls(){
 }
 
 function setFilter(x){
-  filter=x;
+  filter=x;currentPage=1;
   document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('filter-active',b.dataset.filter===x));
   render();
 }
@@ -106,19 +120,28 @@ function render(){
     return matchesFilter&&(!q||hay.includes(q));
   });
 
+  const pageCount=Math.max(1,Math.ceil(visible.length/pageSize));
+  currentPage=Math.min(currentPage,pageCount);
+  const startIndex=visible.length?(currentPage-1)*pageSize:0;
+  const pageRows=visible.slice(startIndex,startIndex+pageSize);
+  $('#pagination').classList.toggle('hidden',visible.length===0);
+  $('#pageSummary').textContent=visible.length?'Showing '+(startIndex+1)+'–'+Math.min(startIndex+pageSize,visible.length)+' of '+visible.length+' invoices':'Showing 0 invoices';
+  $('#pageNumber').textContent='Page '+currentPage+' of '+pageCount;
+  $('#prevPage').disabled=currentPage<=1;
+  $('#nextPage').disabled=currentPage>=pageCount;
   $('#empty').classList.toggle('hidden',visible.length>0);
-  $('#queue').innerHTML=visible.map(r=>{
+  $('#queue').innerHTML=pageRows.map(r=>{
     const od=(r.calculated_status||normalizedStatus(r))==='overdue';
     const status=r.calculated_status||normalizedStatus(r);
     let cls='bg-slate-100 text-slate-600',label=String(status||'').replace('_',' ');
     if(status==='payment_submitted'){cls='bg-amber-100 text-amber-800';label='payment under review';}
     if(status==='paid'){cls='bg-emerald-100 text-emerald-800';label='paid';}
     if(od){cls='bg-red-100 text-red-700';label='overdue';}
-    const review=status==='payment_submitted'?'<a class="btn primary" href="invoice-review.html?id='+encodeURIComponent(r.id)+'">Review POP →</a>':'';
-    const open='<a class="btn ghost" href="invoice-preview.html?id='+encodeURIComponent(r.id)+'">Open Invoice</a>';
-    const timeline='<a class="btn ghost" href="invoice-timeline.html?id='+encodeURIComponent(r.id)+'">Timeline</a>';
+    const review=status==='payment_submitted'&&r.id?'<a class="btn primary" href="/invoice-review.html?id='+encodeURIComponent(r.id)+'">Review POP →</a>':'';
+    const open='<a class="btn ghost" href="/invoice-preview.html?id='+encodeURIComponent(r.id)+'">Open Invoice</a>';
+    const timeline='<a class="btn ghost" href="/invoice-timeline.html?id='+encodeURIComponent(r.id)+'">Timeline</a>'; const evidenceCase='<a class="btn ghost" href="/evidence-case.html?id='+encodeURIComponent(r.id)+'">Evidence</a>';
     const share='<button type="button" class="btn ghost" data-share-id="'+esc(r.id)+'">Share</button>';
-    return '<div class="row p-5 flex flex-col md:flex-row md:items-center gap-4"><div class="flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black">'+esc(r.invoice_no)+'</span><span class="pill '+cls+'">'+esc(label)+'</span></div><div class="text-sm font-bold mt-2">'+esc(r.customer_name)+'</div><div class="text-[10px] text-slate-400 mt-1">Due '+esc(r.due_date||'—')+' · '+esc(r.customer_email||'No email')+'</div></div><div class="text-lg font-black md:text-right">'+money(r.total)+'</div><div class="queue-actions flex flex-wrap gap-2 md:ml-3">'+review+open+timeline+share+'</div></div>';
+    return '<div class="row queue-row flex flex-col md:flex-row md:items-center gap-4"><div class="queue-meta flex-1 min-w-0"><div class="flex flex-wrap items-center gap-2"><span class="font-black">'+esc(r.invoice_no)+'</span><span class="pill '+cls+'">'+esc(label)+'</span></div><div class="text-sm font-bold mt-2">'+esc(r.customer_name)+'</div><div class="text-[10px] text-slate-400 mt-1">Due '+esc(r.due_date||'—')+' · '+esc(r.customer_email||'No email')+'</div></div><div class="queue-amount text-lg font-black md:text-right">'+money(r.total)+'</div><div class="queue-actions flex flex-wrap gap-2 md:ml-3">'+review+open+timeline+evidenceCase+share+'</div></div>';
   }).join('');
 
   bindControls();
@@ -149,10 +172,12 @@ async function logout(){
   if(!db)return;
   const {error}=await db.auth.signOut();
   if(error){showMessage(error.message||'Unable to sign out.');return;}
-  location.href='login.html';
+  location.href='/login.html';
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
+function start(){
   bindControls();
   init();
-});
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start);
+else start();
