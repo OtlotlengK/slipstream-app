@@ -1,4 +1,4 @@
-/* ValoraTap environment routing.
+/* VynoTap environment routing.
    Production is selected only on explicitly allow-listed production hosts.
    Every Vercel preview and localhost uses staging. Unknown hosts fail closed. */
 (() => {
@@ -24,7 +24,7 @@
   } else if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')) {
     environment = 'staging';
   } else {
-    throw new Error('ValoraTap blocked an unrecognised host. No Supabase connection was started.');
+    throw new Error('VynoTap blocked an unrecognised host. No Supabase connection was started.');
   }
   const selected = environment === 'production' ? production : staging;
   window.VT_ENV = Object.freeze({
