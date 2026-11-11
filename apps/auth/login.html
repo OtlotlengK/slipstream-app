@@ -3,21 +3,21 @@
 <head>
 <script src="/vt-env.js"></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="application-name" content="ValoraTap"><meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="VynoTap"><meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#2B2A6B">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="VT">
+<meta name="apple-mobile-web-app-title" content="Vyno">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icons/valoratap.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/icons/valoratap.svg"><title>ValoraTap | Sign in</title>
+<link rel="icon" href="/icons/vynotap.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/vynotap.svg"><title>VynoTap | Sign in</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/core/services/supabase-client.js"></script>
 <script src="/vt-theme.js" defer></script>
 </head>
 <body class="min-h-screen bg-[#0F172A] text-slate-100 flex items-center justify-center p-4">
 <div class="w-full max-w-md">
 <header class="text-center mb-7">
-<img src="/icons/valoratap.svg" alt="ValoraTap" class="w-20 h-20 mx-auto mb-4 object-contain">
-<h1 class="text-3xl font-black tracking-tight text-white">ValoraTap</h1>
+<img src="/icons/vynotap.svg" alt="VynoTap" class="w-20 h-20 mx-auto mb-4 object-contain">
+<h1 class="text-3xl font-black tracking-tight text-white">VynoTap</h1>
 <p class="text-sm text-slate-400 mt-1">The trust layer for business transactions</p>
 </header>
 <section class="bg-[#111827] border border-slate-800 rounded-2xl p-6 shadow-2xl">
@@ -33,8 +33,8 @@
 <button id="forgot" class="w-full mt-3 text-xs text-slate-400 hover:text-white font-bold">Forgot password?</button>
 <button id="resend" class="hidden w-full mt-3 text-xs text-slate-300 hover:text-white font-bold">Resend verification email</button>
 <button id="switch" class="w-full mt-4 text-xs text-[#8B7CF6] hover:text-white font-medium">Don't have an account? Create one</button>
-<button id="install" class="hidden w-full mt-4 bg-white/5 border border-[#6C4CF1]/40 text-[#8B7CF6] font-bold py-3 rounded-xl">Install ValoraTap App</button>
-</section><p class="text-center text-[10px] text-slate-600 mt-5">ValoraTap © 2026</p>
+<button id="install" class="hidden w-full mt-4 bg-white/5 border border-[#6C4CF1]/40 text-[#8B7CF6] font-bold py-3 rounded-xl">Install VynoTap App</button>
+</section><p class="text-center text-[10px] text-slate-600 mt-5">VynoTap © 2026</p>
 </div>
 <script>
 const db=window.VT.createSupabaseClient();
@@ -48,7 +48,7 @@ async function route(){const {data:{user}}=await db.auth.getUser();if(!user){loc
 async function submit(){const email=$('email').value.trim(),password=$('password').value,button=$('submit');if(!email||!password){msg('Please enter your email and password.',true);return}button.disabled=true;button.textContent=signup?'Creating account...':'Logging in...';$('resend').classList.add('hidden');
 if(signup){const business=$('business').value.trim(),owner=$('owner').value.trim();if(!business||!owner){msg('Please enter your business name and your name.',true);button.disabled=false;render();return}
 const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:verifyRedirect,data:{business_name:business,owner_name:owner}}});
-if(error){msg(error.message,true)}else if(data.session){await route()}else{signup=false;render();$('email').value=email;$('password').value='';msg('Account created. Check your email to verify your ValoraTap account before logging in.');$('resend').classList.remove('hidden')}
+if(error){msg(error.message,true)}else if(data.session){await route()}else{signup=false;render();$('email').value=email;$('password').value='';msg('Account created. Check your email to verify your VynoTap account before logging in.');$('resend').classList.remove('hidden')}
 }else{const {error}=await db.auth.signInWithPassword({email,password});if(error){msg(error.message,true);if(error.message.toLowerCase().includes('email not confirmed'))$('resend').classList.remove('hidden')}else await route()}
 button.disabled=false;render();}
 async function resend(){const email=$('email').value.trim();if(!email){msg('Enter your email address first.',true);return}const {error}=await db.auth.resend({type:'signup',email,options:{emailRedirectTo:verifyRedirect}});if(error)msg(error.message,true);else msg('Verification email sent. Check your inbox and spam/junk folder.')}

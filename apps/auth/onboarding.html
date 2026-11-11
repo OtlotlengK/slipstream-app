@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="application-name" content="ValoraTap"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="VT"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#2B2A6B"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/valoratap.svg" type="image/svg+xml">
-<title>ValoraTap | Business Setup</title>
+<meta name="application-name" content="VynoTap"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Vyno"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#2B2A6B"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/vynotap.svg" type="image/svg+xml">
+<title>VynoTap | Business Setup</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/vt-env.js"></script><script src="/core/services/supabase-client.js"></script>
 <script src="/app-lock.js" defer></script>
@@ -12,15 +12,15 @@
 <body class="bg-[#0F172A] min-h-screen text-slate-100 flex items-center justify-center p-4">
 <div class="w-full max-w-lg">
   <div class="text-center mb-7">
-    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#6C4CF1]/10 border border-[#6C4CF1]/30 mb-3"><img src="/icons/valoratap.svg" alt="ValoraTap" class="w-12 h-12 object-contain"></div>
-    <h1 class="text-3xl font-black tracking-[0.12em] text-white">VALORATAP</h1>
+    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#6C4CF1]/10 border border-[#6C4CF1]/30 mb-3"><img src="/icons/vynotap.svg" alt="VynoTap" class="w-12 h-12 object-contain"></div>
+    <h1 class="text-3xl font-black tracking-[0.12em] text-white">VYNOTAP</h1>
     <p class="text-sm text-slate-400 mt-1">Set up your business profile</p>
   </div>
   <div class="bg-[#111827] rounded-2xl shadow-2xl border border-slate-800 p-6">
     <div class="mb-6">
       <p class="text-xs font-bold uppercase tracking-wider text-[#d8b84c]">Merchant onboarding</p>
       <h2 class="text-xl font-bold mt-1">Tell us about your business</h2>
-      <p class="text-xs text-slate-400 mt-1">These details appear on your ValoraTap merchant account and can be updated later.</p>
+      <p class="text-xs text-slate-400 mt-1">These details appear on your VynoTap merchant account and can be updated later.</p>
     </div>
     <div class="space-y-4">
       <div><label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Business Name</label><input id="business-name" type="text" required class="w-full px-3.5 py-3 text-sm bg-[#0d1014] border border-slate-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]"></div>
@@ -31,7 +31,7 @@
     <button id="save-btn" onclick="saveProfile()" class="w-full mt-5 bg-[#c9a227] hover:bg-[#8B7CF6] text-[#0b0d10] font-bold py-3 rounded-xl">Save & Continue</button>
     <button onclick="window.location.href='/index.html'" class="w-full mt-3 text-xs text-slate-500 hover:text-white">Skip for now</button>
   </div>
-  <p class="text-center text-[10px] text-slate-600 mt-5">ValoraTap © 2026</p>
+  <p class="text-center text-[10px] text-slate-600 mt-5">VynoTap © 2026</p>
 </div>
 <script>
 const db=window.VT.createSupabaseClient();
