@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ValoraTap | Business Identity</title>
+<title>VynoTap | Business Identity</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/vt-env.js"></script><script src="/core/services/supabase-client.js"></script>
 <style>
@@ -11,7 +11,7 @@
 <script src="/app-lock.js" defer></script>
 </head>
 <body class="min-h-screen">
-<header class="bg-[#0F172A] text-white"><div class="wrap px-4 md:px-6 py-4 flex items-center justify-between gap-4"><div><a href="/dashboard-v2.html" class="font-black tracking-[.16em] text-lg">VALORATAP</a><div class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Business Identity</div></div><a href="/dashboard-v2.html" class="text-xs font-bold px-3 py-2 rounded-xl bg-white/5">← Overview</a></div></header>
+<header class="bg-[#0F172A] text-white"><div class="wrap px-4 md:px-6 py-4 flex items-center justify-between gap-4"><div><a href="/dashboard-v2.html" class="font-black tracking-[.16em] text-lg">VYNOTAP</a><div class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Business Identity</div></div><a href="/dashboard-v2.html" class="text-xs font-bold px-3 py-2 rounded-xl bg-white/5">← Overview</a></div></header>
 <main class="wrap px-4 md:px-6 py-7 md:py-9">
 <section class="mb-6"><div class="label gold">Business identity centre</div><div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4"><div><h1 class="text-3xl md:text-4xl font-black tracking-tight mt-1">Build your Business Identity.</h1><p class="text-sm text-slate-500 mt-2 max-w-2xl">One profile for your business identity, verification and future Business Passport. Start simple. Add depth when your business needs it.</p></div><div class="card px-4 py-3 min-w-[220px]"><div class="flex items-center justify-between"><span class="label">Profile strength</span><strong id="completion-text" class="text-sm">0%</strong></div><div class="meter mt-2"><span id="completion-bar"></span></div><div id="completion-hint" class="hint mt-2">Start with your business name and identity.</div></div></div></section>
 <div class="grid lg:grid-cols-[1fr_330px] gap-5 items-start">
@@ -36,7 +36,7 @@
 <div class="md:col-span-2"><label class="label block mb-2 text-slate-600">Transfer reference</label><input id="bank_transfer_reference" class="input" maxlength="120" placeholder="e.g. Invoice number / customer name"></div>
 </div>
 <div class="mt-6 p-4 rounded-2xl bg-[#F7FAF9] border border-[#DDE7E5]">
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"><div><div class="label gold">ValoraTap Pay · Paystack</div><strong class="text-lg">Connect your payout account</strong><p class="hint mt-1">VT creates a merchant settlement account under its Paystack integration. Your Paystack secret key is never stored in VT.</p></div><span id="paystack-status" class="tag">Not connected</span></div>
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4"><div><div class="label gold">VynoTap Pay · Paystack</div><strong class="text-lg">Connect your payout account</strong><p class="hint mt-1">VT creates a merchant settlement account under its Paystack integration. Your Paystack secret key is never stored in VT.</p></div><span id="paystack-status" class="tag">Not connected</span></div>
 <div class="grid md:grid-cols-[1fr_1fr_auto] gap-3 mt-4"><select id="paystack-bank" class="input"><option value="">Choose your bank</option></select><input id="paystack-account" class="input" inputmode="numeric" maxlength="20" placeholder="Bank account number"><button id="paystack-connect" type="button" class="px-4 py-3 rounded-xl bg-[#17201F] text-white text-xs font-black hover:bg-[#0F766E]">Connect Paystack</button></div>
 <div id="paystack-message" class="hidden mt-3 p-3 rounded-xl text-xs"></div>
 <p class="hint mt-3">South Africa is currently supported first. Paystack may perform its own subaccount verification before the first payout.</p>
