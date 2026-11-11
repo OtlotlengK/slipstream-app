@@ -33,7 +33,7 @@ function setLoading(loading){
 async function init(){
   try{
     if(!window.supabase?.createClient){
-      throw new Error('ValoraTap could not load its secure connection library. Please refresh the page.');
+      throw new Error('VynoTap could not load its secure connection library. Please refresh the page.');
     }
     db=window.supabase.createClient(SUPABASE_URL,KEY);
     setLoading(true);
@@ -144,7 +144,7 @@ async function shareInvoice(id){
     if(navigator.share) await navigator.share({title:'Invoice '+r.invoice_no,text:'Invoice '+r.invoice_no,url:link});
     else if(navigator.clipboard){
       await navigator.clipboard.writeText(link);
-      showMessage('ValoraTap invoice link copied to your clipboard.','success');
+      showMessage('VynoTap invoice link copied to your clipboard.','success');
     }else{
       showMessage('Sharing is not available in this browser. Copy the invoice link below: '+link,'success');
     }

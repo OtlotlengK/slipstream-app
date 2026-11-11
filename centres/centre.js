@@ -13,7 +13,7 @@
 
   let db;
   function ready() {
-    if (!window.VT || typeof window.VT.createSupabaseClient !== 'function') throw new Error('ValoraTap shared database client did not load.');
+    if (!window.VT || typeof window.VT.createSupabaseClient !== 'function') throw new Error('VynoTap shared database client did not load.');
     db = window.VT.createSupabaseClient({ auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true } });
   }
   async function auth() {
@@ -100,10 +100,10 @@
       else if(kind==='financial')await financial(uid);
       else if(kind==='customers')await customers(uid);
       else if(kind==='action')await action(uid);
-      else throw new Error('Unknown ValoraTap centre.');
-    } catch (e) { errorBox(e?.message || 'ValoraTap could not load this centre.'); }
+      else throw new Error('Unknown VynoTap centre.');
+    } catch (e) { errorBox(e?.message || 'VynoTap could not load this centre.'); }
   }
-  window.addEventListener('error',e=>{ if(e?.message) errorBox('ValoraTap page error: '+e.message); });
-  window.addEventListener('unhandledrejection',e=>{ if(e?.reason) errorBox('ValoraTap data error: '+(e.reason.message||String(e.reason))); });
+  window.addEventListener('error',e=>{ if(e?.message) errorBox('VynoTap page error: '+e.message); });
+  window.addEventListener('unhandledrejection',e=>{ if(e?.reason) errorBox('VynoTap data error: '+(e.reason.message||String(e.reason))); });
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',main); else main();
 })();
