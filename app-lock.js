@@ -1,9 +1,9 @@
 /* Load the shared appearance system on authenticated app pages. */
 (() => { const s=document.createElement('script'); s.src='/vt-theme.js'; s.async=true; document.head.appendChild(s); })();
 
-/* ValoraTap local app lock.
+/* VynoTap local app lock.
    This is a device-level privacy gate, not a replacement for Supabase Auth.
-   The Supabase session remains intact while VT is locked. */
+   The Supabase session remains intact while VynoTap is locked. */
 (() => {
   const KEY = 'vt_app_lock_v1';
   const HIDDEN_AT = 'vt_app_lock_hidden_at';
@@ -47,11 +47,11 @@
       <div class="vt-lock-backdrop">
         <div class="vt-lock-card">
           <div class="vt-lock-mark">V</div>
-          <div class="vt-lock-eyebrow">ValoraTap locked</div>
+          <div class="vt-lock-eyebrow">VynoTap locked</div>
           <h1 class="vt-lock-title">Welcome back</h1>
-          <p class="vt-lock-subtitle">Unlock this device to continue. Your ValoraTap session is still signed in.</p>
+          <p class="vt-lock-subtitle">Unlock this device to continue. Your VynoTap session is still signed in.</p>
           <div id="vt-lock-pin-wrap" class="vt-lock-pin-wrap">
-            <label class="vt-lock-label" for="vt-lock-pin">VT PIN</label>
+            <label class="vt-lock-label" for="vt-lock-pin">VynoTap PIN</label>
             <input id="vt-lock-pin" inputmode="numeric" autocomplete="one-time-code" maxlength="8" type="password" class="vt-lock-input" placeholder="Enter your PIN">
           </div>
           <button id="vt-lock-unlock" type="button" class="vt-lock-button vt-lock-primary">Unlock</button>
@@ -100,11 +100,11 @@
               const script = document.createElement('script');
               script.src = '/vt-env.js';
               script.onload = resolve;
-              script.onerror = () => reject(new Error('ValoraTap environment configuration could not load.'));
+              script.onerror = () => reject(new Error('VynoTap environment configuration could not load.'));
               document.head.appendChild(script);
             });
           }
-          if (!window.VT_ENV) throw new Error('ValoraTap environment configuration is unavailable.');
+          if (!window.VT_ENV) throw new Error('VynoTap environment configuration is unavailable.');
           const db = window.supabase.createClient(window.VT_ENV.supabaseUrl, window.VT_ENV.supabaseKey);
           await db.auth.signOut();
         }
@@ -137,7 +137,7 @@
   async function unlockWithPin() {
     const s=read(), pin=document.getElementById('vt-lock-pin')?.value||'';
     if(!s.pin){ showMessage('No PIN is configured. Use your device biometric or set a PIN in Settings.',true); return; }
-    if(!/^\d{6,8}$/.test(pin)){ showMessage('Enter your 6–8 digit VT PIN.',true); return; }
+    if(!/^\d{6,8}$/.test(pin)){ showMessage('Enter your 6–8 digit VynoTap PIN.',true); return; }
     try{
       const salt=b64ToBytes(s.pin.salt);
       const hash=await derivePin(pin,salt,s.pin.iterations||120000);
@@ -196,18 +196,18 @@
 
   async function setupBiometric() {
     const current = read();
-    if (!current.pin) throw new Error('Set and confirm a VT PIN first. Your PIN is the fallback if fingerprint / Face ID is unavailable.');
+    if (!current.pin) throw new Error('Set and confirm a VynoTap PIN first. Your PIN is the fallback if fingerprint / Face ID is unavailable.');
     if(!window.isSecureContext || !window.PublicKeyCredential || !navigator.credentials) throw new Error('Device biometric unlock is not supported here.');
     if(PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable){
       const available=await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-      if(!available) throw new Error('This device does not have a supported fingerprint, Face ID or screen-lock authenticator available to ValoraTap.');
+      if(!available) throw new Error('This device does not have a supported fingerprint, Face ID or screen-lock authenticator available to VynoTap.');
     }
     const challenge=randomBytes(32), userId=randomBytes(16);
     const cred=await navigator.credentials.create({
       publicKey:{
         challenge,
-        rp:{id:location.hostname,name:'ValoraTap'},
-        user:{id:userId,name:'ValoraTap device',displayName:'ValoraTap device'},
+        rp:{id:location.hostname,name:'VynoTap'},
+        user:{id:userId,name:'VynoTap device',displayName:'VynoTap device'},
         pubKeyCredParams:[{type:'public-key',alg:-7}],
         authenticatorSelection:{authenticatorAttachment:'platform',userVerification:'required',residentKey:'preferred'},
         timeout:60000
