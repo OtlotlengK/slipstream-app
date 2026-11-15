@@ -288,7 +288,7 @@ html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[
     const overlay=document.createElement('div');overlay.id='vt-theme-onboarding';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-labelledby','vt-theme-title');
     const box=document.createElement('div');box.className='vt-theme-dialog';
     const h=document.createElement('h2');h.id='vt-theme-title';h.textContent='Match your device?';
-    const p=document.createElement('p');p.textContent='Choose how ValoraTap should look. You can change this any time in Business Settings.';
+    const p=document.createElement('p');p.textContent='Choose how VynoTap looks. Change this any time in Settings.';
     const choices=document.createElement('div');choices.className='vt-theme-choices';
     choices.append(choice('system','◐','Follow device settings','VT changes when your phone changes. Recommended.'),choice('light','☀','Always light','Keep VT light even when your phone is dark.'),choice('dark','☾','Always dark','Keep VT dark even when your phone is light.'));
     const skip=document.createElement('button');skip.type='button';skip.className='vt-theme-dismiss';skip.textContent='Use my device setting for now';skip.addEventListener('click',()=>{apply('system');try{localStorage.setItem('vt_theme_onboarding_seen_v1','1')}catch(_){};overlay.remove()});
