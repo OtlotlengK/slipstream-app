@@ -9,21 +9,21 @@
 <script src="/app-lock.js" defer></script>
 </head>
 <body class="min-h-screen">
-<header class="bg-[#171717] text-white"><div class="wrap px-4 md:px-6 py-4 flex items-center justify-between"><a href="dashboard-v2.html" class="font-black tracking-[.16em] text-lg">VYNOTAP</a><a href="business-profile.html" class="text-xs font-bold px-3 py-2 rounded-xl bg-white/5">← Business Identity</a></div></header>
+<header class="bg-[#171717] text-white"><div class="wrap px-4 md:px-6 py-4 flex items-center justify-between"><a href="dashboard-v2.html" class="font-black tracking-[.16em] text-lg">VYNOTAP</a><a href="business-profile.html" class="text-xs font-bold px-3 py-2 rounded-xl bg-white/5">← Identity</a></div></header>
 <main class="wrap px-4 md:px-6 py-8">
-<section class="mb-6"><div class="label text-[#a47f2b]">Regional settings</div><h1 class="text-3xl md:text-4xl font-black tracking-tight mt-1">Country, region & currency.</h1><p class="text-sm text-slate-500 mt-2 max-w-2xl">Tell VynoTap where your business operates. Your default currency will follow the country you select and will be used as the starting currency for invoices and financial records.</p></section>
+<section class="mb-6"><div class="label text-[#a47f2b]">Regional settings</div><h1 class="text-3xl md:text-4xl font-black tracking-tight mt-1">Country, region & currency.</h1><p class="text-sm text-slate-500 mt-2 max-w-2xl">Choose where you operate. Your country sets the default currency for new invoices and financial records.</p></section>
 <section class="card p-5 md:p-7">
 <div class="grid md:grid-cols-2 gap-5">
-<div><label class="label block mb-2 text-slate-600">Country of operation</label><select id="country_code" class="input"><option value="">Select country</option></select><div class="hint mt-2">This sets the ISO country code used by VT.</div></div>
-<div><label class="label block mb-2 text-slate-600">Default currency</label><select id="currency_code" class="input"><option value="">Select country first</option></select><div class="hint mt-2">The default currency is stored on the business profile and copied onto new invoices.</div></div>
+<div><label class="label block mb-2 text-slate-600">Country of operation</label><select id="country_code" class="input"><option value="">Select country</option></select><div class="hint mt-2">Sets your country code.</div></div>
+<div><label class="label block mb-2 text-slate-600">Default currency</label><select id="currency_code" class="input"><option value="">Select country first</option></select><div class="hint mt-2">Used as the starting currency for new invoices.</div></div>
 <div><label class="label block mb-2 text-slate-600">Province / State / Region</label><input id="province" maxlength="80" class="input" placeholder="e.g. Gauteng"></div>
 <div><label class="label block mb-2 text-slate-600">City</label><input id="city" maxlength="100" class="input" placeholder="e.g. Pretoria"></div>
 </div>
 <div id="note" class="mt-5 p-4 rounded-xl bg-slate-50 text-xs text-slate-600"></div>
 <div id="message" class="hidden mt-5 p-4 rounded-xl text-xs"></div>
-<button id="save" class="mt-5 w-full bg-[#d0aa4b] hover:bg-[#d8b84c] text-[#151515] font-black py-4 rounded-xl">Save Regional Settings</button>
+<button id="save" class="mt-5 w-full bg-[#d0aa4b] hover:bg-[#d8b84c] text-[#151515] font-black py-4 rounded-xl">Save Changes</button>
 </section>
-<section class="card p-5 mt-5"><div class="label text-[#a47f2b]">How VT uses this</div><div class="grid md:grid-cols-3 gap-4 mt-4 text-sm"><div><strong>Invoices</strong><p class="hint mt-1">New invoices start in your default business currency.</p></div><div><strong>Receipts</strong><p class="hint mt-1">Payment records retain the currency in which the transaction occurred.</p></div><div><strong>VT Pay</strong><p class="hint mt-1">Payment providers are checked separately for supported settlement currencies.</p></div></div></section>
+<section class="card p-5 mt-5"><div class="label text-[#a47f2b]">How it works</div><div class="grid md:grid-cols-3 gap-4 mt-4 text-sm"><div><strong>Invoices</strong><p class="hint mt-1">New invoices use your default currency.</p></div><div><strong>Receipts</strong><p class="hint mt-1">Payment records retain the currency in which the transaction occurred.</p></div><div><strong>VT Pay</strong><p class="hint mt-1">Payment providers are checked separately for supported settlement currencies.</p></div></div></section>
 </main>
 <script>
 const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';const db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let user=null;

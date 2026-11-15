@@ -96,7 +96,7 @@
     const assurance = document.querySelector('[data-verification-assurance]');
     badges.forEach(b => { b.textContent = verified ? '✓ Verified' : 'Verification pending'; b.classList.toggle('pending', !verified); });
     if (title) title.textContent = verified ? 'Verified identity' : 'Business identity';
-    if (assurance) assurance.textContent = verified ? 'Identity verified by ValoraTap' : 'Identity record available';
+    if (assurance) assurance.textContent = verified ? 'Identity verified by VynoTap' : 'Identity record available';
   }
 
   function addContactActions(row) {
@@ -154,7 +154,7 @@
       $('app').classList.remove('hidden');
       $('business').textContent = row.business_name;
       renderLogo(row);
-      $('intro').textContent = row.description || 'A public Business Passport for this business identity and its ValoraTap verification infrastructure.';
+      $('intro').textContent = row.description || 'A public Business Passport with verified details for this business.';
       $('profile').textContent = row.trading_name || row.business_name;
       $('phone').textContent = row.business_phone || 'Not provided';
       $('receipts').textContent = Number(row.receipt_count || 0).toLocaleString('en-ZA');
