@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://slipstream-app-jbxe.vercel.app/sitemap.xml
+Sitemap: https://vynotap.com/sitemap.xml

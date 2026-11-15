@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' https://cdn.jsdelivr.net;connect-src 'self' https://pddjualtnhgmplampucn.supabase.co;style-src 'self' 'unsafe-inline';img-src 'self' data: blob:;base-uri 'none';form-action 'self';frame-ancestors 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' https://cdn.jsdelivr.net;connect-src 'self' https://pddjualtnhgmplampucn.supabase.co https://uvnlihejfwotynxhlvpq.supabase.co;style-src 'self' 'unsafe-inline';img-src 'self' data: blob:;base-uri 'none';form-action 'self';frame-ancestors 'none'">
 <title>ValoraTap | Evidence Case</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/vt-env.js"></script><script src="/core/services/supabase-client.js"></script>
 <script src="/app-lock.js" defer></script>
 <style>
 :root{--brand:#0F766E;--brand2:#14B8A6;--paper:#F6F9F8;--ink:#0F172A;--muted:#64748B;--line:#DDE7E5}
@@ -17,7 +17,7 @@
 </style>
 </head>
 <body>
-<header class="top no-print"><div class="topin"><a class="brand" href="dashboard-v2.html">VALORATAP</a><div style="display:flex;gap:8px"><a class="btn ghost" href="invoice-centre.html">← Invoice Centre</a><button id="logoutBtn" class="btn dark">Log out</button></div></div></header>
+<header class="top no-print"><div class="topin"><a class="brand" href="/dashboard-v2.html">VALORATAP</a><div style="display:flex;gap:8px"><a class="btn ghost" href="/invoice-centre.html">← Invoice Centre</a><button id="logoutBtn" class="btn dark">Log out</button></div></div></header>
 <main class="wrap">
 <section class="card hero pad">
   <div class="label">Evidence Case</div>
@@ -74,9 +74,8 @@
 <p class="label" style="text-align:center;margin-top:20px">ValoraTap Evidence Protocol · Merchant-only case view</p>
 </main>
 <script>
-const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';
-const KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';
-const db=supabase.createClient(SUPABASE_URL,KEY);
+const SUPABASE_URL=window.VT_ENV?.supabaseUrl;
+const db=window.VT.createSupabaseClient();
 const id=new URLSearchParams(location.search).get('id');
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
@@ -90,7 +89,7 @@ function fmtDate(v){return v?new Date(v).toLocaleString('en-ZA'):'—'}
 async function init(){
  try{
   const {data:{session},error:se}=await db.auth.getSession();
-  if(se)throw se;if(!session){location.href='login.html';return}
+  if(se)throw se;if(!session){location.href='/login.html';return}
   if(!/^[0-9a-f-]{36}$/i.test(id||'')){throw new Error('Invalid invoice reference.')}
   const inv=await db.rpc('get_merchant_invoice',{p_invoice_id:id});
   if(inv.error)throw inv.error;invoice=Array.isArray(inv.data)?inv.data[0]:inv.data;
@@ -125,10 +124,10 @@ function render(){
  $('#invoiceNo').textContent=invoice.invoice_no||'—';$('#customer').textContent=invoice.customer_name||'—';$('#amount').textContent=money(invoice.total,invoice.currency);
  $('#paymentStatus').textContent=status;$('#receiptNo').textContent=receipt?.receipt_no||'Not issued';$('#issued').textContent=fmtDate(invoice.created_at);
  $('#statusPill').textContent=status;$('#statusPill').className='pill '+statusClass;
- $('#invoiceBtn').href='invoice-preview.html?id='+encodeURIComponent(invoice.id);
- $('#reviewBtn').href='invoice-review.html?id='+encodeURIComponent(invoice.id);
+ $('#invoiceBtn').href='/invoice-preview.html?id='+encodeURIComponent(invoice.id);
+ $('#reviewBtn').href='/invoice-review.html?id='+encodeURIComponent(invoice.id);
  $('#reviewBtn').classList.toggle('hidden',!pop?.has_submission);
- if(receipt?.verification_hash)$('#receiptBtn').href='verify.html?hash='+encodeURIComponent(receipt.verification_hash);else $('#receiptBtn').classList.add('hidden');
+ if(receipt?.verification_hash)$('#receiptBtn').href='/verify.html?hash='+encodeURIComponent(receipt.verification_hash);else $('#receiptBtn').classList.add('hidden');
  renderHealth();renderDocs();renderTimeline();renderFulfilment();
 }
 
@@ -153,12 +152,12 @@ function docCard(title,status,copy,href,meta){
 }
 function renderDocs(){
  const docs=[];
- docs.push(docCard('Invoice',invoice.status==='paid'||invoice.status==='payment_submitted'||invoice.status==='issued'?'Confirmed':'Review','Original invoice and commercial terms.','invoice-preview.html?id='+encodeURIComponent(invoice.id),'Amount '+money(invoice.total,invoice.currency)));
- if(pop?.has_submission)docs.push(docCard('Proof of payment',pop.status==='verified'?'Confirmed':(pop.status==='suspicious'||pop.status==='duplicate'?'Review':'Review'),'Submitted POP with file hash and Shield checks.','invoice-review.html?id='+encodeURIComponent(invoice.id),(pop.mime_type||'file')+' · '+((Number(pop.file_size||0)/1024).toFixed(1))+' KB'));
+ docs.push(docCard('Invoice',invoice.status==='paid'||invoice.status==='payment_submitted'||invoice.status==='issued'?'Confirmed':'Review','Original invoice and commercial terms.','/invoice-preview.html?id='+encodeURIComponent(invoice.id),'Amount '+money(invoice.total,invoice.currency)));
+ if(pop?.has_submission)docs.push(docCard('Proof of payment',pop.status==='verified'?'Confirmed':(pop.status==='suspicious'||pop.status==='duplicate'?'Review':'Review'),'Submitted POP with file hash and Shield checks.','/invoice-review.html?id='+encodeURIComponent(invoice.id),(pop.mime_type||'file')+' · '+((Number(pop.file_size||0)/1024).toFixed(1))+' KB'));
  else docs.push(docCard('Proof of payment','Missing','No POP submission is attached to this invoice yet.',null,'Payment can still be verified through a supported online settlement.'));
  if(payment)docs.push(docCard('Payment record',payment.status==='paid'?'Confirmed':'Recorded','Payment intent and provider reference recorded by VT.',null,(payment.provider||'provider')+' · '+(payment.provider_reference||'No reference')));
  else docs.push(docCard('Payment record','Missing','No online payment intent is currently linked to this invoice.',null,'Manual payment cases may rely on POP evidence.'));
- if(receipt?.verification_hash)docs.push(docCard('Receipt','Confirmed','Final receipt with a public verification record.','verify.html?hash='+encodeURIComponent(receipt.verification_hash),receipt.receipt_no||'Verified receipt'));
+ if(receipt?.verification_hash)docs.push(docCard('Receipt','Confirmed','Final receipt with a public verification record.','/verify.html?hash='+encodeURIComponent(receipt.verification_hash),receipt.receipt_no||'Verified receipt'));
  else docs.push(docCard('Receipt','Missing','No receipt has been issued yet.',null,'Receipt issuance follows confirmed payment.'));
  $('#docCount').textContent=docs.length+' records';$('#docs').innerHTML=docs.join('');
 }
@@ -192,7 +191,7 @@ async function recordFulfilment(){
 
 function printPack(){window.print()}
 $('#printBtn').addEventListener('click',printPack);$('#printBtn2').addEventListener('click',printPack);$('#fulfilmentBtn').addEventListener('click',recordFulfilment);
-$('#logoutBtn').addEventListener('click',async()=>{const {error}=await db.auth.signOut({scope:'global'});if(error){message(error.message);return}location.href='login.html'});
+$('#logoutBtn').addEventListener('click',async()=>{const {error}=await db.auth.signOut({scope:'global'});if(error){message(error.message);return}location.href='/login.html'});
 init();
 </script>
 </body>

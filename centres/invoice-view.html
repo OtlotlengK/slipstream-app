@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-store">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net;connect-src 'self' https://pddjualtnhgmplampucn.supabase.co;style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;base-uri 'none';form-action 'self';frame-ancestors 'none';object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net;connect-src 'self' https://pddjualtnhgmplampucn.supabase.co https://uvnlihejfwotynxhlvpq.supabase.co;style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;base-uri 'none';form-action 'self';frame-ancestors 'none';object-src 'none'">
 <title>ValoraTap | Invoice</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/vt-env.js"></script><script src="/core/services/supabase-client.js"></script>
 <style>:root{--gold:#d0aa4b;--paper:#f5f2eb;--line:#e5dfd3}body{background:var(--paper);color:#171717}.wrap{max-width:900px;margin:auto}.card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 8px 28px rgba(15,23,42,.05)}.label{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#938c80}.status{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:10px;font-weight:900;text-transform:uppercase}.item{display:grid;grid-template-columns:1fr auto auto;gap:16px;padding:15px 0;border-top:1px solid var(--line)}@media(max-width:640px){.item{grid-template-columns:1fr auto}.item .amount{grid-column:2}.item .qty{grid-column:2;grid-row:1}.item .description{grid-column:1;grid-row:1}}
 </style>
 <script src="/app-lock.js" defer></script>
@@ -25,7 +25,7 @@
 </main>
 <script>
 'use strict';
-const URL='https://pddjualtnhgmplampucn.supabase.co',KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCHY',db=supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}),$=id=>document.getElementById(id);
+const URL=window.VT_ENV?.supabaseUrl,db=window.VT.createSupabaseClient({auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}),$=id=>document.getElementById(id);
 const money=v=>`R ${Number(v||0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 const date=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleDateString('en-ZA',{year:'numeric',month:'short',day:'numeric'})};
 const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');

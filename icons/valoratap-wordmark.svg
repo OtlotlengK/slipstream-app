@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
-<title id="title">ValoraTap</title><desc id="desc">ValoraTap VT wordmark</desc>
-<rect width="1200" height="760" fill="#ff00e8"/>
-<g fill="#252525" stroke="#151515" stroke-width="2" stroke-linejoin="miter">
+<title id="title">VynoTap</title><desc id="desc">VynoTap VT wordmark</desc>
+<rect width="1200" height="760" fill="#0F172A"/>
+<g fill="#F8FAFC" stroke="#0F172A" stroke-width="2" stroke-linejoin="miter">
 <path d="M250 105h155l103 286 122-286h155L584 566H430z"/>
 <path d="M573 105h432v116H855v345H704V221H573z"/>
 </g>
-<rect x="704" y="454" width="151" height="112" fill="#2b8589"/>
+<rect x="704" y="454" width="151" height="112" fill="#6C4CF1"/>
 <g fill="#252525" font-family="Arial Black,Arial,sans-serif" font-size="150" font-weight="900" letter-spacing="8">
-<text x="145" y="710">VALORATAP</text>
+<text x="145" y="710">VYNOTAP</text>
 </g>
 </svg>

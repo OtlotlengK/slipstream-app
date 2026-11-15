@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ValoraTap | Developer Console</title>
-<meta name="description" content="ValoraTap API Quickstart and reference for receipts, transaction verification and webhooks.">
+<title>VynoTap | Developer Console</title>
+<meta name="description" content="VynoTap API Quickstart and reference for receipts, transaction verification and webhooks.">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @import url('developer-console.css');
@@ -17,7 +17,7 @@ body{background:#F8FAFC}.gold{color:#0F766E}.gold-bg{background:#0F766E}.gold-bg
 <body class="text-slate-800 antialiased">
 <div class="min-h-screen flex">
 <aside class="hidden md:flex w-64 shrink-0 bg-slate-950 text-white flex-col sticky top-0 h-screen">
-<div class="p-6 border-b border-white/10"><a href="developers.html" class="font-black tracking-[.2em]">VALORATAP</a><div class="text-[10px] text-slate-500 uppercase tracking-widest mt-2">Developer Console</div></div>
+<div class="p-6 border-b border-white/10"><a href="developers.html" class="font-black tracking-[.2em]">VYNOTAP</a><div class="text-[10px] text-slate-500 uppercase tracking-widest mt-2">Developer Console</div></div>
 <nav class="p-4 space-y-1 text-sm">
 <div class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-600 font-black">Build</div>
 <a href="developers.html" class="block px-3 py-2.5 rounded-xl bg-white/10 font-bold">Overview</a>
@@ -34,7 +34,7 @@ body{background:#F8FAFC}.gold{color:#0F766E}.gold-bg{background:#0F766E}.gold-bg
 </aside>
 <main class="flex-1 min-w-0">
 <header class="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur border-b px-4 py-4">
-<div class="flex items-center justify-between"><a href="developers.html" class="font-black tracking-[.16em]">VALORATAP</a><a href="dashboard-v2.html" class="text-xs font-bold">← Dashboard</a></div>
+<div class="flex items-center justify-between"><a href="developers.html" class="font-black tracking-[.16em]">VYNOTAP</a><a href="dashboard-v2.html" class="text-xs font-bold">← Dashboard</a></div>
 <div class="flex gap-1 overflow-x-auto mt-3">
 <a href="#quickstart" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-900 text-white text-xs font-bold">Quickstart</a>
 <a href="#reference" class="whitespace-nowrap px-3 py-2 rounded-lg bg-slate-100 text-xs font-bold">Reference</a>
@@ -45,7 +45,7 @@ body{background:#F8FAFC}.gold{color:#0F766E}.gold-bg{background:#0F766E}.gold-bg
 <div class="max-w-7xl mx-auto px-5 py-8 md:py-12">
 <section class="bg-slate-950 text-white rounded-3xl p-7 md:p-10 anchor">
 <div class="max-w-4xl"><div class="chip gold">Developer Platform</div>
-<h1 class="text-4xl md:text-6xl font-black tracking-tight mt-3">Build with ValoraTap.</h1>
+<h1 class="text-4xl md:text-6xl font-black tracking-tight mt-3">Build with VynoTap.</h1>
 <p class="text-slate-300 text-lg leading-relaxed mt-5">Connect your software to receipts, transaction verification and signed business events. Start in Sandbox with a <span class="mono">vt_test_</span> key; switch to Production when you are ready for live traffic.</p>
 <div class="flex flex-wrap gap-3 mt-7">
 <a href="#quickstart" class="gold-bg px-5 py-3 rounded-xl font-bold">Start Quickstart</a>
@@ -106,7 +106,7 @@ body{background:#F8FAFC}.gold{color:#0F766E}.gold-bg{background:#0F766E}.gold-bg
 </section>
 
 <section id="reference" class="mt-12 anchor">
-<div class="chip gold">API Reference</div><h2 class="text-3xl md:text-4xl font-black mt-2">REST API</h2><p class="text-slate-500 mt-2 max-w-3xl">All authenticated API requests use a ValoraTap API key in the Bearer Authorization header. Keep keys on your server. The browser and mobile app must never receive a secret API key.</p>
+<div class="chip gold">API Reference</div><h2 class="text-3xl md:text-4xl font-black mt-2">REST API</h2><p class="text-slate-500 mt-2 max-w-3xl">All authenticated API requests use a VynoTap API key in the Bearer Authorization header. Keep keys on your server. The browser and mobile app must never receive a secret API key.</p>
 <div class="mt-7 bg-white border rounded-3xl overflow-hidden">
 <div class="p-6 border-b"><div class="flex flex-wrap items-center gap-2"><span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-black mono">POST</span><span class="mono text-sm font-bold">/functions/v1/transactions</span></div><h3 id="transactions" class="font-black text-xl mt-4 anchor">Create a transaction</h3><p class="text-sm text-slate-500 mt-2">Creates a verified transaction record in Production or an isolated simulated transaction in Sandbox.</p></div>
 <div class="p-6 grid lg:grid-cols-2 gap-7">
@@ -117,7 +117,7 @@ body{background:#F8FAFC}.gold{color:#0F766E}.gold-bg{background:#0F766E}.gold-bg
   {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.VALORATAP_API_KEY}`,
+      Authorization: `Bearer ${process.env.VYNOTAP_API_KEY}`,
       'Content-Type': 'application/json',
       'Idempotency-Key': 'order_12345'
     },
@@ -168,15 +168,15 @@ console.log(data);</pre></div>
 </section>
 
 <section id="webhooks" class="mt-12 anchor">
-<div class="chip gold">Webhooks</div><h2 class="text-3xl md:text-4xl font-black mt-2">Receive signed events</h2><p class="text-slate-500 mt-2 max-w-3xl">Create a Sandbox or Production endpoint in Developer Console → Webhooks. ValoraTap sends HTTPS POST requests and signs the exact body you receive.</p>
+<div class="chip gold">Webhooks</div><h2 class="text-3xl md:text-4xl font-black mt-2">Receive signed events</h2><p class="text-slate-500 mt-2 max-w-3xl">Create a Sandbox or Production endpoint in Developer Console → Webhooks. VynoTap sends HTTPS POST requests and signs the exact body you receive.</p>
 <div class="grid lg:grid-cols-2 gap-5 mt-7">
-<div class="bg-white border rounded-2xl p-6"><h3 class="font-black text-lg">Headers</h3><div class="mt-4 text-sm space-y-3"><div><span class="mono font-bold">X-ValoraTap-Event</span><p class="text-slate-500">Event type, such as <span class="mono">transaction.created</span>.</p></div><div><span class="mono font-bold">X-ValoraTap-Delivery</span><p class="text-slate-500">Unique delivery ID.</p></div><div><span class="mono font-bold">X-ValoraTap-Signature</span><p class="text-slate-500">Format: <span class="mono">t=TIMESTAMP,v1=HMAC_SHA256</span>.</p></div></div></div>
+<div class="bg-white border rounded-2xl p-6"><h3 class="font-black text-lg">Headers</h3><div class="mt-4 text-sm space-y-3"><div><span class="mono font-bold">X-VynoTap-Event</span><p class="text-slate-500">Event type, such as <span class="mono">transaction.created</span>.</p></div><div><span class="mono font-bold">X-VynoTap-Delivery</span><p class="text-slate-500">Unique delivery ID.</p></div><div><span class="mono font-bold">X-VynoTap-Signature</span><p class="text-slate-500">Format: <span class="mono">t=TIMESTAMP,v1=HMAC_SHA256</span>.</p></div></div></div>
 <div class="bg-white border rounded-2xl p-6"><h3 class="font-black text-lg">Signature verification</h3><p class="text-sm text-slate-500 mt-2">Compute HMAC-SHA256 over <span class="mono">timestamp + "." + raw_request_body</span> using your webhook signing secret. Compare the result to <span class="mono">v1</span> using a constant-time comparison. Do not parse and re-serialize JSON before hashing.</p></div>
 </div>
 <div class="mt-5 grid lg:grid-cols-2 gap-5">
 <div><div class="flex items-center justify-between mb-2"><div class="chip text-slate-400">Node.js</div><button class="copy border px-3 py-1.5 rounded-lg text-xs font-bold" data-copy="webhook-node">Copy</button></div><pre id="webhook-node" class="code rounded-2xl p-5 overflow-auto text-xs leading-6 mono">import crypto from 'node:crypto';
 
-export function verifyValoraTapWebhook(rawBody, signatureHeader, secret) {
+export function verifyVynoTapWebhook(rawBody, signatureHeader, secret) {
   const parts = Object.fromEntries(
     signatureHeader.split(',').map(part => part.split('='))
   );
@@ -202,7 +202,7 @@ def verify_valoratap_webhook(raw_body, signature, secret):
     ).hexdigest()
     return hmac.compare_digest(expected, parts.get("v1", ""))</pre></div>
 </div>
-<div class="bg-slate-50 border rounded-2xl p-5 mt-5 text-sm"><b>Webhook delivery behaviour:</b> ValoraTap records each delivery, retries unsuccessful deliveries, and exposes delivery history in Developer Console. Return a <span class="mono">2xx</span> response after successful signature validation and processing. Make your handler idempotent using <span class="mono">X-ValoraTap-Delivery</span>.</div>
+<div class="bg-slate-50 border rounded-2xl p-5 mt-5 text-sm"><b>Webhook delivery behaviour:</b> VynoTap records each delivery, retries unsuccessful deliveries, and exposes delivery history in Developer Console. Return a <span class="mono">2xx</span> response after successful signature validation and processing. Make your handler idempotent using <span class="mono">X-VynoTap-Delivery</span>.</div>
 </section>
 
 <section id="errors" class="mt-12 anchor">
@@ -216,7 +216,7 @@ def verify_valoratap_webhook(raw_body, signature, secret):
 <tr><td class="p-4 mono">409</td><td class="p-4 mono">idempotency_key_reused / currency_mismatch</td><td class="p-4 text-slate-500">The request conflicts with an existing operation or merchant configuration. Reusing an idempotency key with a different payload is rejected.</td></tr>
 <tr><td class="p-4 mono">413</td><td class="p-4 mono">request_too_large</td><td class="p-4 text-slate-500">The request exceeded the endpoint size limit.</td></tr>
 <tr><td class="p-4 mono">429</td><td class="p-4 mono">rate_limit_exceeded</td><td class="p-4 text-slate-500">Rate limit reached. Respect the Retry-After header.</td></tr>
-<tr><td class="p-4 mono">500</td><td class="p-4 mono">authentication_error / rate_limit_check_error / transaction_creation_error / server_configuration_error</td><td class="p-4 text-slate-500">ValoraTap could not complete the operation. Retry only when the failure is safe to retry.</td></tr>
+<tr><td class="p-4 mono">500</td><td class="p-4 mono">authentication_error / rate_limit_check_error / transaction_creation_error / server_configuration_error</td><td class="p-4 text-slate-500">VynoTap could not complete the operation. Retry only when the failure is safe to retry.</td></tr>
 </tbody></table></div></div>
 <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mt-5 text-sm"><b>Retry rule:</b> retry network failures and 5xx responses with the same <span class="mono">Idempotency-Key</span>. Do not generate a new idempotency key for the same logical transaction.</div>
 </section>

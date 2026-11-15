@@ -1,20 +1,20 @@
 /**
- * ValoraTap server-side JavaScript SDK.
+ * VynoTap server-side JavaScript SDK.
  * API keys must stay on your server. Never expose them to browser code.
  */
-export class ValoraTapError extends Error {
+export class VynoTapError extends Error {
   constructor(message, status, body) {
     super(message);
-    this.name = 'ValoraTapError';
+    this.name = 'VynoTapError';
     this.status = status;
     this.body = body;
   }
 }
 
-export class ValoraTap {
-  constructor({ apiKey, baseUrl = 'https://pddjualtnhgmplampucn.supabase.co/functions/v1' } = {}) {
+export class VynoTap {
+  constructor({ apiKey, baseUrl = 'https://uvnlihejfwotynxhlvpq.supabase.co/functions/v1' } = {}) {
     if (!apiKey || !/^(vt_live_|vt_test_)[A-Za-z0-9_-]{12,}$/.test(apiKey)) {
-      throw new Error('A valid ValoraTap vt_live_ or vt_test_ API key is required.');
+      throw new Error('A valid VynoTap vt_live_ or vt_test_ API key is required.');
     }
     this.apiKey = apiKey;
     this.baseUrl = baseUrl.replace(/\/$/, '');
@@ -39,7 +39,7 @@ export class ValoraTap {
     let data;
     try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
     if (!response.ok) {
-      throw new ValoraTapError(data.error || data.message || 'ValoraTap request failed.', response.status, data);
+      throw new VynoTapError(data.error || data.message || 'VynoTap request failed.', response.status, data);
     }
     return data;
   }
@@ -55,4 +55,4 @@ export class ValoraTap {
   }
 }
 
-export default ValoraTap;
+export default VynoTap;

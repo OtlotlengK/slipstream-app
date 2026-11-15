@@ -1,7 +1,7 @@
 {
-  "name": "ValoraTap",
-  "short_name": "VT",
-  "description": "ValoraTap business receipts, invoices and transaction verification.",
+  "name": "VynoTap",
+  "short_name": "Vyno",
+  "description": "VynoTap business receipts, invoices and transaction verification.",
   "start_url": "/login.html",
   "scope": "/",
   "display": "standalone",
@@ -10,7 +10,7 @@
   "theme_color": "#2B2A6B",
   "icons": [
     {
-      "src": "/icons/valoratap.svg",
+      "src": "/icons/vynotap.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
