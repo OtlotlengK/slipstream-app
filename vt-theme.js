@@ -87,6 +87,24 @@
     html[data-vt-theme="light"] body .passport .text-white{color:#F8FAFC!important}
     html[data-vt-theme="light"] body .hero .hero-copy,
     html[data-vt-theme="light"] body .passport p{color:#CBD5E1!important}
+    /* Keep the dashboard's branded hero dark in light mode: light mode applies to the page chrome, not this feature panel. */
+    html[data-vt-theme="light"] body .hero{
+      background:linear-gradient(135deg,#111C1B 0%,#18322F 52%,#20514B 100%)!important;
+      color:#F8FAFC!important;border-color:#294A45!important;
+      box-shadow:0 14px 34px rgba(23,32,31,.12),inset 0 1px 0 rgba(255,255,255,.05)!important;
+    }
+    html[data-vt-theme="light"] body .hero h2,
+    html[data-vt-theme="light"] body .hero .text-white{color:#F8FAFC!important}
+    html[data-vt-theme="light"] body .hero .hero-copy{color:#CBD5E1!important}
+    html[data-vt-theme="light"] body .hero .label{color:#99F6E4!important}
+    html[data-vt-theme="light"] body .hero a.btn:not(.goldbtn){
+      background:rgba(255,255,255,.10)!important;color:#F8FAFC!important;
+      border:1px solid rgba(255,255,255,.18)!important;
+    }
+    html[data-vt-theme="light"] body .hero a.btn:not(.goldbtn):hover{
+      background:rgba(255,255,255,.17)!important;border-color:rgba(94,234,212,.42)!important;
+    }
+    html[data-vt-theme="light"] body .hero a.goldbtn{background:#0F766E!important;color:#FFFFFF!important}
     
     html[data-vt-theme="dark"] .notification-panel{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
     html[data-vt-theme="dark"] .notification-head{background:#151F30!important;border-color:#334155!important}
