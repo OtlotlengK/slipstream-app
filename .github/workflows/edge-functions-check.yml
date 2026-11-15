@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "feat/ai-pop-shield-foundation-2026-10-22"
+      - "feat/vynotap-rebrand-cutover-2026-11-11"
     paths:
       - "supabase/functions/**"
       - ".github/workflows/edge-functions-check.yml"

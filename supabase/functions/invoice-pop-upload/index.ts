@@ -7,6 +7,42 @@ const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers
 const H = { ...CORS, 'Content-Type': 'application/json', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'no-referrer', 'Content-Security-Policy': "default-src 'none'; frame-ancestors 'none'" };
 const buckets = new Map<string, { count: number; reset: number }>();
 
+const MAX_MULTIPART_BYTES = 11 * 1024 * 1024;
+
+async function readBoundedBody(req: Request, maxBytes: number): Promise<Uint8Array | null> {
+  const contentLength = req.headers.get('content-length');
+  if (contentLength !== null) {
+    if (!/^\d+$/.test(contentLength) || Number(contentLength) > maxBytes) return null;
+  }
+  if (!req.body) return new Uint8Array();
+
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel();
+        return null;
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  const body = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return body;
+}
+
 function json(body: unknown, status = 200, extra: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), { status, headers: { ...H, ...extra } });
 }
@@ -41,7 +77,11 @@ Deno.serve(async (req) => {
   try {
     const ct = req.headers.get('content-type') || '';
     if (!ct.toLowerCase().startsWith('multipart/form-data')) return json({ error: 'multipart_required' }, 415);
-    const form = await req.formData();
+    // Bound the complete multipart body before parsing it, including chunked requests
+    // that do not provide Content-Length.
+    const requestBody = await readBoundedBody(req, MAX_MULTIPART_BYTES);
+    if (!requestBody) return json({ error: 'request_too_large' }, 413);
+    const form = await new Response(requestBody, { headers: { 'Content-Type': ct } }).formData();
     const token = String(form.get('token') || '').trim().toLowerCase();
     const file = form.get('file');
     if (!/^[a-f0-9]{64}$/.test(token)) return json({ error: 'invalid_token' }, 400);
