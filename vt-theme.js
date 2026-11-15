@@ -43,7 +43,16 @@
     html[data-vt-theme="light"] body header.dark>a{color:#F8FAFC!important}
     html[data-vt-theme="light"] body .notification-bell{background:#4B5563!important;color:#F8FAFC!important;border-color:#6B7280!important;box-shadow:0 2px 8px rgba(15,23,42,.14)}
     html[data-vt-theme="light"] body .notification-bell:hover{background:#374151!important;border-color:#9CA3AF!important}
-/* Quick navigation must follow light mode while preserving contrast and colored icons. */
+/* Dashboard action cards need a true dark surface in dark mode (their base CSS is hard-coded white). */
+    html[data-vt-theme="dark"] body .action-card{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important;box-shadow:none!important}
+    html[data-vt-theme="dark"] body .action-card:hover{background:#1E293B!important;border-color:#475569!important;box-shadow:0 8px 22px rgba(0,0,0,.24)!important}
+    html[data-vt-theme="dark"] body .action-card .font-black{color:#F1F5F9!important}
+    html[data-vt-theme="dark"] body .action-card .text-slate-500{color:#A8B4C7!important}
+    html[data-vt-theme="dark"] body .action-card .gold{color:#5EEAD4!important}
+    html[data-vt-theme="dark"] body .action-card .action-icon{background:#0F3D3A!important;color:#99F6E4!important;border-color:#115E59!important}
+    html[data-vt-theme="dark"] body .action-card.warn .action-icon{background:#3B2A0B!important;color:#FDE68A!important;border-color:#92400E!important}
+    html[data-vt-theme="dark"] body .action-card.danger .action-icon{background:#3F151B!important;color:#FECACA!important;border-color:#991B1B!important}
+    /* Quick navigation must follow light mode while preserving contrast and colored icons. */
     html[data-vt-theme="light"] body .quick-drawer{background:#E2E8F0!important;color:#0F172A!important;border-color:#CBD5E1!important;box-shadow:0 22px 48px rgba(15,23,42,.20)!important}
     html[data-vt-theme="light"] body .quick-head{border-bottom-color:#CBD5E1!important}
     html[data-vt-theme="light"] body .quick-head .label{color:#0F766E!important}
