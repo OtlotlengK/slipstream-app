@@ -37,6 +37,19 @@
     html[data-vt-theme="dark"] body .input::placeholder{color:#94A3B8!important}
     html[data-vt-theme="dark"] body .hero,
     html[data-vt-theme="dark"] body .passport{color:#F8FAFC!important}
+    /* Business Passport has a light card surface in its base stylesheet; theme it as one coherent surface. */
+    html[data-vt-theme="dark"] body .hero{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
+    html[data-vt-theme="dark"] body .hero h1,
+    html[data-vt-theme="dark"] body .hero .num{color:#F8FAFC!important}
+    html[data-vt-theme="dark"] body .hero .stat{background:#1E293B!important;color:#E5E7EB!important;border-color:#475569!important}
+    html[data-vt-theme="dark"] body .hero .label{color:#A8B4C7!important}
+    html[data-vt-theme="dark"] body .hero .muted{color:#CBD5E1!important}
+    html[data-vt-theme="light"] body .hero{background:#FFFFFF!important;color:#0F172A!important;border-color:#E2E8F0!important}
+    html[data-vt-theme="light"] body .hero h1,
+    html[data-vt-theme="light"] body .hero .num{color:#0F172A!important}
+    html[data-vt-theme="light"] body .hero .stat{background:#F7FAF9!important;color:#0F172A!important;border-color:#E2E8F0!important}
+    html[data-vt-theme="light"] body .hero .label{color:#64748B!important}
+    html[data-vt-theme="light"] body .hero .muted{color:#64748B!important}
     html[data-vt-theme="light"] body .wrap{background:#F1F5F9!important;color:#0F172A!important}
 /* Keep the dashboard's brand header dark in light mode, with a visible notification control. */
     html[data-vt-theme="light"] body header.dark{background:#374151!important;color:#F8FAFC!important}
