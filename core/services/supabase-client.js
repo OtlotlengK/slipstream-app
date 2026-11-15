@@ -1,11 +1,11 @@
-/* ValoraTap shared Supabase client factory.
+/* VynoTap shared Supabase client factory.
    Requires /vt-env.js and the Supabase JS v2 CDN to load first.
    Never embed project URLs or keys in individual pages. */
 (() => {
   const clients = new Map();
   function createSupabaseClient(options = {}) {
     if (!window.VT_ENV || !window.VT_ENV.supabaseUrl || !window.VT_ENV.supabaseKey) {
-      throw new Error('ValoraTap environment configuration is unavailable.');
+      throw new Error('VynoTap environment configuration is unavailable.');
     }
     if (!window.supabase || typeof window.supabase.createClient !== 'function') {
       throw new Error('Supabase client library is unavailable.');
