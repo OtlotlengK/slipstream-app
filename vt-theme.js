@@ -74,7 +74,18 @@
     html[data-vt-theme="light"] body .passport .text-white{color:#F8FAFC!important}
     html[data-vt-theme="light"] body .hero .hero-copy,
     html[data-vt-theme="light"] body .passport p{color:#CBD5E1!important}
-    html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[data-vt-theme="dark"] .doc,html[data-vt-theme="dark"] .panel,html[data-vt-theme="dark"] .notification-panel,html[data-vt-theme="dark"] [class~="bg-white"],html[data-vt-theme="dark"] [class~="bg-slate-50"],html[data-vt-theme="dark"] [class~="bg-gray-50"],html[data-vt-theme="dark"] [class*="bg-[#F"],html[data-vt-theme="dark"] [class*="bg-[#f"]{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
+    
+    html[data-vt-theme="dark"] .notification-panel{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
+    html[data-vt-theme="dark"] .notification-head{background:#151F30!important;border-color:#334155!important}
+    html[data-vt-theme="dark"] .notification-head .label{color:#5EEAD4!important}
+    html[data-vt-theme="dark"] .notification-item,html[data-vt-theme="dark"] .notification-item.unread{background:#1B293D!important;color:#E5E7EB!important;border-color:#334155!important}
+    html[data-vt-theme="dark"] .notification-item:hover{background:#22334A!important}
+    html[data-vt-theme="dark"] .notification-title{color:#F8FAFC!important}
+    html[data-vt-theme="dark"] .notification-message{color:#CBD5E1!important}
+    html[data-vt-theme="dark"] .notification-time{color:#94A3B8!important}
+    html[data-vt-theme="dark"] .notification-foot{background:#111A29!important;color:#94A3B8!important;border-color:#334155!important}
+    html[data-vt-theme="dark"] .notification-empty{color:#CBD5E1!important}
+html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[data-vt-theme="dark"] .doc,html[data-vt-theme="dark"] .panel,html[data-vt-theme="dark"] .notification-panel,html[data-vt-theme="dark"] [class~="bg-white"],html[data-vt-theme="dark"] [class~="bg-slate-50"],html[data-vt-theme="dark"] [class~="bg-gray-50"],html[data-vt-theme="dark"] [class*="bg-[#F"],html[data-vt-theme="dark"] [class*="bg-[#f"]{background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important}
     html[data-vt-theme="dark"] [class~="text-slate-900"],html[data-vt-theme="dark"] [class~="text-slate-800"],html[data-vt-theme="dark"] [class~="text-slate-700"],html[data-vt-theme="dark"] [class~="text-gray-900"],html[data-vt-theme="dark"] [class~="text-gray-800"],html[data-vt-theme="dark"] [class~="text-gray-700"],html[data-vt-theme="dark"] [class~="text-zinc-900"]{color:#E5E7EB!important}
     html[data-vt-theme="dark"] [class~="text-slate-600"],html[data-vt-theme="dark"] [class~="text-slate-500"],html[data-vt-theme="dark"] [class~="text-gray-600"],html[data-vt-theme="dark"] [class~="text-gray-500"]{color:#A8B4C7!important}
     html[data-vt-theme="dark"] [class~="border-slate-100"],html[data-vt-theme="dark"] [class~="border-slate-200"],html[data-vt-theme="dark"] [class~="border-gray-100"],html[data-vt-theme="dark"] [class~="border-gray-200"]{border-color:#334155!important}
