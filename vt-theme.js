@@ -172,10 +172,9 @@ html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[
     html[data-vt-theme="dark"] .success{background:#052E2B!important;color:#A7F3D0!important;border-color:#065F46!important}html[data-vt-theme="dark"] .warnbox{background:#3B2A0B!important;color:#FDE68A!important;border-color:#92400E!important}html[data-vt-theme="dark"] .error{background:#3F151B!important;color:#FECACA!important;border-color:#991B1B!important}
     html[data-vt-theme="dark"] .top{background:#080F1B!important}html[data-vt-theme="dark"] [class*="bg-[#17201F]"],html[data-vt-theme="dark"] [class*="bg-[#0F172A]"]{background:#080F1B!important}html[data-vt-theme="dark"] [class~="text-slate-100"]{color:#E5E7EB!important}html[data-vt-theme="dark"] [class~="border-slate-800"]{border-color:#334155!important}
     html[data-vt-theme="light"] body{background:#F1F5F9!important;color:#0F172A!important}
-    html[data-vt-theme="light"] [class*="bg-[#17201F]"],html[data-vt-theme="light"] [class*="bg-[#0F172A]"],html[data-vt-theme="light"] [class~="bg-slate-900"],html[data-vt-theme="light"] [class~="bg-gray-900"]{background:#FFFFFF!important;color:#0F172A!important}
-    html[data-vt-theme="light"] [class~="text-slate-100"],html[data-vt-theme="light"] [class~="text-slate-200"],html[data-vt-theme="light"] [class~="text-gray-100"],html[data-vt-theme="light"] [class~="text-gray-200"]{color:#0F172A!important}
+    /* Keep intentional dark brand surfaces and dark CTA buttons dark in light mode. */
     html[data-vt-theme="light"] .card,html[data-vt-theme="light"] .settings-card,html[data-vt-theme="light"] .doc{background:#FFFFFF!important;color:#0F172A!important;border-color:#E2E8F0!important}
-    html[data-vt-theme="light"] [class~="border-slate-800"]{border-color:#E2E8F0!important}html[data-vt-theme="light"] [class~="bg-slate-800"]{background:#F1F5F9!important;color:#0F172A!important}
+    html[data-vt-theme="light"] [class~="border-slate-800"]{border-color:#E2E8F0!important}
     html[data-vt-theme="light"] [class~="text-slate-400"],html[data-vt-theme="light"] [class~="text-slate-500"]{color:#64748B!important}
     /* Light-theme contrast pass for shared workspace controls and data surfaces. */
     html[data-vt-theme="light"] body input:not([type="checkbox"]):not([type="radio"]),
