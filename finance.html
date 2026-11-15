@@ -124,7 +124,7 @@ async function init(){
     if(profile?.currency_code)currencyCode=String(profile.currency_code).toUpperCase();
 
     document.getElementById('currencyLabel').textContent=currencyCode;
-    setWelcome((merchant?.business_name||user.email)+' · Live financial operations');
+    setWelcome((merchant?.business_name||user.email)+' · Live activity');
 
     const results=await Promise.allSettled([loadRevenue(),loadInvoices()]);
     const failed=results.filter(r=>r.status==='rejected');
@@ -136,7 +136,7 @@ async function init(){
     }
   }catch(error){
     console.error('Finance initialization failed',error);
-    setWelcome('Unable to load financial operations');
+    setWelcome('Unable to load finance data');
     box.innerHTML='<div class="p-6 text-center"><div class="text-xs text-red-600">Financial data could not be loaded.</div><button type="button" onclick="location.reload()" class="text-[11px] font-black gold mt-2 underline">Retry</button></div>';
   }
 }

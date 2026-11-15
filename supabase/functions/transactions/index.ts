@@ -58,7 +58,7 @@ serve(async(req)=>{
   if(msg.includes("invalid_idempotency_key"))return json({error:"invalid_idempotency_key"},400);
   if(msg.includes("invalid_amount"))return json({error:"invalid_amount"},400);
   if(msg.includes("invalid_currency"))return json({error:"invalid_currency"},400);
-  if(msg.includes("currency_mismatch"))return json({error:"currency_mismatch",message:"Currency must match the merchant's ValoraTap business currency."},409);
+  if(msg.includes("currency_mismatch"))return json({error:"currency_mismatch",message:"Currency must match the merchant's VynoTap currency."},409);
   if(msg.includes("invalid_payment_method"))return json({error:"invalid_payment_method"},400);
   if(msg.includes("invalid_customer_name"))return json({error:"invalid_customer_name"},400);
   return json({error:"transaction_creation_error"},500);
