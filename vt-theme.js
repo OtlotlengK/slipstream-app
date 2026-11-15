@@ -92,6 +92,50 @@ html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[
     html[data-vt-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),html[data-vt-theme="dark"] select,html[data-vt-theme="dark"] textarea,html[data-vt-theme="dark"] .input,html[data-vt-theme="dark"] .search{background:#0F172A!important;color:#F8FAFC!important;border-color:#475569!important}
     html[data-vt-theme="dark"] input::placeholder,html[data-vt-theme="dark"] textarea::placeholder{color:#94A3B8!important}
     html[data-vt-theme="dark"] .row:hover,html[data-vt-theme="dark"] tr:hover{background:#1E293B!important}
+    /* Dark-mode control audit: neutral buttons, filters and pagination must not retain white surfaces. */
+    html[data-vt-theme="dark"] .btn.ghost,
+    html[data-vt-theme="dark"] .ghost,
+    html[data-vt-theme="dark"] .pagination-btn,
+    html[data-vt-theme="dark"] .page-size,
+    html[data-vt-theme="dark"] .filter-active,
+    html[data-vt-theme="dark"] .queue-filters .btn:not(.primary),
+    html[data-vt-theme="dark"] .vault-filter button:not(.primary),
+    html[data-vt-theme="dark"] .filter-btn,
+    html[data-vt-theme="dark"] .tab-button,
+    html[data-vt-theme="dark"] button.secondary {
+      background:#1E293B!important;
+      color:#E2E8F0!important;
+      border-color:#475569!important;
+      box-shadow:none!important;
+    }
+    html[data-vt-theme="dark"] .btn.ghost:hover,
+    html[data-vt-theme="dark"] .ghost:hover,
+    html[data-vt-theme="dark"] .pagination-btn:not(:disabled):hover,
+    html[data-vt-theme="dark"] .page-size:hover,
+    html[data-vt-theme="dark"] .queue-filters .btn:not(.primary):hover,
+    html[data-vt-theme="dark"] .vault-filter button:not(.primary):hover,
+    html[data-vt-theme="dark"] .filter-btn:hover,
+    html[data-vt-theme="dark"] .tab-button:hover {
+      background:#334155!important;
+      color:#F8FAFC!important;
+      border-color:#64748B!important;
+    }
+    html[data-vt-theme="dark"] .btn.ghost:disabled,
+    html[data-vt-theme="dark"] .ghost:disabled,
+    html[data-vt-theme="dark"] .pagination-btn:disabled {
+      background:#172235!important;
+      color:#64748B!important;
+      border-color:#334155!important;
+      opacity:.65;
+    }
+    html[data-vt-theme="dark"] .filter-active,
+    html[data-vt-theme="dark"] .queue-filters .btn.filter-active,
+    html[data-vt-theme="dark"] .vault-filter .active {
+      background:#0F766E!important;
+      color:#F0FDFA!important;
+      border-color:#14B8A6!important;
+    }
+
     html[data-vt-theme="dark"] .kv{border-color:#334155!important}html[data-vt-theme="dark"] .meta{background:#0F172A!important;color:#CBD5E1!important;border-color:#334155!important}
     html[data-vt-theme="dark"] .check.ok{background:#052E2B!important;border-color:#065F46!important}html[data-vt-theme="dark"] .check.warn{background:#3B2A0B!important;border-color:#92400E!important}html[data-vt-theme="dark"] .check.bad{background:#3F151B!important;border-color:#991B1B!important}
     html[data-vt-theme="dark"] .success{background:#052E2B!important;color:#A7F3D0!important;border-color:#065F46!important}html[data-vt-theme="dark"] .warnbox{background:#3B2A0B!important;color:#FDE68A!important;border-color:#92400E!important}html[data-vt-theme="dark"] .error{background:#3F151B!important;color:#FECACA!important;border-color:#991B1B!important}
