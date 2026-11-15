@@ -159,6 +159,65 @@ html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[
     html[data-vt-theme="light"] .card,html[data-vt-theme="light"] .settings-card,html[data-vt-theme="light"] .doc{background:#FFFFFF!important;color:#0F172A!important;border-color:#E2E8F0!important}
     html[data-vt-theme="light"] [class~="border-slate-800"]{border-color:#E2E8F0!important}html[data-vt-theme="light"] [class~="bg-slate-800"]{background:#F1F5F9!important;color:#0F172A!important}
     html[data-vt-theme="light"] [class~="text-slate-400"],html[data-vt-theme="light"] [class~="text-slate-500"]{color:#64748B!important}
+    /* Light-theme contrast pass for shared workspace controls and data surfaces. */
+    html[data-vt-theme="light"] body input:not([type="checkbox"]):not([type="radio"]),
+    html[data-vt-theme="light"] body select,
+    html[data-vt-theme="light"] body textarea,
+    html[data-vt-theme="light"] body .input,
+    html[data-vt-theme="light"] body .search{
+      background:#FFFFFF!important;color:#0F172A!important;border-color:#CBD5E1!important;
+    }
+    html[data-vt-theme="light"] body input::placeholder,
+    html[data-vt-theme="light"] body textarea::placeholder{color:#64748B!important;opacity:1}
+    html[data-vt-theme="light"] body .ghost,
+    html[data-vt-theme="light"] body .btn.ghost,
+    html[data-vt-theme="light"] body .pagination-btn,
+    html[data-vt-theme="light"] body .page-size,
+    html[data-vt-theme="light"] body .filter-btn,
+    html[data-vt-theme="light"] body .tab-button,
+    html[data-vt-theme="light"] body button.secondary,
+    html[data-vt-theme="light"] body .queue-filters .btn:not(.primary),
+    html[data-vt-theme="light"] body .vault-filter button:not(.primary){
+      background:#FFFFFF!important;color:#334155!important;border:1px solid #CBD5E1!important;box-shadow:none!important;
+    }
+    html[data-vt-theme="light"] body .ghost:hover,
+    html[data-vt-theme="light"] body .pagination-btn:not(:disabled):hover,
+    html[data-vt-theme="light"] body .page-size:hover,
+    html[data-vt-theme="light"] body .filter-btn:hover,
+    html[data-vt-theme="light"] body .tab-button:hover,
+    html[data-vt-theme="light"] body .queue-filters .btn:not(.primary):hover,
+    html[data-vt-theme="light"] body .vault-filter button:not(.primary):hover{
+      background:#F1F5F9!important;color:#0F172A!important;border-color:#94A3B8!important;
+    }
+    html[data-vt-theme="light"] body .filter-active,
+    html[data-vt-theme="light"] body .queue-filters .btn.filter-active,
+    html[data-vt-theme="light"] body .vault-filter .active{
+      background:#0F766E!important;color:#FFFFFF!important;border-color:#0F766E!important;
+    }
+    html[data-vt-theme="light"] body .pagination-btn:disabled,
+    html[data-vt-theme="light"] body button:disabled{
+      color:#94A3B8!important;opacity:.7;
+    }
+    html[data-vt-theme="light"] body .card,
+    html[data-vt-theme="light"] body .panel,
+    html[data-vt-theme="light"] body .stat,
+    html[data-vt-theme="light"] body .metric,
+    html[data-vt-theme="light"] body .ops-item,
+    html[data-vt-theme="light"] body .ops-stat{
+      color:#0F172A;border-color:#E2E8F0;
+    }
+    html[data-vt-theme="light"] body .card .muted,
+    html[data-vt-theme="light"] body .panel .muted,
+    html[data-vt-theme="light"] body .stat .muted,
+    html[data-vt-theme="light"] body .metric .muted{color:#64748B!important}
+    html[data-vt-theme="light"] body .card .label,
+    html[data-vt-theme="light"] body .panel .label,
+    html[data-vt-theme="light"] body .stat .label,
+    html[data-vt-theme="light"] body .metric .label{color:#64748B!important}
+    html[data-vt-theme="light"] body .table-wrap,
+    html[data-vt-theme="light"] body table{color:#0F172A}
+    html[data-vt-theme="light"] body th{color:#475569}
+    html[data-vt-theme="light"] body td{color:#334155}
     #vt-theme-onboarding[hidden]{display:none!important}#vt-theme-onboarding{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(2,6,23,.72);backdrop-filter:blur(10px)}
     .vt-theme-dialog{width:min(440px,100%);border:1px solid #DDE7E5;border-radius:24px;padding:24px;background:#fff;color:#0F172A;box-shadow:0 30px 100px rgba(0,0,0,.3);font-family:Inter,ui-sans-serif,system-ui,sans-serif}
     .vt-theme-dialog h2{margin:0;font-size:24px;line-height:1.15;font-weight:900;letter-spacing:-.03em}.vt-theme-dialog p{margin:9px 0 0;color:#64748B;font-size:13px;line-height:1.5}.vt-theme-choices{display:grid;gap:9px;margin-top:20px}
