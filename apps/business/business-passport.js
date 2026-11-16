@@ -92,10 +92,30 @@
     }
   }
 
+  function showCopyFallback() {
+    const status = $('share-status');
+    status.textContent = 'Copy your secure Passport link below:';
+    status.classList.remove('hidden');
+    let field = document.getElementById('passport-copy-fallback');
+    if (!field) {
+      field = document.createElement('input');
+      field.id = 'passport-copy-fallback';
+      field.type = 'text';
+      field.readOnly = true;
+      field.autocomplete = 'off';
+      field.setAttribute('aria-label', 'Secure Business Passport link');
+      field.style.cssText = 'display:block;width:100%;margin-top:10px;padding:12px;border:1px solid #94A3B8;border-radius:10px;background:#fff;color:#0F172A;font-size:13px';
+      status.insertAdjacentElement('afterend', field);
+    }
+    field.value = publicUrl;
+    field.focus();
+    field.select();
+  }
+
   async function copyPassportLink() {
     if (!publicUrl) return showError('Generate a secure Passport link first.');
     try { await navigator.clipboard.writeText(publicUrl); $('share-status').textContent='Passport link copied to clipboard.'; $('share-status').classList.remove('hidden'); }
-    catch (_) { prompt('Copy this secure Passport link:', publicUrl); }
+    catch (_) { showCopyFallback(); }
   }
 
   async function sharePassport() {
@@ -121,7 +141,7 @@
       $('share-status').classList.remove('hidden');
       const data = { title: 'ValoraTap Business Passport', text: 'View the verified business identity for ' + (r.business_name || 'this business') + '.', url: publicUrl };
       if (navigator.share) { try { await navigator.share(data); } catch (_) {} }
-      else { try { await navigator.clipboard.writeText(publicUrl); $('share-status').textContent = 'Clean secure Passport link generated and copied to clipboard.'; } catch (_) { prompt('Copy this secure Passport link:', publicUrl); } }
+      else { try { await navigator.clipboard.writeText(publicUrl); $('share-status').textContent = 'Clean secure Passport link generated and copied to clipboard.'; } catch (_) { showCopyFallback(); } }
     } catch (err) {
       console.error('Passport link generation failed:', err);
       $('share-status').textContent = 'We couldn’t generate a secure Passport link. Please try again.';
