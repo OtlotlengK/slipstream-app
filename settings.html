@@ -9,6 +9,28 @@
 <style>
 .settings-card{min-width:0;overflow:hidden}.settings-actions{display:flex;gap:10px;flex-wrap:wrap}.settings-actions>*{min-width:0}
 @media(max-width:640px){main{padding-left:16px!important;padding-right:16px!important}.settings-card{padding:20px!important}.settings-actions{flex-direction:column}.settings-actions>*{width:100%;justify-content:center;text-align:center}.settings-card input{min-width:0}.settings-title{font-size:22px!important;line-height:1.15}}
+
+/* Branded PIN setup dialog */
+.pin-modal-backdrop{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.62);backdrop-filter:blur(7px)}
+.pin-modal-backdrop.open{display:flex}
+.pin-modal{width:min(440px,100%);padding:26px;border:1px solid #DDE7E5;border-radius:24px;background:#fff;color:#0F172A;box-shadow:0 28px 90px rgba(15,23,42,.28)}
+.pin-modal-kicker{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#0F8B80}
+.pin-modal h2{margin:8px 0 0;font-size:24px;line-height:1.15;font-weight:900;letter-spacing:-.03em;color:#0F172A}
+.pin-modal-copy{margin:9px 0 20px;font-size:13px;line-height:1.55;color:#64748B}
+.pin-field{display:block;margin-top:14px;font-size:12px;font-weight:800;color:#334155}
+.pin-field input{display:block;width:100%;margin-top:7px;padding:13px 14px;border:1px solid #CBD5E1;border-radius:12px;background:#F8FAFC;color:#0F172A;font-size:18px;letter-spacing:.24em;outline:none}
+.pin-field input:focus{border-color:#0F8B80;box-shadow:0 0 0 3px rgba(15,139,128,.13)}
+.pin-modal-error{min-height:18px;margin-top:10px;color:#BE123C;font-size:12px}
+.pin-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.pin-modal-actions button{min-height:44px;padding:10px 17px;border-radius:12px;font-size:12px;font-weight:800}
+.pin-modal-cancel{border:1px solid #CBD5E1;background:#F1F5F9;color:#334155}
+.pin-modal-submit{border:1px solid #0F766E;background:#0F766E;color:#fff}
+html[data-vt-theme="dark"] .pin-modal{background:#151F30;border-color:#334155;color:#E5E7EB}
+html[data-vt-theme="dark"] .pin-modal h2{color:#F8FAFC}
+html[data-vt-theme="dark"] .pin-modal-copy,html[data-vt-theme="dark"] .pin-field{color:#A8B4C7}
+html[data-vt-theme="dark"] .pin-field input{background:#0F172A;border-color:#475569;color:#F8FAFC}
+html[data-vt-theme="dark"] .pin-modal-cancel{background:#1E293B;border-color:#475569;color:#E2E8F0}
+@media(max-width:480px){.pin-modal{padding:22px;border-radius:20px}.pin-modal h2{font-size:22px}.pin-modal-actions{flex-direction:column-reverse}.pin-modal-actions button{width:100%}}
 </style></head>
 <body class="bg-[#17201F] min-h-screen text-slate-100">
 <header class="border-b border-slate-800 bg-[#17201F]"><div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between"><div><div class="font-black tracking-[0.12em] text-[#14B8A6]">VYNOTAP</div><div class="text-[10px] uppercase tracking-wider text-slate-500">Settings</div></div><a href="dashboard-v2.html" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg">← Overview</a></div></header>
@@ -46,11 +68,25 @@
 <section class="settings-card bg-[#17201F] border border-slate-800 rounded-2xl p-6">
 <div class="settings-eyebrow">Account</div><h2 class="text-xl font-black mt-2">Signed-in account</h2><p class="text-sm text-slate-500 mt-2 settings-account-email">Signed in as <span id="account-email"></span></p><div class="mt-4 pt-4 border-t settings-divider"><button onclick="logout()" class="settings-btn settings-btn-danger">Sign out of account</button></div>
 </section>
-</main><script>
+</main>
+<div id="pin-modal-backdrop" class="pin-modal-backdrop" aria-hidden="true">
+ <section class="pin-modal" role="dialog" aria-modal="true" aria-labelledby="pin-modal-title" aria-describedby="pin-modal-copy">
+  <div class="pin-modal-kicker">VynoTap security</div><h2 id="pin-modal-title">Set your device PIN</h2>
+  <p id="pin-modal-copy" class="pin-modal-copy">Choose a 6–8 digit PIN. You’ll use it to unlock VynoTap on this device.</p>
+  <form id="pin-modal-form" novalidate>
+   <label class="pin-field" for="pin-entry">New PIN<input id="pin-entry" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" pattern="[0-9]{6,8}" placeholder="6–8 digits" required></label>
+   <label class="pin-field" for="pin-confirm">Confirm PIN<input id="pin-confirm" type="password" inputmode="numeric" autocomplete="new-password" maxlength="8" pattern="[0-9]{6,8}" placeholder="Enter PIN again" required></label>
+   <p id="pin-modal-error" class="pin-modal-error" role="alert" aria-live="polite"></p>
+   <div class="pin-modal-actions"><button type="button" id="pin-modal-cancel" class="pin-modal-cancel">Cancel</button><button type="submit" class="pin-modal-submit">Save PIN</button></div>
+  </form>
+ </section>
+</div>
+<script>
 const SUPABASE_URL='https://pddjualtnhgmplampucn.supabase.co';const SUPABASE_ANON_KEY='sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH';const{createClient}=supabase;const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let user=null;let payNowBusy=false;
 function securityMessage(text,error=false){const el=document.getElementById('security-message');if(el){el.textContent=text;el.className='text-xs mt-3 '+(error?'text-red-300':'text-slate-400')}}
 function refreshLockStatus(){const s=window.ValoraAppLock?.status?.()||{};const el=document.getElementById('lock-status');if(!el)return;if(!s.enabled){el.textContent='App lock: Off';el.className='settings-status'}else{const methods=[s.pin?'PIN':'',s.biometric?'Fingerprint / Face ID':''].filter(Boolean).join(' + ');el.textContent='App lock: On · '+methods;el.className='settings-status is-on'} }
-async function setPin(){const pin=prompt('Choose a 6–8 digit VynoTap PIN.');if(pin===null)return;const confirmPin=prompt('Enter the PIN again to confirm.');if(confirmPin!==pin){securityMessage('The PINs did not match.',true);return}try{await window.ValoraAppLock.setupPin(pin);securityMessage('VT PIN enabled on this device.');refreshLockStatus()}catch(e){securityMessage(e.message||'Could not set the PIN.',true)}}
+function requestPin(){return new Promise(resolve=>{const backdrop=document.getElementById('pin-modal-backdrop'),form=document.getElementById('pin-modal-form'),pinInput=document.getElementById('pin-entry'),confirmInput=document.getElementById('pin-confirm'),error=document.getElementById('pin-modal-error'),cancel=document.getElementById('pin-modal-cancel');const close=value=>{backdrop.classList.remove('open');backdrop.setAttribute('aria-hidden','true');form.reset();error.textContent='';form.removeEventListener('submit',submit);cancel.removeEventListener('click',cancelClick);backdrop.removeEventListener('click',outsideClick);document.removeEventListener('keydown',escapeKey);resolve(value)};const cancelClick=()=>close(null);const outsideClick=e=>{if(e.target===backdrop)close(null)};const escapeKey=e=>{if(e.key==='Escape')close(null)};const submit=e=>{e.preventDefault();const pin=pinInput.value.trim(),confirmation=confirmInput.value.trim();if(!/^[0-9]{6,8}$/.test(pin)){error.textContent='Enter a PIN containing 6 to 8 digits.';pinInput.focus();return}if(pin!==confirmation){error.textContent='The PINs do not match. Please try again.';confirmInput.focus();confirmInput.select();return}close(pin)};form.addEventListener('submit',submit);cancel.addEventListener('click',cancelClick);backdrop.addEventListener('click',outsideClick);document.addEventListener('keydown',escapeKey);backdrop.classList.add('open');backdrop.setAttribute('aria-hidden','false');setTimeout(()=>pinInput.focus(),40)})}
+async function setPin(){const pin=await requestPin();if(pin===null)return;try{await window.ValoraAppLock.setupPin(pin);securityMessage('VynoTap PIN enabled on this device.');refreshLockStatus()}catch(e){securityMessage(e.message||'Could not set the PIN.',true)}}
 async function enableBiometric(){const status=window.ValoraAppLock?.status?.()||{};if(!status.pin){securityMessage('Set and confirm a VT PIN first. You will need it if fingerprint / Face ID is unavailable.',true);document.getElementById('set-pin-btn')?.focus();return}try{await window.ValoraAppLock.setupBiometric();securityMessage('Device biometric unlock is enabled. Your VT PIN remains available as a fallback.');refreshLockStatus()}catch(e){securityMessage(e.message||'Biometric unlock could not be enabled.',true)}}
 function lockVT(){window.ValoraAppLock?.lockNow()}
 function disableLock(){if(!confirm('Turn off the VynoTap app lock on this device?'))return;window.ValoraAppLock?.disable();securityMessage('App lock is off on this device.');refreshLockStatus()}
