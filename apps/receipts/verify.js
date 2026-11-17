@@ -26,7 +26,7 @@ async function load(){
   document.getElementById('receipt-no').textContent=r.receipt_no||'—';
   const amount=Number(r.amount||0),currency=String(r.currency||'ZAR').toUpperCase();
   document.getElementById('amount').textContent=formatMoney(amount,currency);
-  document.getElementById('total').textContent=document.getElementById('amount').textContent;
+  document.getElementById('total').textContent=document.getElementById('amount').textContent;const breakdown=document.getElementById('receipt-breakdown');if(breakdown&&r.subtotal!==null&&r.subtotal!==undefined){breakdown.classList.remove('hidden');document.getElementById('receipt-subtotal').textContent=formatMoney(r.subtotal,currency);if(Number(r.tax_amount||0)>0){const row=document.getElementById('receipt-tax-row');row.classList.remove('hidden');row.classList.add('flex');document.getElementById('receipt-tax-label').textContent=Number(r.tax_rate||0)>0?'Tax ('+Number(r.tax_rate).toFixed(2)+'%)':'Tax';document.getElementById('receipt-tax').textContent=formatMoney(r.tax_amount,currency)}if(Number(r.discount_amount||0)>0){const row=document.getElementById('receipt-discount-row');row.classList.remove('hidden');row.classList.add('flex');document.getElementById('receipt-discount').textContent='−'+formatMoney(r.discount_amount,currency)}}
   document.getElementById('method').textContent=r.payment_method||'—';
   document.getElementById('customer').textContent=r.customer_name||'Customer';
   document.getElementById('description').textContent=r.description||'—';
