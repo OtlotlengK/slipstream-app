@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/s/:code",
+      "destination": "https://pddjualtnhgmplampucn.supabase.co/functions/v1/short-link?code=:code"
+    },
+    {
       "source": "/",
       "destination": "/home.html"
     },
