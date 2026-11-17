@@ -27,11 +27,12 @@ async function loadRevenue(){
   const {data,error}=await db.from('receipts').select('amount,created_at').eq('merchant_id',user.id).eq('status','issued');
   if(error)throw error;
   const total=(data||[]).reduce((sum,row)=>sum+Number(row.amount||0),0);
-  document.getElementById('revenue').textContent=money(total);\n  document.getElementById('receiptCount').textContent=(data||[]).length.toLocaleString('en-ZA');
+  document.getElementById('revenue').textContent=money(total);
+  document.getElementById('receiptCount').textContent=(data||[]).length.toLocaleString('en-ZA');
 }
 
 async function init(){
-    try{
+  try{
     const {data:{session},error}=await db.auth.getSession();
     if(error)throw error;
     if(!session){location.href='login.html';return;}
@@ -53,9 +54,8 @@ async function init(){
     const failed=results.filter(r=>r.status==='rejected');
     if(failed.length){
       console.error('Finance data load failed',failed.map(r=>r.reason));
-      if(failed.length){
-        document.getElementById('revenue').textContent='—';\n    document.getElementById('receiptCount').textContent='—';
-      }
+      document.getElementById('revenue').textContent='—';
+      document.getElementById('receiptCount').textContent='—';
     }
   }catch(error){
     console.error('Finance initialization failed',error);
