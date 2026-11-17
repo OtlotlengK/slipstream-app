@@ -5,9 +5,9 @@ const formatMoney=(n,currency)=>{const c=String(currency||'ZAR').toUpperCase();t
 const labels={physical_goods:'Physical goods',professional_service:'Professional service',digital_product:'Digital product',appointment:'Appointment / session',delivery:'Delivery',subscription:'Subscription',rental:'Rental',other:'Transaction'};
 function setStatus(text,ok=true){const b=document.getElementById('status-badge');b.textContent=text;b.className=ok?'px-3 py-1.5 rounded-full bg-emerald-950 text-emerald-300 text-[9px] font-black uppercase tracking-widest':'px-3 py-1.5 rounded-full bg-red-950 text-red-300 text-[9px] font-black uppercase tracking-widest'}
 function fail(message){document.getElementById('receipt-shell').classList.add('hidden');document.getElementById('failure').classList.remove('hidden');document.getElementById('failure-message').textContent=message||'The receipt could not be verified.'}
-function renderQr(){try{if(window.QRCode){new QRCode(document.getElementById('qrcode'),{text:verificationUrl,width:180,height:180,colorDark:'#171717',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}else{document.getElementById('qrcode').textContent='QR unavailable';}}catch(e){document.getElementById('qrcode').textContent='QR unavailable';}}
+function renderQr(){try{if(window.QRCode){new QRCode(document.getElementById('qrcode'),{text:verificationUrl,width:180,height:180,colorDark:'#171717',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});const printNode=document.getElementById('print-qrcode');if(printNode)new QRCode(printNode,{text:verificationUrl,width:104,height:104,colorDark:'#171717',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}else{document.getElementById('qrcode').textContent='QR unavailable';}}catch(e){document.getElementById('qrcode').textContent='QR unavailable';}}
 async function load(){
- document.getElementById('verification-url').textContent=verificationUrl;
+ document.getElementById('verification-url').textContent=verificationUrl;const printUrl=document.getElementById('print-verification-url');if(printUrl)printUrl.textContent=verificationUrl;
  renderQr();
  const params=new URLSearchParams(location.search);
  const hash=(params.get('hash')||'').trim();
@@ -45,4 +45,5 @@ async function copyVerificationLink(){const f=document.getElementById('copy-feed
 async function shareVerification(){if(navigator.share){try{await navigator.share({title:'ValoraTap Verified Receipt',text:'Verify this transaction independently:',url:verificationUrl})}catch(e){}}else window.open('https://wa.me/?text='+encodeURIComponent('Verify this ValoraTap receipt: '+verificationUrl),'_blank')}
 document.getElementById('copy-link')?.addEventListener('click',copyVerificationLink);
 document.getElementById('share-receipt')?.addEventListener('click',shareVerification);
+document.getElementById('download-pdf')?.addEventListener('click',()=>{const original=document.title;const no=document.getElementById('receipt-no')?.textContent||'Receipt';document.title='VynoTap - '+no;window.print();setTimeout(()=>{document.title=original},1200)});
 load();
