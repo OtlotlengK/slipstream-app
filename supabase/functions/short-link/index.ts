@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const BASE_URL = Deno.env.get("PUBLIC_APP_URL") || "https://slipstream-app-sigma.vercel.app";
+const BASE_URL = Deno.env.get("PUBLIC_APP_URL") || "https://vynotap.com";
 const buckets = new Map<string, { count: number; reset: number }>();
 const cors = {
   "Access-Control-Allow-Origin": "*",
