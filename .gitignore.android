@@ -1,0 +1,10 @@
+# Capacitor Android build outputs
+node_modules/
+www/
+android/
+ios/
+*.jks
+*.keystore
+.env
+.env.*
+!.env.example
