@@ -1,0 +1,51 @@
+name: VynoTap Android debug build
+
+on:
+  push:
+    branches:
+      - feat/vynotap-android-capacitor
+    paths:
+      - '**'
+      - '!README.md'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-debug:
+    name: Build staging APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Android development branch
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install JavaScript dependencies
+        run: npm install
+      - name: Prepare staging web bundle
+        run: npm run build:android:debug
+      - name: Add Android platform
+        run: npx cap add android
+      - name: Sync Capacitor Android project
+        run: npx cap sync android
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - name: Upload staging APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: vynotap-android-debug-staging
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
