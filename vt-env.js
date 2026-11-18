@@ -35,11 +35,15 @@
     throw new Error('VynoTap blocked an unrecognised host. No Supabase connection was started.');
   }
   const selected = environment === 'production' ? production : staging;
+  const appUrl = isNativeAndroid
+    ? (environment === 'production' ? 'https://vynotap.com' : 'https://slipstream-app-jbxe-git-feat-vynotap-android-capacitor-clips4.vercel.app')
+    : window.location.origin;
   window.VT_ENV = Object.freeze({
     name: environment,
     supabaseUrl: selected.url,
     supabaseKey: selected.key,
-    functionsUrl: selected.url + '/functions/v1'
+    functionsUrl: selected.url + '/functions/v1',
+    appUrl
   });
   document.documentElement.dataset.vtEnvironment = environment;
 })();
