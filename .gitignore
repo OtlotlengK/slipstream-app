@@ -1,0 +1,12 @@
+# Dependencies and generated Android web bundle
+node_modules/
+www/
+android/
+ios/
+
+# Local signing material and environment files
+*.jks
+*.keystore
+.env
+.env.*
+!.env.example
