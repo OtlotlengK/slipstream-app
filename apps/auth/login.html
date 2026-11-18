@@ -58,6 +58,6 @@ $('switch').onclick=()=>{signup=!signup;render();$('resend').classList.add('hidd
 $('resend').onclick=resend;
 (async()=>{const {data:{session}}=await db.auth.getSession();if(session)await route();else render()})();
 let deferred=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').classList.remove('hidden')});$('install').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('install').classList.add('hidden')};
-if(!window.Capacitor?.isNativePlatform?.()&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+if(!window.VT_ANDROID_BUILD_ENV&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 </script>
 </body></html>
