@@ -36,6 +36,39 @@ await cp(root, output, {
   }
 });
 
+// Vercel performs these aliases on the hosted site. Recreate static aliases in
+// the packaged bundle because the Android WebView does not execute vercel.json.
+const vercel = JSON.parse(await readFile(path.join(root, 'vercel.json'), 'utf8'));
+for (const rule of vercel.rewrites || []) {
+  const { source, destination } = rule;
+  if (!source?.startsWith('/') || source.includes(':') ||
+      !destination?.startsWith('/') || destination.includes('?') ||
+      destination.includes(':')) continue;
+  const sourcePath = source.replace(/^\/+/, '');
+  const destinationPath = path.join(output, destination.replace(/^\/+/, ''));
+  if (!sourcePath) continue; // The app entry point is handled below.
+  try {
+    await stat(destinationPath);
+  } catch {
+    continue;
+  }
+  const targetPath = path.join(output, sourcePath);
+  if (path.extname(sourcePath)) {
+    await mkdir(path.dirname(targetPath), { recursive: true });
+    await cp(destinationPath, targetPath);
+  } else {
+    await mkdir(targetPath, { recursive: true });
+    await cp(destinationPath, path.join(targetPath, 'index.html'));
+  }
+}
+
+// Capacitor starts at /index.html. The Android app should open the login flow;
+// the public marketing landing page remains available at /home.html.
+await writeFile(path.join(output, 'index.html'),
+  '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=/login.html"><title>VynoTap</title></head><body><script>location.replace("/login.html")</script></body></html>',
+  'utf8'
+);
+
 const envPath = path.join(output, 'vt-env.js');
 const envSource = await readFile(envPath, 'utf8');
 await writeFile(envPath, `window.VT_ANDROID_BUILD_ENV = ${JSON.stringify(environment)};\n${envSource}`, 'utf8');
