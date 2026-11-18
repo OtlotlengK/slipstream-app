@@ -4,7 +4,7 @@
    scripts/build-android.mjs. Debug builds use staging; release builds use production. */
 (() => {
   const host = window.location.hostname.toLowerCase();
-  const isNativeAndroid = Boolean(window.Capacitor?.isNativePlatform?.());
+  const isNativeAndroid = host === 'localhost' && ['staging', 'production'].includes(window.VT_ANDROID_BUILD_ENV);
   const productionHosts = new Set([
     'vynotap.com',
     'www.vynotap.com',
