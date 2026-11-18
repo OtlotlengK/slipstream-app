@@ -84,7 +84,14 @@ Deno.serve(async (req) => {
       await db.from('payment_intents').update({ status:'failed', updated_at:new Date().toISOString(), metadata:{source:'valoratap',failure_reason:'invalid_invoice_amount'} }).eq('id',intent.payment_intent_id).eq('status','pending');
       return json({ error:'invalid_invoice_amount' },400);
     }
-    const appUrl = (Deno.env.get('PUBLIC_APP_URL') || 'https://slipstream-app-sigma.vercel.app').replace(/\/$/,'');
+    const projectRef = new URL(url).hostname.split('.')[0];
+    const defaultAppUrl = projectRef === 'pddjualtnhgmplampucn'
+      ? 'https://vynotap.com'
+      : projectRef === 'uvnlihejfwotynxhlvpq'
+        ? 'https://slipstream-app-jbxe-git-feat-vynotap-android-capacitor-clips4.vercel.app'
+        : '';
+    const appUrl = (Deno.env.get('PUBLIC_APP_URL') || defaultAppUrl).replace(/\/$/,'');
+    if (!appUrl) return json({ error: 'callback_origin_not_configured' }, 500);
     const callbackUrl = `${appUrl}/invoice.html?token=${encodeURIComponent(token)}&payment=return`;
     const paymentBody: Record<string, unknown> = { email:invoice.customer_email, amount:String(amountSubunit), currency:intent.currency||currency, reference:intent.provider_reference, callback_url:callbackUrl, channels:['card','bank','eft','qr','capitec_pay','apple_pay'], metadata:{invoice_id:invoice.id,invoice_no:invoice.invoice_no,payment_intent_id:intent.payment_intent_id,source:'valoratap'} };
     paymentBody.subaccount=settlementAccount.provider_account_id;
