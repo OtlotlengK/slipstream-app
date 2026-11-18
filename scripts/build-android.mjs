@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, rm, stat } from 'node:fs/promises';
+import { cp, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
@@ -23,7 +23,7 @@ await cp(root, output, {
   recursive: true,
   filter: async (source) => {
     const relative = path.relative(root, source);
-    if (!relative) return false;
+    if (!relative) return true;
     const first = relative.split(path.sep)[0];
     if (excluded.has(first)) return false;
     if (relative === 'package.json' || relative === 'package-lock.json' || relative === 'capacitor.config.ts') return false;
@@ -38,8 +38,6 @@ await cp(root, output, {
 
 const envPath = path.join(output, 'vt-env.js');
 const envSource = await readFile(envPath, 'utf8');
-await import('node:fs/promises').then(({ writeFile }) =>
-  writeFile(envPath, `window.VT_ANDROID_BUILD_ENV = ${JSON.stringify(environment)};\\n${envSource}`, 'utf8')
-);
+await writeFile(envPath, `window.VT_ANDROID_BUILD_ENV = ${JSON.stringify(environment)};\n${envSource}`, 'utf8');
 
 console.log(`VynoTap Android web bundle prepared for ${environment} at ${output}`);
