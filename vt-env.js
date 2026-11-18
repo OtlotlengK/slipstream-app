@@ -1,8 +1,10 @@
 /* VynoTap environment routing.
    Production is selected only on explicitly allow-listed production hosts.
-   Every Vercel preview and localhost uses staging. Unknown hosts fail closed. */
+   Android build environment is injected into the packaged web bundle by
+   scripts/build-android.mjs. Debug builds use staging; release builds use production. */
 (() => {
   const host = window.location.hostname.toLowerCase();
+  const isNativeAndroid = Boolean(window.Capacitor?.isNativePlatform?.());
   const productionHosts = new Set([
     'vynotap.com',
     'www.vynotap.com',
@@ -19,7 +21,13 @@
     key: 'sb_publishable_erwz2gEbNN3sOx7h29B8ew_ObOMUwe2'
   };
   let environment;
-  if (productionHosts.has(host)) {
+  if (isNativeAndroid) {
+    const nativeEnvironment = window.VT_ANDROID_BUILD_ENV;
+    if (!['staging', 'production'].includes(nativeEnvironment)) {
+      throw new Error('VynoTap Android build has no valid environment. Build with the Android build script.');
+    }
+    environment = nativeEnvironment;
+  } else if (productionHosts.has(host)) {
     environment = 'production';
   } else if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')) {
     environment = 'staging';
