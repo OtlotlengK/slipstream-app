@@ -38,8 +38,8 @@
 </div>
 <script>
 const db=window.VT.createSupabaseClient();
-const verifyRedirect=new URL('/confirm-signup.html',location.origin).href;
-const resetRedirect=new URL('/reset-password.html',location.origin).href;
+const verifyRedirect=new URL('/confirm-signup.html',window.VT_ENV.appUrl||location.origin).href;
+const resetRedirect=new URL('/reset-password.html',window.VT_ENV.appUrl||location.origin).href;
 let signup=new URLSearchParams(location.search).get('mode')==='signup';
 const $=id=>document.getElementById(id);
 function msg(t,error=false){$('message').textContent=t;$('message').className='mt-4 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');}
