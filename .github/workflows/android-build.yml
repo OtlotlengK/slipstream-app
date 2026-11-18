@@ -32,7 +32,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Install JavaScript dependencies
-        run: npm install
+        run: npm install --no-audit --no-fund
       - name: Prepare staging web bundle
         run: npm run build:android:debug
       - name: Add Android platform
