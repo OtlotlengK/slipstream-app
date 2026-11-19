@@ -71,7 +71,7 @@ button.disabled=false;render();}
 async function resend(){const email=$('email').value.trim();if(!email){msg('Enter your email address first.',true);return}const {error}=await db.auth.resend({type:'signup',email});if(error)msg(error.message,true);else msg('A new verification code has been sent. Check your inbox and spam/junk folder.')}
 async function verifySignup(){
   const email=$('email').value.trim(),token=$('signup-otp').value.trim(),button=$('verify-signup');
-  if(!email||!/^\\d{6}$/.test(token)){msg('Enter the six-digit code from your email.',true);return;}
+  if(!email||!/^\d{6}$/.test(token)){msg('Enter the six-digit code from your email.',true);return;}
   button.disabled=true;button.textContent='Verifying...';
   const {error}=await db.auth.verifyOtp({email,token,type:'signup'});
   if(error){msg(error.message,true);button.disabled=false;button.textContent='Verify Email';return;}
