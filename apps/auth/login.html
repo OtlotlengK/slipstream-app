@@ -26,6 +26,11 @@
 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Business Name<input id="business" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="e.g. Brightside Traders"></label>
 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Your Name<input id="owner" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="e.g. Jordan Lee"></label>
 </div>
+<div id="verify-fields" class="hidden mt-4 space-y-3">
+<label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Email verification code<input id="signup-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm tracking-[0.35em] text-white" placeholder="000000"></label>
+<button id="verify-signup" type="button" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl">Verify Email</button>
+<p class="text-[11px] text-slate-400">Enter the six-digit code sent to your email. You can request another code if needed.</p>
+</div>
 <label class="block mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Email Address<input id="email" type="email" autocomplete="email" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="you@example.com"></label>
 <label class="block mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Password<input id="password" type="password" autocomplete="current-password" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="Minimum 6 characters"></label>
 <div id="message" class="hidden mt-4 p-3 rounded-xl text-xs"></div>
@@ -41,20 +46,41 @@ const db=window.VT.createSupabaseClient();
 const verifyRedirect=new URL('/confirm-signup.html',window.VT_ENV.appUrl||location.origin).href;
 const resetRedirect=new URL('/reset-password.html',window.VT_ENV.appUrl||location.origin).href;
 let signup=new URLSearchParams(location.search).get('mode')==='signup';
+let verificationPending=false;
 const $=id=>document.getElementById(id);
 function msg(t,error=false){$('message').textContent=t;$('message').className='mt-4 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');}
-function render(){ $('signup-fields').classList.toggle('hidden',!signup);$('title').textContent=signup?'Create your merchant account':'Welcome back';$('subtitle').textContent=signup?'Start issuing verifiable digital receipts.':'Log in to your merchant dashboard.';$('submit').textContent=signup?'Create Merchant Account':'Log In';$('switch').textContent=signup?'Already have an account? Log in':"Don't have an account? Create one";$('forgot').classList.toggle('hidden',signup);}
+function render(){
+  $('signup-fields').classList.toggle('hidden',!signup);
+  $('verify-fields').classList.toggle('hidden',!verificationPending);
+  $('title').textContent=verificationPending?'Verify your email':(signup?'Create your merchant account':'Welcome back');
+  $('subtitle').textContent=verificationPending?'Enter the six-digit code we sent to your email address.':(signup?'Start issuing verifiable digital receipts.':'Log in to your merchant dashboard.');
+  $('submit').classList.toggle('hidden',verificationPending);
+  $('switch').classList.toggle('hidden',verificationPending);
+  $('forgot').classList.toggle('hidden',signup||verificationPending);
+  $('resend').classList.toggle('hidden',!verificationPending);
+  $('submit').textContent=signup?'Create Merchant Account':'Log In';
+  $('switch').textContent=signup?'Already have an account? Log in':"Don't have an account? Create one";
+}
 async function route(){const {data:{user}}=await db.auth.getUser();if(!user){location.href='/login.html';return}const {data}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).maybeSingle();if(!data||!data.business_name||!data.owner_name){location.href='/onboarding.html';return}location.href='/index.html';}
 async function submit(){const email=$('email').value.trim(),password=$('password').value,button=$('submit');if(!email||!password){msg('Please enter your email and password.',true);return}button.disabled=true;button.textContent=signup?'Creating account...':'Logging in...';$('resend').classList.add('hidden');
 if(signup){const business=$('business').value.trim(),owner=$('owner').value.trim();if(!business||!owner){msg('Please enter your business name and your name.',true);button.disabled=false;render();return}
 const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:verifyRedirect,data:{business_name:business,owner_name:owner}}});
-if(error){msg(error.message,true)}else if(data.session){await route()}else{signup=false;render();$('email').value=email;$('password').value='';msg('Account created. Check your email to verify your VynoTap account before logging in.');$('resend').classList.remove('hidden')}
+if(error){msg(error.message,true)}else if(data.session){await route()}else{verificationPending=true;signup=false;render();$('email').value=email;$('email').disabled=true;$('password').value='';msg('Account created. Check your inbox for the six-digit VynoTap verification code.');$('signup-otp').focus()}
 }else{const {error}=await db.auth.signInWithPassword({email,password});if(error){msg(error.message,true);if(error.message.toLowerCase().includes('email not confirmed'))$('resend').classList.remove('hidden')}else await route()}
 button.disabled=false;render();}
-async function resend(){const email=$('email').value.trim();if(!email){msg('Enter your email address first.',true);return}const {error}=await db.auth.resend({type:'signup',email,options:{emailRedirectTo:verifyRedirect}});if(error)msg(error.message,true);else msg('Verification email sent. Check your inbox and spam/junk folder.')}
+async function resend(){const email=$('email').value.trim();if(!email){msg('Enter your email address first.',true);return}const {error}=await db.auth.resend({type:'signup',email});if(error)msg(error.message,true);else msg('A new verification code has been sent. Check your inbox and spam/junk folder.')}
+async function verifySignup(){
+  const email=$('email').value.trim(),token=$('signup-otp').value.trim(),button=$('verify-signup');
+  if(!email||!/^\\d{6}$/.test(token)){msg('Enter the six-digit code from your email.',true);return;}
+  button.disabled=true;button.textContent='Verifying...';
+  const {error}=await db.auth.verifyOtp({email,token,type:'signup'});
+  if(error){msg(error.message,true);button.disabled=false;button.textContent='Verify Email';return;}
+  verificationPending=false;$('email').disabled=false;msg('Email verified successfully. Opening your VynoTap account...');await route();
+}
+$('verify-signup').onclick=verifySignup;
 $('submit').onclick=submit;
 $('forgot').onclick=()=>{const email=$('email').value.trim();location.href='/reset-password.html'+(email?'?email='+encodeURIComponent(email):'');};
-$('switch').onclick=()=>{signup=!signup;render();$('resend').classList.add('hidden');$('message').classList.add('hidden')};
+$('switch').onclick=()=>{signup=!signup;verificationPending=false;$('email').disabled=false;render();$('message').classList.add('hidden')};
 $('resend').onclick=resend;
 (async()=>{const {data:{session}}=await db.auth.getSession();if(session)await route();else render()})();
 let deferred=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').classList.remove('hidden')});$('install').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('install').classList.add('hidden')};
