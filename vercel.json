@@ -53,6 +53,10 @@
       "destination": "/apps/receipts/verify.html"
     },
     {
+      "source": "/product-catalogue.html",
+      "destination": "/apps/catalogue/product-catalogue.html"
+    },
+    {
       "source": "/invoice-centre.html",
       "destination": "/apps/invoices/invoice-centre.html"
     },
