@@ -228,7 +228,7 @@ begin
   if v_uid is null then
     raise exception 'not_authorized';
   end if;
-  if p_action not in ('accept', 'decline') then
+  if p_action is null or p_action not in ('accept', 'decline') then
     raise exception 'invalid_action';
   end if;
 
