@@ -15,13 +15,18 @@ export default function IndexRoute() {
     const resolve = async () => {
       setDestination(undefined);
       setProblem("");
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError) {
-        if (active) setProblem(userError.message);
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        if (active) setProblem(sessionError.message);
         return;
       }
-      if (!user) {
+      if (!session) {
         if (active) setDestination("/sign-in");
+        return;
+      }
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        if (active) setProblem(userError?.message ?? "We couldn't verify your account. Please try again.");
         return;
       }
       const { data: merchant, error } = await supabase
