@@ -6,7 +6,6 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
-    "icon": "../../icons/vynotap.png",
     "splash": {
       "backgroundColor": "#0B1220"
     },
@@ -15,10 +14,7 @@
       "bundleIdentifier": "com.vynotap.app"
     },
     "android": {
-      "package": "com.vynotap.app",
-      "adaptiveIcon": {
-        "backgroundColor": "#0B1220"
-      }
+      "package": "com.vynotap.app"
     },
     "plugins": [
       "expo-router"
