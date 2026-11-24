@@ -37,6 +37,10 @@
       "destination": "/apps/business/business-profile.html"
     },
     {
+      "source": "/business-network.html",
+      "destination": "/apps/business/business-network.html"
+    },
+    {
       "source": "/receipts.html",
       "destination": "/apps/receipts/receipts.html"
     },
