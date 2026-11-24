@@ -270,6 +270,38 @@ html[data-vt-theme="dark"] .card,html[data-vt-theme="dark"] .settings-card,html[
     html[data-vt-theme="dark"] body[class*="bg-[#0F172A]"] #resend{color:#CBD5E1!important}
     html[data-vt-theme="dark"] body[class*="bg-[#0F172A]"] #install{background:#1E293B!important;color:#A78BFA!important;border-color:#4C3D8F!important}
     html[data-vt-theme="light"] body header.dark>a.brand-wordmark,html[data-vt-theme="dark"] body header.dark>a.brand-wordmark{letter-spacing:-.045em;font-size:1.35rem;line-height:1;font-weight:900;text-transform:none}
+
+    /* Business Passport: finish dark-mode contrast without changing light mode. */
+    html[data-vt-theme="dark"] body .hero #hero-logo{
+      background:#0F172A!important;color:#E2E8F0!important;border-color:#475569!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 8px 22px rgba(0,0,0,.18)!important;
+    }
+    html[data-vt-theme="dark"] body .cards>.card,
+    html[data-vt-theme="dark"] body #private-profile-details,
+    html[data-vt-theme="dark"] body #share,
+    html[data-vt-theme="dark"] body #share.card{
+      background:#151F30!important;color:#E5E7EB!important;border-color:#334155!important;
+      box-shadow:0 10px 28px rgba(0,0,0,.16)!important;
+    }
+    html[data-vt-theme="dark"] body .cards>.card h2,
+    html[data-vt-theme="dark"] body #private-profile-details h2,
+    html[data-vt-theme="dark"] body #share h2,
+    html[data-vt-theme="dark"] body #app>section.card h2{color:#F8FAFC!important}
+    html[data-vt-theme="dark"] body .cards .row,
+    html[data-vt-theme="dark"] body #private-profile-details .row{border-bottom-color:#334155!important;color:#CBD5E1!important}
+    html[data-vt-theme="dark"] body .cards .row>span:first-child,
+    html[data-vt-theme="dark"] body #private-profile-details .row>span:first-child{color:#A8B4C7!important}
+    html[data-vt-theme="dark"] body .cards .value,
+    html[data-vt-theme="dark"] body #private-profile-details .value{color:#F1F5F9!important}
+    html[data-vt-theme="dark"] body .trust b{color:#F1F5F9!important}
+    html[data-vt-theme="dark"] body .check{background:#0F3D3A!important;color:#99F6E4!important}
+    html[data-vt-theme="dark"] body .badge{background:#123B36!important;color:#99F6E4!important;border:1px solid #1D665D!important}
+    html[data-vt-theme="dark"] body .meta-pill{background:#1E293B!important;color:#CBD5E1!important;border-color:#475569!important}
+    html[data-vt-theme="dark"] body #copy-btn,
+    html[data-vt-theme="dark"] body #print-btn{background:#1E293B!important;color:#E2E8F0!important;border:1px solid #475569!important}
+    html[data-vt-theme="dark"] body #copy-btn:disabled{color:#64748B!important;opacity:.65}
+    html[data-vt-theme="dark"] body #share-status{color:#99F6E4!important}
+    html[data-vt-theme="dark"] body .qr{background:#FFFFFF!important;border-color:#475569!important}
   `;
   document.head.appendChild(style);
   function apply(p) {
