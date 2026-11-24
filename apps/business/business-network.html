@@ -45,7 +45,7 @@ function businessCard(b){
  let action='';
  if(b.connection_status==='connected') action='<button class="btn" disabled>✓ Connected</button>';
  else if(b.connection_status==='pending_sent') action='<button class="btn" disabled>Request sent</button>';
- else if(b.connection_status==='pending_received') action='<button class="btn primary" data-action="accept" data-id="'+esc(b.connection_id||'')+'" disabled>Request received · see Requests</button>';
+ else if(b.connection_status==='pending_received') action='<button class="btn" data-action="view-requests">Review request</button>';
  else action='<button class="btn primary" data-action="connect" data-id="'+esc(b.merchant_id)+'">＋ Connect</button>';
  return '<article class="business"><div class="business-head">'+logoMarkup(b)+'<div style="min-width:0"><div class="business-name">'+esc(b.business_name)+'</div><div class="industry">'+esc(b.industry||'Business on VynoTap')+'</div></div></div><div class="location">⌖ '+esc(locationText(b))+'</div><p class="description">'+esc(b.description||'This business has shared its Business Passport on VynoTap.')+'</p>'+action+'</article>';
 }
@@ -65,7 +65,7 @@ async function performAction(action,id){const messages={connect:'Sending connect
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
 $('search-btn').addEventListener('click',loadDirectory);
 $('directory-search').addEventListener('keydown',e=>{if(e.key==='Enter')loadDirectory()});
-document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(b&&!b.disabled)performAction(b.dataset.action,b.dataset.id)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b||b.disabled)return;if(b.dataset.action==='view-requests'){setTab('requests');return}performAction(b.dataset.action,b.dataset.id)});
 async function init(){try{const{data:{session},error}=await db.auth.getSession();if(error)throw error;if(!session){location.replace('/login.html');return}currentUser=session.user;await Promise.all([loadDirectory(),loadConnections()])}catch(error){console.error(error);$('directory-results').innerHTML='<div class="empty"><strong>Could not load Business Network</strong>Please sign in again and retry.</div>'}}
 init();
 </script>
