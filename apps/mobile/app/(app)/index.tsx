@@ -52,8 +52,8 @@ export default function HomeScreen() {
   );
 }
 
-function Action({ title, secondary = false }: { title: string; secondary?: boolean }) {
-  return <Pressable onPress={() => {}} style={[styles.action, secondary && styles.actionSecondary]}>
+function Action({ title, secondary = false, onPress }: { title: string; secondary?: boolean; onPress: () => void }) {
+  return <Pressable onPress={onPress} style={[styles.action, secondary && styles.actionSecondary]}>
     <Text style={styles.actionText}>{title}  →</Text>
   </Pressable>;
 }
