@@ -38,7 +38,7 @@ export default function HomeScreen() {
         <Text style={styles.heroBody}>Create invoices, track payments, issue receipts and keep a clear record of every transaction.</Text>
         <Action title="Create new invoice" onPress={() => router.push("/(app)/invoices")} />
         <Action title="Open invoice centre" secondary onPress={() => router.push("/(app)/invoices")} />
-        <Action title="Open receipt vault" secondary onPress={() => router.push("/(app)/receipts")} />
+        <Action title="Open receipt vault" secondary onPress={() => router.push("/(app)/receipts")} />\n        <Action title="Open product catalogue" secondary onPress={() => router.push("/(app)/catalogue")} />
       </View>
 
       <View style={styles.passport}>
