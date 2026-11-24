@@ -36,16 +36,16 @@ export default function HomeScreen() {
         <Text style={styles.heroEyebrow}>MONEY · PAYMENTS · PROOF · IDENTITY</Text>
         <Text style={styles.heroTitle}>Manage invoices, payments and receipts in one place.</Text>
         <Text style={styles.heroBody}>Create invoices, track payments, issue receipts and keep a clear record of every transaction.</Text>
-        <Action title="Create new invoice" />
-        <Action title="Open invoice centre" secondary />
-        <Action title="Open receipt vault" secondary />
+        <Action title="Create new invoice" onPress={() => router.push("/(app)/invoices")} />
+        <Action title="Open invoice centre" secondary onPress={() => router.push("/(app)/invoices")} />
+        <Action title="Open receipt vault" secondary onPress={() => router.push("/(app)/receipts")} />
       </View>
 
       <View style={styles.passport}>
         <Text style={styles.heroEyebrow}>BUSINESS IDENTITY · TRUST LAYER</Text>
         <Text style={styles.passportTitle}>Your Business Passport</Text>
         <Text style={styles.heroBody}>Your business identity and verification profile.</Text>
-        <Action title="View Business Passport" secondary />
+        <Action title="View Business Passport" secondary onPress={() => router.push("/(app)/passport")} />
       </View>
       <Text style={styles.footer}>VynoTap · One business identity across your devices</Text>
     </ScrollView>
