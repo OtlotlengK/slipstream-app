@@ -29,7 +29,7 @@ export default function SignInScreen() {
   const signIn = () => run(async () => {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) throw error;
-    router.replace("/(app)");
+    router.replace("/");
   });
 
   const signUp = () => run(async () => {
@@ -39,7 +39,7 @@ export default function SignInScreen() {
       options: { data: { business_name: business.trim(), owner_name: owner.trim() } },
     });
     if (error) throw error;
-    if (data.session) router.replace("/(app)");
+    if (data.session) router.replace("/");
     else { setMode("verify"); setNotice("Your account has been created. Enter the eight-digit code sent to your email."); }
   });
 
@@ -47,7 +47,7 @@ export default function SignInScreen() {
     if (!/^\d{8}$/.test(code)) throw new Error("Enter the eight-digit verification code.");
     const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: code, type: "signup" });
     if (error) throw error;
-    router.replace("/(app)");
+    router.replace("/");
   });
 
   const resend = () => run(async () => {
@@ -71,7 +71,7 @@ export default function SignInScreen() {
     if (verifyError) throw verifyError;
     const { error: updateError } = await supabase.auth.updateUser({ password });
     if (updateError) throw updateError;
-    router.replace("/(app)");
+    router.replace("/");
   });
 
   const title = mode === "signup" ? "Create your account" :
