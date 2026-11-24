@@ -1,8 +1,9 @@
-/* VynoTap environment routing.
-   Production is selected only on explicitly allow-listed production hosts.
-   Every Vercel preview and localhost uses staging. Unknown hosts fail closed. */
+/* VynoTap production-only environment routing.
+   Website and Android both use the same production Supabase Auth project.
+   Unrecognised hosts fail closed; no staging project is selected. */
 (() => {
   const host = window.location.hostname.toLowerCase();
+  const isNativeAndroid = host === 'localhost' && window.VT_ANDROID_BUILD_ENV === 'production';
   const productionHosts = new Set([
     'vynotap.com',
     'www.vynotap.com',
@@ -10,28 +11,19 @@
     'slipstream-app-clips4.vercel.app',
     'slipstream-app-git-main-clips4.vercel.app'
   ]);
+  if (!isNativeAndroid && !productionHosts.has(host)) {
+    throw new Error('VynoTap is configured for production only. This host is not authorised.');
+  }
   const production = {
     url: 'https://pddjualtnhgmplampucn.supabase.co',
     key: 'sb_publishable_31VRHyY4ze-5FqJU7CKooA_PzYUIYCH'
   };
-  const staging = {
-    url: 'https://uvnlihejfwotynxhlvpq.supabase.co',
-    key: 'sb_publishable_erwz2gEbNN3sOx7h29B8ew_ObOMUwe2'
-  };
-  let environment;
-  if (productionHosts.has(host)) {
-    environment = 'production';
-  } else if (host === 'localhost' || host === '127.0.0.1' || host.endsWith('.vercel.app')) {
-    environment = 'staging';
-  } else {
-    throw new Error('VynoTap blocked an unrecognised host. No Supabase connection was started.');
-  }
-  const selected = environment === 'production' ? production : staging;
   window.VT_ENV = Object.freeze({
-    name: environment,
-    supabaseUrl: selected.url,
-    supabaseKey: selected.key,
-    functionsUrl: selected.url + '/functions/v1'
+    name: 'production',
+    supabaseUrl: production.url,
+    supabaseKey: production.key,
+    functionsUrl: production.url + '/functions/v1',
+    appUrl: isNativeAndroid ? 'https://vynotap.com' : window.location.origin
   });
-  document.documentElement.dataset.vtEnvironment = environment;
+  document.documentElement.dataset.vtEnvironment = 'production';
 })();

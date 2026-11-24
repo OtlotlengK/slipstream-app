@@ -1,0 +1,21 @@
+{
+  "name": "vynotap-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Capacitor Android wrapper for the VynoTap web application",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build:android": "node scripts/build-android.mjs",
+    "android:sync": "npm run build:android && cap sync android",
+    "android:add": "cap add android",
+    "android:open": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.2",
+    "@capacitor/core": "8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.2",
+    "typescript": "^5.9.3"
+  }
+}
