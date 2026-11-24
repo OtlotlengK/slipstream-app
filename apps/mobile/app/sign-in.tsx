@@ -5,6 +5,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { supabase } from "../src/lib/supabase";
+import { VynoTapMark } from "../src/components/vynotap-mark";
 
 type Mode = "login" | "signup" | "verify" | "forgot" | "recover";
 
@@ -88,7 +89,7 @@ export default function SignInScreen() {
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.brand}>
-          <View style={styles.mark}><Text style={styles.markText}>VT</Text></View>
+          <VynoTapMark size={76} />
           <Text style={styles.brandName}>VynoTap</Text>
           <Text style={styles.tagline}>The trust layer for business transactions</Text>
         </View>
