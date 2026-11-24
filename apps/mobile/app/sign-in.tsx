@@ -4,7 +4,7 @@ import {
   ScrollView, StyleSheet, Text, TextInput, View,
 } from "react-native";
 import { router } from "expo-router";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../src/lib/supabase";
 
 type Mode = "login" | "signup" | "verify" | "forgot" | "recover";
 
