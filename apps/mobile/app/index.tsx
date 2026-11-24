@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, Pressable, View } from "react-native";
 import { Redirect } from "expo-router";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../src/lib/supabase";
 
 type Destination = "/sign-in" | "/(app)" | "/(app)/onboarding";
 
