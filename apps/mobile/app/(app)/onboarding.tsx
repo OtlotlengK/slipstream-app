@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
 import { supabase } from "../../src/lib/supabase";
+import { VynoTapMark } from "../../src/components/vynotap-mark";
 
 export default function OnboardingScreen() {
   const [business, setBusiness] = useState("");
@@ -58,7 +59,7 @@ export default function OnboardingScreen() {
     <KeyboardAvoidingView style={styles.loading} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.brand}>
-          <View style={styles.mark}><Text style={styles.markText}>VT</Text></View>
+          <VynoTapMark size={64} />
           <Text style={styles.brandName}>VynoTap</Text>
           <Text style={styles.muted}>Set up your business profile</Text>
         </View>
