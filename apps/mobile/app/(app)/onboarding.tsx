@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { router } from "expo-router";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "../../src/lib/supabase";
 
 export default function OnboardingScreen() {
   const [business, setBusiness] = useState("");
