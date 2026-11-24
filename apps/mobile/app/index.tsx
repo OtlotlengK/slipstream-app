@@ -8,6 +8,7 @@ type Destination = "/sign-in" | "/(app)" | "/(app)/onboarding";
 export default function IndexRoute() {
   const [destination, setDestination] = useState<Destination>();
   const [problem, setProblem] = useState("");
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -35,19 +36,15 @@ export default function IndexRoute() {
       if (active) setDestination(merchant?.business_name ? "/(app)" : "/(app)/onboarding");
     };
     resolve();
-    const { data: listener } = supabase.auth.onAuthStateChange(() => { resolve(); });
-    return () => {
-      active = false;
-      listener.subscription.unsubscribe();
-    };
-  }, []);
+    return () => { active = false; };
+  }, [retry]);
 
   if (problem) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 28, backgroundColor: "#0B1220" }}>
         <Text style={{ color: "#F8FAFC", fontSize: 17, fontWeight: "800", textAlign: "center" }}>{problem}</Text>
-        <Pressable onPress={() => { setProblem(""); setDestination(undefined); supabase.auth.getSession().then(() => setDestination("/sign-in")); }} style={{ marginTop: 18, padding: 14 }}>
-          <Text style={{ color: "#A78BFA", fontWeight: "800" }}>Return to sign in</Text>
+        <Pressable onPress={() => setRetry(value => value + 1)} style={{ marginTop: 18, padding: 14 }}>
+          <Text style={{ color: "#A78BFA", fontWeight: "800" }}>Try again</Text>
         </Pressable>
       </View>
     );
