@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import {
   ActivityIndicator, KeyboardAvoidingView, Platform, Pressable,
   ScrollView, StyleSheet, Text, TextInput, View,
@@ -133,7 +133,7 @@ export default function SignInScreen() {
   );
 }
 
-function Field(props: React.ComponentProps<typeof TextInput> & { label: string }) {
+function Field(props: ComponentProps<typeof TextInput> & { label: string }) {
   const { label, ...input } = props;
   return <View style={styles.field}>
     <Text style={styles.label}>{label.toUpperCase()}</Text>
