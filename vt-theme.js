@@ -1,10 +1,15 @@
-/* ValoraTap appearance: system, light, or dark. */
+/* VynoTap appearance: apply the saved theme before the browser paints the page. */
 (() => {
+  if (window.__VT_THEME_BOOTSTRAPPED__) return;
+  window.__VT_THEME_BOOTSTRAPPED__ = true;
   const KEY = 'vt_theme_preference_v1';
   const valid = ['system','light','dark'];
   const media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
   const read = () => { try { const v=localStorage.getItem(KEY); return valid.includes(v)?v:null; } catch (_) { return null; } };
   const resolved = p => p==='dark'||(p==='system'&&media&&media.matches)?'dark':'light';
+  const initialPreference = read() || 'system';
+  document.documentElement.dataset.vtTheme = resolved(initialPreference);
+  document.documentElement.dataset.vtThemePreference = initialPreference;
   const style = document.createElement('style');
   style.id='vt-theme-styles';
   style.textContent = `
