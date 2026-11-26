@@ -22,23 +22,25 @@
 </header>
 <section class="bg-[#111827] border border-slate-800 rounded-2xl p-6 shadow-2xl">
 <h2 id="title" class="text-xl font-bold">Welcome back</h2><p id="subtitle" class="text-xs text-slate-400 mt-1 mb-6">Log in to your merchant dashboard.</p>
+<div id="auth-fields">
 <div id="signup-fields" class="hidden space-y-4">
 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Business Name<input id="business" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="e.g. Brightside Traders"></label>
 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Your Name<input id="owner" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="e.g. Jordan Lee"></label>
 </div>
-<div id="verify-fields" class="hidden mt-4 space-y-3">
-<label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Email verification code<input id="signup-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm tracking-[0.35em] text-white" placeholder="000000"></label>
-<button id="verify-signup" type="button" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl">Verify Email</button>
-<p class="text-[11px] text-slate-400">Enter the six-digit code sent to your email. You can request another code if needed.</p>
-</div>
 <label class="block mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Email Address<input id="email" type="email" autocomplete="email" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="you@example.com"></label>
 <label id="password-field" class="block mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Password<input id="password" type="password" autocomplete="current-password" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="Minimum 6 characters"></label>
-<div id="message" class="hidden mt-4 p-3 rounded-xl text-xs"></div>
 <button id="submit" class="w-full mt-5 bg-[#6C4CF1] hover:bg-[#8B7CF6] text-[#0F172A] font-black py-3 rounded-xl">Log In</button>
 <button id="forgot" class="w-full mt-3 text-xs text-slate-400 hover:text-white font-bold">Forgot password?</button>
-<button id="resend" class="hidden w-full mt-3 text-xs text-slate-300 hover:text-white font-bold">Resend verification email</button>
 <button id="switch" class="w-full mt-4 text-xs text-[#8B7CF6] hover:text-white font-medium">Don't have an account? Create one</button>
 <button id="install" class="hidden w-full mt-4 bg-white/5 border border-[#6C4CF1]/40 text-[#8B7CF6] font-bold py-3 rounded-xl">Install VynoTap App</button>
+</div>
+<div id="verify-fields" class="hidden mt-4 space-y-4">
+<p class="text-sm text-slate-300">We sent a six-digit verification code to <span id="verify-email" class="font-semibold text-white"></span>.</p>
+<label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Email verification code<input id="signup-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm tracking-[0.35em] text-white" placeholder="000000"></label>
+<button id="verify-signup" type="button" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl">Verify Email</button>
+<button id="resend" class="w-full text-xs text-slate-300 hover:text-white font-bold">Resend verification code</button>
+</div>
+<div id="message" class="hidden mt-4 p-3 rounded-xl text-xs"></div>
 </section><p class="text-center text-[10px] text-slate-600 mt-5">VynoTap © 2026</p>
 </div>
 <script>
@@ -50,15 +52,14 @@ let verificationPending=false;
 const $=id=>document.getElementById(id);
 function msg(t,error=false){$('message').textContent=t;$('message').className='mt-4 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');}
 function render(){
+  $('auth-fields').classList.toggle('hidden',verificationPending);
   $('signup-fields').classList.toggle('hidden',!signup);
   $('verify-fields').classList.toggle('hidden',!verificationPending);
+  $('verify-email').textContent=$('email').value.trim();
   $('title').textContent=verificationPending?'Verify your email':(signup?'Create your merchant account':'Welcome back');
   $('subtitle').textContent=verificationPending?'Enter the six-digit code we sent to your email address.':(signup?'Start issuing verifiable digital receipts.':'Log in to your merchant dashboard.');
   $('submit').classList.toggle('hidden',verificationPending);
-  $('switch').classList.toggle('hidden',verificationPending);
   $('forgot').classList.toggle('hidden',signup||verificationPending);
-  $('password-field').classList.toggle('hidden',verificationPending);
-  $('resend').classList.toggle('hidden',!verificationPending);
   $('submit').textContent=signup?'Create Merchant Account':'Log In';
   $('switch').textContent=signup?'Already have an account? Log in':"Don't have an account? Create one";
 }
