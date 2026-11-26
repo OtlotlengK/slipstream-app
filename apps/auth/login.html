@@ -85,7 +85,7 @@ $('submit').onclick=submit;
 $('forgot').onclick=()=>{const email=$('email').value.trim();location.href='/reset-password.html'+(email?'?email='+encodeURIComponent(email):'');};
 $('switch').onclick=()=>{signup=!signup;verificationPending=false;sessionStorage.removeItem('vynotap.pendingSignupEmail');$('email').disabled=false;render();$('message').classList.add('hidden')};
 $('resend').onclick=resend;
-(async()=>{const {data:{session}}=await db.auth.getSession();if(session){sessionStorage.removeItem('vynotap.pendingSignupEmail');await route();return}const pendingEmail=sessionStorage.getItem('vynotap.pendingSignupEmail');if(pendingEmail){verificationPending=true;signup=false;render();$('email').value=pendingEmail;$('email').disabled=true}else render()})();
+(async()=>{const {data:{session}}=await db.auth.getSession();if(session){sessionStorage.removeItem('vynotap.pendingSignupEmail');await route();return}const pendingEmail=sessionStorage.getItem('vynotap.pendingSignupEmail');if(pendingEmail){verificationPending=true;signup=false;$('email').value=pendingEmail;$('email').disabled=true;render()}else render()})();
 let deferred=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').classList.remove('hidden')});$('install').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('install').classList.add('hidden')};
 if(!window.VT_ANDROID_BUILD_ENV&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
 </script>
