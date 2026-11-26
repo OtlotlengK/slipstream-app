@@ -77,7 +77,8 @@ async function verifySignup(){
   if(error){msg(error.message,true);button.disabled=false;button.textContent='Verify Email';return;}
   verificationPending=false;sessionStorage.removeItem('vynotap.pendingSignupEmail');$('email').disabled=false;msg('Email verified successfully. Opening your VynoTap account...');await route();
 }
-$('verify-signup').onclick=verifySignup;\n$('signup-otp').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\\D/g,'').slice(0,8)});
+$('verify-signup').onclick=verifySignup;
+$('signup-otp').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\\D/g,'').slice(0,8)});
 $('submit').onclick=submit;
 $('forgot').onclick=()=>{const email=$('email').value.trim();location.href='/reset-password.html'+(email?'?email='+encodeURIComponent(email):'');};
 $('switch').onclick=()=>{signup=!signup;verificationPending=false;sessionStorage.removeItem('vynotap.pendingSignupEmail');$('email').disabled=false;render();$('message').classList.add('hidden')};
