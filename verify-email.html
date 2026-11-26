@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="/vt-env.js"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="application-name" content="VynoTap"><meta name="theme-color" content="#2B2A6B">
+<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icons/vynotap.svg" type="image/svg+xml">
+<title>VynoTap | Verify Email</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/core/services/supabase-client.js"></script>
+<script src="/vt-theme.js" defer></script>
+</head>
+<body class="min-h-screen bg-[#0F172A] text-slate-100 flex items-center justify-center p-4">
+<main class="w-full max-w-md">
+<header class="text-center mb-7">
+<img src="/icons/vynotap.svg" alt="VynoTap" class="w-20 h-20 mx-auto mb-4 object-contain">
+<h1 class="text-3xl font-black tracking-tight text-white">VynoTap</h1>
+<p class="text-sm text-slate-400 mt-1">The trust layer for business transactions</p>
+</header>
+<section class="bg-[#111827] border border-slate-800 rounded-2xl p-6 shadow-2xl">
+<h2 class="text-xl font-bold">Verify your email</h2>
+<p class="text-sm text-slate-400 mt-2 mb-6">Enter the six-digit verification code sent to your email address.</p>
+<p id="destination" class="text-sm text-white font-semibold text-center mb-5 break-all"></p>
+<label for="signup-otp" class="block text-xs font-bold uppercase tracking-wider text-slate-400">Verification code</label>
+<input id="signup-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" class="mt-2 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-4 text-center text-xl tracking-[0.55em] text-white" placeholder="000000" aria-label="Six-digit verification code">
+<button id="verify" type="button" class="w-full mt-5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl">Verify Email</button>
+<button id="resend" type="button" class="w-full mt-4 text-xs text-slate-300 hover:text-white font-bold">Resend verification code</button>
+<div id="message" role="status" aria-live="polite" class="hidden mt-4 p-3 rounded-xl text-xs"></div>
+</section>
+<p class="text-center text-[10px] text-slate-600 mt-5">VynoTap © 2026</p>
+</main>
+<script>
+const db=window.VT.createSupabaseClient();
+const $=id=>document.getElementById(id);
+const email=sessionStorage.getItem('vynotap.pendingSignupEmail')||'';
+$('destination').textContent=email;
+function msg(text,error=false){$('message').textContent=text;$('message').className='mt-4 p-3 rounded-xl text-xs '+(error?'bg-red-950/50 text-red-300':'bg-emerald-950/50 text-emerald-300');}
+$('signup-otp').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,6)});
+async function route(){const {data:{user}}=await db.auth.getUser();if(!user){location.href='/login.html';return}sessionStorage.removeItem('vynotap.pendingSignupEmail');const {data}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).maybeSingle();if(!data||!data.business_name||!data.owner_name){location.href='/onboarding.html';return}location.href='/index.html';}
+$('verify').onclick=async()=>{const token=$('signup-otp').value.trim();if(!email){msg('Your registration email could not be retrieved. Please return to registration.',true);return}if(!/^\d{6}$/.test(token)){msg('Enter the six-digit code from your email.',true);return}const button=$('verify');button.disabled=true;button.textContent='Verifying...';const {error}=await db.auth.verifyOtp({email,token,type:'email'});if(error){msg(error.message,true);button.disabled=false;button.textContent='Verify Email';return}msg('Email verified. Opening your VynoTap account...');await route();};
+$('resend').onclick=async()=>{if(!email){msg('Your registration email could not be retrieved. Please return to registration.',true);return}const button=$('resend');button.disabled=true;const {error}=await db.auth.resend({type:'signup',email});if(error)msg(error.message,true);else msg('A new six-digit verification code has been sent.');button.disabled=false;};
+if(!email){msg('No pending registration was found. Please return to registration to begin again.',true);$('verify').disabled=true;$('resend').disabled=true;}
+if(!window.VT_ANDROID_BUILD_ENV&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body></html>
