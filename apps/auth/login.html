@@ -31,6 +31,7 @@
 <label id="password-field" class="block mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Password<input id="password" type="password" autocomplete="current-password" class="mt-1 w-full rounded-xl bg-[#0B1220] border border-slate-700 px-3.5 py-3 text-sm text-white" placeholder="Minimum 6 characters"></label>
 <button id="submit" class="w-full mt-5 bg-[#6C4CF1] hover:bg-[#8B7CF6] text-[#0F172A] font-black py-3 rounded-xl">Log In</button>
 <button id="forgot" class="w-full mt-3 text-xs text-slate-400 hover:text-white font-bold">Forgot password?</button>
+<button id="resend-login" class="hidden w-full mt-3 text-xs text-slate-300 hover:text-white font-bold">Resend confirmation email</button>
 <button id="switch" class="w-full mt-4 text-xs text-[#8B7CF6] hover:text-white font-medium">Don't have an account? Create one</button>
 <button id="install" class="hidden w-full mt-4 bg-white/5 border border-[#6C4CF1]/40 text-[#8B7CF6] font-bold py-3 rounded-xl">Install VynoTap App</button>
 </div>
@@ -64,11 +65,11 @@ function render(){
   $('switch').textContent=signup?'Already have an account? Log in':"Don't have an account? Create one";
 }
 async function route(){const {data:{user}}=await db.auth.getUser();if(!user){location.href='/login.html';return}const {data}=await db.from('merchants').select('business_name,owner_name,phone').eq('id',user.id).maybeSingle();if(!data||!data.business_name||!data.owner_name){location.href='/onboarding.html';return}location.href='/index.html';}
-async function submit(){const email=$('email').value.trim(),password=$('password').value,button=$('submit');if(!email||!password){msg('Please enter your email and password.',true);return}button.disabled=true;button.textContent=signup?'Creating account...':'Logging in...';$('resend').classList.add('hidden');
+async function submit(){const email=$('email').value.trim(),password=$('password').value,button=$('submit');if(!email||!password){msg('Please enter your email and password.',true);return}button.disabled=true;button.textContent=signup?'Creating account...':'Logging in...';$('resend-login').classList.add('hidden');
 if(signup){const business=$('business').value.trim(),owner=$('owner').value.trim();if(!business||!owner){msg('Please enter your business name and your name.',true);button.disabled=false;render();return}
 const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:verifyRedirect,data:{business_name:business,owner_name:owner}}});
 if(error){msg(error.message,true)}else if(data.session){await route()}else{verificationPending=true;signup=false;sessionStorage.setItem('vynotap.pendingSignupEmail',email);render();$('email').value=email;$('email').disabled=true;$('password').value='';msg('Account created. Check your inbox for the six-digit VynoTap verification code.');$('signup-otp').focus()}
-}else{const {error}=await db.auth.signInWithPassword({email,password});if(error){msg(error.message,true);if(error.message.toLowerCase().includes('email not confirmed'))$('resend').classList.remove('hidden')}else await route()}
+}else{const {error}=await db.auth.signInWithPassword({email,password});if(error){msg(error.message,true);if(error.message.toLowerCase().includes('email not confirmed'))$('resend-login').classList.remove('hidden')}else await route()}
 button.disabled=false;render();}
 async function resend(){const email=$('email').value.trim();if(!email){msg('Enter your email address first.',true);return}const {error}=await db.auth.resend({type:'signup',email});if(error)msg(error.message,true);else msg('A new verification code has been sent. Check your inbox and spam/junk folder.')}
 async function verifySignup(){
@@ -85,6 +86,7 @@ $('submit').onclick=submit;
 $('forgot').onclick=()=>{const email=$('email').value.trim();location.href='/reset-password.html'+(email?'?email='+encodeURIComponent(email):'');};
 $('switch').onclick=()=>{signup=!signup;verificationPending=false;sessionStorage.removeItem('vynotap.pendingSignupEmail');$('email').disabled=false;render();$('message').classList.add('hidden')};
 $('resend').onclick=resend;
+$('resend-login').onclick=resend;
 (async()=>{const {data:{session}}=await db.auth.getSession();if(session){sessionStorage.removeItem('vynotap.pendingSignupEmail');await route();return}const pendingEmail=sessionStorage.getItem('vynotap.pendingSignupEmail');if(pendingEmail){verificationPending=true;signup=false;$('email').value=pendingEmail;$('email').disabled=true;render()}else render()})();
 let deferred=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('install').classList.remove('hidden')});$('install').onclick=async()=>{if(!deferred)return;deferred.prompt();await deferred.userChoice;deferred=null;$('install').classList.add('hidden')};
 if(!window.VT_ANDROID_BUILD_ENV&&'serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
