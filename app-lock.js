@@ -1,6 +1,9 @@
 /* Load the shared appearance system on authenticated app pages. */
 (() => { const s=document.createElement('script'); s.src='/vt-theme.js'; s.async=true; document.head.appendChild(s); })();
 
+/* Load account-specific contextual guidance on authenticated app pages. */
+(() => { const s=document.createElement('script'); s.src='/vt-guidance.js'; s.async=true; document.head.appendChild(s); })();
+
 /* VynoTap local app lock.
    This is a device-level privacy gate, not a replacement for Supabase Auth.
    The Supabase session remains intact while VynoTap is locked. */
