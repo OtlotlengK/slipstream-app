@@ -5,13 +5,13 @@
   window.__VT_GUIDANCE_STARTED__ = true;
   const pages = {
     '/dashboard-v2.html': ['dashboard','Your business at a glance','Use this dashboard to monitor your financial snapshot, access invoice actions and review important business activity. Figures reflect records available in your VynoTap account.'],
-    '/invoice-centre.html': ['invoice_centre','Welcome to your Invoice Centre','Review invoices, monitor payment status, search records and open an invoice to inspect or manage its details.'],
-    '/invoice-create.html': ['create_invoice','Creating an invoice','Enter customer details, add products or services, confirm dates and review totals before creating the invoice. Saved catalogue items help you avoid repeatedly entering the same items.'],
-    '/invoice-vault.html': ['invoice_vault','Your Invoice Vault','Use search and filters to locate invoices and review their current status. Open a record to inspect its details.'],
-    '/digital-receipts.html': ['receipt_vault','Your Receipt Vault','Your issued receipts are kept here. Open a receipt to review its details and verification information. A receipt should not be treated as proof of cleared funds unless its status confirms payment.'],
-    '/business-passport.html': ['business_passport','Your Business Passport','Your Business Passport presents your business profile and selected VynoTap activity in a shareable format. Review the information before sharing its public link.'],
-    '/product-catalogue.html': ['product_catalogue','Build your product catalogue','Save the products and services you sell, including descriptions and prices. Select saved items when preparing invoices instead of typing them repeatedly.'],
-    '/action-centre.html': ['action_centre','Your Action Centre','This area brings important items requiring attention into one place. Review each item and use its available action to resolve or investigate it.']
+    '/apps/invoices/invoice-centre.html': ['invoice_centre','Welcome to your Invoice Centre','Review invoices, monitor payment status, search records and open an invoice to inspect or manage its details.'],
+    '/apps/invoices/invoice-create.html': ['create_invoice','Creating an invoice','Enter customer details, add products or services, confirm dates and review totals before creating the invoice. Saved catalogue items help you avoid repeatedly entering the same items.'],
+    '/apps/invoices/invoice-centre.html': ['invoice_vault','Your Invoice Vault','Use search and filters to locate invoices and review their current status. Open a record to inspect its details.'],
+    '/apps/receipts/receipts.html': ['receipt_vault','Your Receipt Vault','Your issued receipts are kept here. Open a receipt to review its details and verification information. A receipt should not be treated as proof of cleared funds unless its status confirms payment.'],
+    '/apps/business/business-passport.html': ['business_passport','Your Business Passport','Your Business Passport presents your business profile and selected VynoTap activity in a shareable format. Review the information before sharing its public link.'],
+    '/apps/catalogue/product-catalogue.html': ['product_catalogue','Build your product catalogue','Save the products and services you sell, including descriptions and prices. Select saved items when preparing invoices instead of typing them repeatedly.'],
+    '/centres/action-centre.html': ['action_centre','Your Action Centre','This area brings important items requiring attention into one place. Review each item and use its available action to resolve or investigate it.']
   };
   const path = location.pathname.replace(/\/$/, '') || '/';
   const guide = pages[path];
